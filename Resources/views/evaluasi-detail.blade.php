@@ -102,9 +102,10 @@
                                                 @endphp
 
                                                 <textarea
-                                                    class="{{ $predikat !== null && $deskripsi === null ? 'd-none' : '' }}"
+                                                    class="mt-2 {{ $predikat !== null && $deskripsi === null ? 'd-none' : '' }}"
                                                     {{ $predikat !== null && $deskripsi !== null ? 'disabled' : '' }}
                                                     name="feedback[{{ $index }}][umpan_balik_deskripsi]"
+                                                    required
                                                     placeholder="{{ $predikat !== null && $deskripsi !== null ? $deskripsi : '' }}"
                                                     style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                                             </td>
@@ -145,9 +146,10 @@
                                                     </div>
                                                 </div>
                                                 <textarea
-                                                class=""
+                                                class="mt-2"
                                                 name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                                                 placeholder=""
+                                                required
                                                 style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                                             </td>
                                         </tr>
@@ -220,7 +222,8 @@
                                                 </div>
 
                                                 <textarea
-                                                    class="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
+                                                    required
+                                                    class="mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
                                                     {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }}
                                                     name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                                                     placeholder="{{ ($penilaian && $penilaian->umpan_balik_deskripsi) ? $penilaian->umpan_balik_deskripsi : '' }}"

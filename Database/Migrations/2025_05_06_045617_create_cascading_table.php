@@ -22,7 +22,7 @@ class CreateCascadingTable extends Migration
             $table->unsignedBigInteger('pegawai_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('cascade');
+            $table->foreign('pegawai_id')->references('id')->on('pegawais')->onDelete('cascade');
         });
     }
 

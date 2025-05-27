@@ -19,7 +19,7 @@ class CreatePeriodeAktifTable extends Migration
             $table->unsignedBigInteger('periode_id');
             $table->timestamps();
 
-            $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('cascade');
+            $table->foreign('pegawai_id')->references('id')->on('pegawais')->onDelete('cascade');
             $table->foreign('periode_id')->references('id')->on('periodes')->onDelete('cascade');
         });
     }

@@ -25,7 +25,7 @@ class CreateRencanaPerilakuTable extends Migration
 
             $table->foreign('rencana_id')->references('id')->on('skp_rencana_kerja')->onDelete('cascade');
             $table->foreign('perilaku_kerja_id')->references('id')->on('skp_perilaku_kerja')->onDelete('cascade');
-            $table->foreign('ketua_tim_id')->references('id')->on('pegawai')->onDelete('cascade');
+            $table->foreign('ketua_tim_id')->references('id')->on('pegawais')->onDelete('cascade');
         });
     }
 

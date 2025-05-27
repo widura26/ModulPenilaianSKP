@@ -24,14 +24,14 @@ class CreateSkpRencanaKerjaTable extends Migration
             $table->text('deskripsi_rating_hasil_kerja')->nullable();
             $table->string('rating_perilaku')->nullable();
             $table->text('deskripsi_rating_perilaku')->nullable();
-            $table->enum('predikat_akhir', ['Istimewa', 'Baik', 'Cukup', 'Kurang', 'Sangat Kurang', 'Butuh Perbaikan'])->nullable();
+            $table->enum('predikat_akhir', ['Istimewa', 'Baik', 'Cukup', 'Kurang', 'Sangat Kurang', 'Butuh Perbaikan', 'Sangat Baik'])->nullable();
             $table->unsignedBigInteger('periode_id')->nullable();
             $table->unsignedBigInteger('pegawai_id')->nullable();
             $table->unsignedBigInteger('lampiran_id')->nullable();
             $table->timestamps();
 
             $table->foreign('periode_id')->references('id')->on('periodes')->onDelete('cascade');
-            $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('cascade');
+            $table->foreign('pegawai_id')->references('id')->on('pegawais')->onDelete('cascade');
             $table->foreign('tim_kerja_id')->references('id')->on('tim_kerja')->onDelete('cascade');
         });
     }

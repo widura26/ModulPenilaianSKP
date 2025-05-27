@@ -41,15 +41,16 @@ class PeriodeController extends Controller {
     public function setPeriode(Request $request){
         $request->validate([
             'periodetahun' => 'required|exists:periodes,id',
+            'periode_range' => 'required|exists:periodes,id',
         ], [
             'periodetahun.required' => 'Periode tahun belum di-set.',
-            'periodetahun.exists' => 'Periode tahun tidak ditemukan dalam data.',
+            'periode_range.required' => 'Periode belum dipilih.',
         ]);
         $penilaianController = new PenilaianController();
         $pegawai = $penilaianController->getPegawaiWhoLogin();
 
         try {
-            PeriodeAktif::updateOrCreate(
+            $hasil = PeriodeAktif::updateOrCreate(
                 ['pegawai_id' => $pegawai->id],
                 ['periode_id' => $request->periode_range]
             );
