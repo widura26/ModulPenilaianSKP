@@ -217,19 +217,30 @@ class PenilaianController extends Controller
             }
 
             $jumlahHariLibur = collect($presensi)->filter(fn($v) => $v === 'L')->count();
-            $jumlahHariKehadiran_tunjangan = collect($presensi)->filter(fn($v) => $v === 'D')->count();
-            $jumlahHariKehadiran_nontunjangan = collect($presensi)->filter(fn($v) => $v === 'T')->count();
-            $hariKerja = $jumlahHari - $jumlahHariLibur;
+            $jumlahHariKehadiran_sesuai_ketentuan = collect($presensi)->filter(fn($v) => $v === 'D')->count();
+            $jumlahHariKehadiran_tidak_sesuai_ketentuan = collect($presensi)->filter(fn($v) => $v === 'T')->count();
+            $dinasLuar = collect($presensi)->filter(fn($v) => $v === 'DL')->count();
+            $cuti = collect($presensi)->filter(fn($v) => $v === 'C')->count();
+            $alpa = collect($presensi)->filter(fn($v) => $v === 'TM')->count();
 
+            $hariKerja = $jumlahHari - $jumlahHariLibur - $alpa - $cuti;
+
+            $rerataKehadiranSesuaiKetentuan = ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja;
+            $rerataKehadiranTidakSesuaiKetentuan = ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja;
+            // - cuti, -tugasluar
             return [
                 'pegawai' => $pegawai->nama,
                 'jumlahHari_dalam_periode' => $jumlahHari,
-                'hari_kerja_dalam_periode' => $hariKerja,
                 'hari_libur_dalam_periode' => $jumlahHariLibur,
-                'jumlahHariKehadiran_tunjangan' => $jumlahHariKehadiran_tunjangan,
-                'jumlahHariKehadiran_nontunjangan' => $jumlahHariKehadiran_nontunjangan,
-                'rerata_kehadiran_tunjangan' => ($jumlahHariKehadiran_tunjangan * 100) / $hariKerja,
-                'rerata_kehadiran_nontunjangan' => ($jumlahHariKehadiran_nontunjangan * 100) / $hariKerja
+                'dinas_luar' => $dinasLuar,
+                'cuti' => $cuti,
+                'alpa' => $alpa,
+                'hari_kerja_dalam_periode' => $hariKerja,
+                'jumlahHariKehadiran_sesuai_ketentuan' => $jumlahHariKehadiran_sesuai_ketentuan,
+                'jumlahHariKehadiran_tidak_sesuai_ketentuan' => $jumlahHariKehadiran_tidak_sesuai_ketentuan,
+                'rerata_kehadiran_sesuai_ketentuan' => $rerataKehadiranSesuaiKetentuan,
+                'rerata_kehadiran_tidak_sesuai_ketentuan' => $rerataKehadiranTidakSesuaiKetentuan,
+                'total' => $rerataKehadiranSesuaiKetentuan + $rerataKehadiranTidakSesuaiKetentuan
             ];
         });
 

@@ -13,7 +13,7 @@ class CreatePeriodeAktifTable extends Migration
      */
     public function up()
     {
-        Schema::create('periode_aktif', function (Blueprint $table) {
+        Schema::create('skp_periode_aktif', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pegawai_id');
             $table->unsignedBigInteger('periode_id');
@@ -31,6 +31,10 @@ class CreatePeriodeAktifTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('periode_aktif');
+        Schema::table('skp_periode_aktif', function (Blueprint $table) {
+            $table->dropForeign(['skp_periode_aktif_periode_id_foreign']);
+            $table->dropForeign(['pegawai_id']);
+        });
+        Schema::dropIfExists('skp_periode_aktif');
     }
 }

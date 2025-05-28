@@ -22,7 +22,7 @@ class CreateSkpHasilKerjaTable extends Migration
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();
             $table->text('deskripsi')->nullable();
-            $table->unsignedInteger('kriteria_id')->nullable();
+            $table->enum('jenis', ['utama', 'tambahan']);
             $table->timestamps();
         });
     }

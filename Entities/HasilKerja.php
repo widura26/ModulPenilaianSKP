@@ -28,7 +28,11 @@ class HasilKerja extends Model
         return $this->hasMany(Indikator::class);
     }
 
-    public function penilaianHasilKerja(){
-        return $this->hasMany(PenilaianHasilKerja::class, 'hasil_kerja_id', 'id');
+    // public function penilaianHasilKerja(){
+    //     return $this->hasMany(PenilaianHasilKerja::class, 'hasil_kerja_id', 'id');
+    // }
+
+    public function penilaian() {
+        return $this->morphMany(PenilaianHasilKerja::class, 'target');
     }
 }

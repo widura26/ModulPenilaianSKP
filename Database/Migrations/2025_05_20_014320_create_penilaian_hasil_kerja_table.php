@@ -15,14 +15,16 @@ class CreatePenilaianHasilKerjaTable extends Migration
     {
         Schema::create('skp_penilaian_hasil_kerja', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('hasil_kerja_id')->nullable();
+            // $table->unsignedBigInteger('hasil_kerja_id')->nullable();
+            $table->unsignedBigInteger('target_id');
+            $table->string('target_type');
             $table->unsignedBigInteger('ketua_tim_id')->nullable();
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();
             $table->timestamps();
 
-            $table->foreign('hasil_kerja_id')->references('id')->on('skp_hasil_kerja')->onDelete('cascade');
-            $table->foreign('ketua_tim_id')->references('id')->on('pegawai')->onDelete('cascade');
+            // $table->foreign('hasil_kerja_id')->references('id')->on('skp_hasil_kerja')->onDelete('cascade');
+            $table->foreign('ketua_tim_id')->references('id')->on('pegawais')->onDelete('cascade');
         });
     }
 

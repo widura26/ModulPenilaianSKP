@@ -14,8 +14,8 @@ class CreateCascadingTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('cascading');
-        Schema::create('cascading', function (Blueprint $table) {
+        Schema::dropIfExists('skp_cascading');
+        Schema::create('skp_cascading', function (Blueprint $table) {
             $table->id();
             $table->foreignId('hasil_kerja_id')->nullable();
             $table->foreignId('indikator_id')->nullable();
@@ -33,6 +33,6 @@ class CreateCascadingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cascading');
+        Schema::dropIfExists('skp_cascading');
     }
 }

@@ -15,8 +15,8 @@ class CreatePenilaianPerilakuKerjaTable extends Migration
     {
         Schema::create('skp_penilaian_perilaku_kerja', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('rencana_perilaku_id');
-            $table->unsignedInteger('ketua_tim_id')->nullable();
+            $table->unsignedBigInteger('rencana_perilaku_id');
+            $table->unsignedBigInteger('ketua_tim_id')->nullable();
             $table->text('ekspektasi_pimpinan')->nullable();
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();

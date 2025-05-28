@@ -10,7 +10,7 @@ class PeriodeAktif extends Model
 {
     use HasFactory;
 
-    protected $table = 'periode_aktif';
+    protected $table = 'skp_periode_aktif';
 
     protected $guarded = ['id'];
 

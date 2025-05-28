@@ -10,7 +10,7 @@ class Cascading extends Model
 {
     use HasFactory;
 
-    protected $table = 'cascading';
+    protected $table = 'skp_cascading';
     protected $guarded = ['id'];
 
     public function indikator()

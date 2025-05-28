@@ -13,8 +13,8 @@ class CreateSkpRencanaKerjaTable extends Migration
      */
     public function up()
     {
-        Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('skp_rencana_kerja');
+        // Schema::disableForeignKeyConstraints();
+        // Schema::dropIfExists('skp_rencana_kerja');
         Schema::create('skp_rencana_kerja', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tim_kerja_id')->nullable();
@@ -43,7 +43,12 @@ class CreateSkpRencanaKerjaTable extends Migration
      */
     public function down()
     {
+        Schema::table('skp_rencana_kerja', function (Blueprint $table) {
+            $table->dropForeign(['periode_id']);
+            $table->dropForeign(['pegawai_id']);
+            $table->dropForeign(['tim_kerja_id']);
+        });
+
         Schema::dropIfExists('skp_rencana_kerja');
-        // Schema::dropIfExists('periodes');
     }
 }

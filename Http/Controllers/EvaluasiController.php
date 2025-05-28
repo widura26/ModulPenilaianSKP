@@ -9,9 +9,11 @@ use Modules\Pengaturan\Entities\Anggota;
 use Illuminate\Support\Facades\DB;
 use Modules\Cuti\Services\AtasanService;
 use Modules\Pengaturan\Entities\Pejabat;
+use Modules\Penilaian\Entities\HasilKerja;
 use Modules\Penilaian\Entities\PenilaianHasilKerja;
 use Modules\Penilaian\Entities\PenilaianPerilakuKerja;
 use Modules\Penilaian\Entities\RencanaKerja;
+use Modules\SuratTugas\Entities\DetailSuratTugas;
 
 class EvaluasiController extends Controller {
 
@@ -45,7 +47,7 @@ class EvaluasiController extends Controller {
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($username);
 
 
-        if($params == 'json') return response()->json($rencana->hasilKerja);
+        if($params == 'json') return response()->json($rekapKehadiran);
         else return view(
             'penilaian::evaluasi-detail',
             compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran')
@@ -112,16 +114,54 @@ class EvaluasiController extends Controller {
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         DB::beginTransaction();
         try {
+            // return response()->json([
+            //     'feedback_hasil_kerja_utama' => $request->feedback,
+            //     'feedback_hasil_kerja_tambahan' => $request->feedback_hasil_kerja_tambahan,
+            //     'feedback_perilaku_kerja' => $request->feedback_perilaku_kerja,
+            // ]);
+
+            // foreach ($request->feedback as $item) {
+            //     PenilaianHasilKerja::updateOrCreate([
+            //             'hasil_kerja_id' => $item['hasil_kerja_id'],
+            //             'ketua_tim_id' => $pegawaiWhoLogin->id,
+            //         ],
+            //         [
+            //             'umpan_balik_predikat' => $item['umpan_balik_predikat'],
+            //             'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'] ?? null,
+            //         ]
+            //     );
+            // }
+
             foreach ($request->feedback as $item) {
-                PenilaianHasilKerja::updateOrCreate([
-                        'hasil_kerja_id' => $item['hasil_kerja_id'],
+                PenilaianHasilKerja::updateOrCreate(
+                    [
+                        'target_id' => $item['hasil_kerja_id'],
+                        'target_type' => 'Modules\Penilaian\Entities\HasilKerja',
                         'ketua_tim_id' => $pegawaiWhoLogin->id,
                     ],
                     [
                         'umpan_balik_predikat' => $item['umpan_balik_predikat'],
-                        'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'] ?? null,
+                        'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'],
                     ]
                 );
+            }
+
+            foreach ($request->feedback_hasil_kerja_tambahan as $item) {
+                $hasilKerjaTambahan = DetailSuratTugas::where('id', $item['surat_tugas_id'])->first();
+
+                if ($hasilKerjaTambahan) {
+                    PenilaianHasilKerja::updateOrCreate(
+                        [
+                            'target_id' => $hasilKerjaTambahan->id,
+                            'target_type' => 'Modules\SuratTugas\Entities\DetailSuratTugas',
+                            'ketua_tim_id' => $pegawaiWhoLogin->id,
+                        ],
+                        [
+                            'umpan_balik_predikat' => $item['umpan_balik_predikat'],
+                            'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'],
+                        ]
+                    );
+                }
             }
 
             foreach ($request->feedback_perilaku_kerja as $item) {
@@ -137,7 +177,7 @@ class EvaluasiController extends Controller {
             DB::commit();
             return redirect()->back()->with('success', 'proses umpan balik berhasil');
         } catch (\Throwable $th) {
-            // DB::rollBack();
+            DB::rollBack();
             return response()->json($th->getMessage());
         }
     }
@@ -174,7 +214,6 @@ class EvaluasiController extends Controller {
                 'rating_perilaku' => null,
                 'predikat_akhir' => null
             ]);
-
             return redirect()->back()->with('success', 'Evaluasi berhasil dibatalkan');
         } catch (\Throwable $th) {
             throw $th;
@@ -185,7 +224,7 @@ class EvaluasiController extends Controller {
 
     private function hasilKerjaRecommendation($rencana, $ketuaId){
         $arr = $rencana->hasilKerja->map(function ($item) use ($ketuaId) {
-            $penilaian = $item->penilaianHasilKerja->firstWhere('ketua_tim_id', $ketuaId);
+            $penilaian = $item->penilaian->firstWhere('ketua_tim_id', $ketuaId);
             return $this->predikatValue($penilaian->umpan_balik_predikat ?? null);
         });
 

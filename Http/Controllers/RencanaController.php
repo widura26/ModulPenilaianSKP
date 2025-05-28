@@ -40,7 +40,7 @@ class RencanaController extends Controller {
             'hasilKerja.parent.rencanakerja',
             'hasilKerja.parent',
             'perilakuKerja',
-            'hasilKerja.penilaianHasilKerja' => function ($query) use ($pegawaiWhoLogin){
+            'hasilKerja.penilaian' => function ($query) use ($pegawaiWhoLogin){
                 $query->where('ketua_tim_id', $pegawaiWhoLogin->id);
             },
             'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja' => function ($query) use ($pegawaiWhoLogin){
@@ -111,7 +111,7 @@ class RencanaController extends Controller {
 
         if($request->query('params') == 'json'){
             return response()->json([
-                'atasan' => $ketua->pegawai
+                'parent_hasil_kerja' => $parentHasilKerja
             ]);
         }else {
             return view('penilaian::rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
