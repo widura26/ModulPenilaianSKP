@@ -40,7 +40,7 @@
                         <div class="input-group">
                             <input type="hidden" name="feedback_perilaku_kerja[{{ $index }}][perilaku_kerja_id]" value="{{ $item->rencanaPerilaku->id }}">
 
-                            <select class="custom-select" id="perilaku_kerja_id" name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_predikat]">
+                            <select class="custom-select feedback-perilaku-template" id="perilaku_kerja_id" name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_predikat]">
                                 @php
                                     $penilaian = $item->rencanaPerilaku->penilaianPerilakuKerja[0] ?? null;
                                 @endphp
@@ -49,7 +49,7 @@
                                     @include('penilaian::components.predikat-dropdown', [
                                         'jenis' => 'Predikat',
                                         'options' => ['Sangat Baik', 'Baik', 'Cukup', 'Kurang'],
-                                        'selected' => null
+                                        'selected' => $penilaian->umpan_balik_predikat ?? null
                                     ])
                                 @else
                                     <option value="{{ $penilaian->umpan_balik_predikat }}" selected>
@@ -59,18 +59,18 @@
                             </select>
 
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
+                                <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#template-umpanbalik-perilaku-{{ $item->id }}">
                                     <i class="nav-icon fas fa-copy "></i>
                                 </button>
                             </div>
                         </div>
-
+                        @include('penilaian::components.modal-template-umpanbalik-perilaku')
                         <textarea
-                            class="mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
+                            class="feedback-perilaku-text mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
                             {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }}
                             name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                             required
-                            placeholder="{{ $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null ? $penilaian->umpan_balik_deskripsi : '' }}"
+                            placeholder="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? $penilaian->umpan_balik_deskripsi : '' }}"
                             style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                     </td>
                 </tr>

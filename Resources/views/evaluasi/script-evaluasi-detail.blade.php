@@ -1,44 +1,4 @@
 <script>
-    // $(document).ready(() => {
-    //     $('#form-umpan-balik').on('submit', function(event) {
-    //         event.preventDefault();
-
-    //         $.ajax({
-    //             url: '/penilaian/predikat-kinerja',
-    //             type: 'GET',
-    //             data: $(this).serialize(),
-    //             success: (response) => {
-    //                 console.log(response)
-    //             },
-    //             error: (response) => {
-    //                 console.log(response.responseJSON.message)
-    //             }
-    //         });
-    //     });
-    // })
-
-    // $('#umpanBalikForm').on('submit', function(e) {
-    //     e.preventDefault();
-
-    //     $.ajax({
-    //         url: '/penilaian/evaluasi/proses-umpan-balik/{{ $pegawai->username }}',
-    //         type: 'POST',
-    //         data: $(this).serialize(),
-    //         success: function(response) {
-    //             try {
-    //                 umpanBalikBox.style.display = 'block'
-    //                 console.log(response)
-
-    //             } catch (error) {
-    //                 console.log(error)
-    //             }
-    //         },
-    //         error: function(xhr) {
-    //             $('#result').html('<p style="color: red;">Gagal mengirim umpan balik.</p>');
-    //         }
-    //     });
-    // });
-
     (function() {
     'use strict';
     window.addEventListener('load', function() {
@@ -74,10 +34,10 @@
     const textareaRatingHasilKerja = document.querySelector('#textarea-rating-hasil-kerja');
     const textareaRatingPerilaku = document.querySelector('#textarea-rating-perilaku');
 
-    const valRatHasilKerja = rekomendasiRatingHasilKerja.value;
-    const valRatPerilaku = rekomendasiRatingPerilaku.value;
+    const valRatHasilKerja = rekomendasiRatingHasilKerja?.value;
+    const valRatPerilaku = rekomendasiRatingPerilaku?.value;
 
-    selectRatingHasilKerja.addEventListener('change', () => {
+    selectRatingHasilKerja?.addEventListener('change', () => {
         const valSelRatHasilKerja = selectRatingHasilKerja.value;
 
         if(valSelRatHasilKerja == valRatHasilKerja) {
@@ -92,7 +52,7 @@
 
     // selectRatingHasilKerja.dispatchEvent(new Event('change'));
 
-    selectRatingPerilaku.addEventListener('change', () => {
+    selectRatingPerilaku?.addEventListener('change', () => {
         const valSelRatPerilaku = selectRatingPerilaku.value;
 
         if(valSelRatPerilaku == valRatPerilaku) {
@@ -104,5 +64,41 @@
             textareaRatingPerilaku.setAttribute('required', 'required');
         }
     })
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.modal .hasil-kerja[data-dismiss="modal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                const modal = this.closest('.modal');
+                const selectedTemplate = modal.querySelector('.template-select');
+                const selectedOption = selectedTemplate.options[selectedTemplate.selectedIndex];
+                const optgroup = selectedOption.closest('optgroup');
+                const label = optgroup ? optgroup.label : '';
+                document.querySelectorAll('.feedback-template').forEach(select => {
+                    select.value = label;
+                });
+
+                document.querySelectorAll('.feedback-text').forEach(textarea => {
+                    textarea.value = selectedTemplate.value;
+                });
+            });
+        });
+
+        document.querySelectorAll('.modal .perilaku-kerja[data-dismiss="modal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                const modal = this.closest('.modal');
+                const selectedTemplate = modal.querySelector('.template-perilaku-select');
+                const selectedOption = selectedTemplate.options[selectedTemplate.selectedIndex];
+                const optgroup = selectedOption.closest('optgroup');
+                const label = optgroup ? optgroup.label : '';
+                document.querySelectorAll('.feedback-perilaku-template').forEach(select => {
+                    select.value = label;
+                });
+
+                document.querySelectorAll('.feedback-perilaku-text').forEach(textarea => {
+                    textarea.value = selectedTemplate.value;
+                });
+            });
+        });
+    });
 
 </script>

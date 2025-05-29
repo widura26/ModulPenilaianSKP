@@ -20,8 +20,20 @@
                         <span>Umpan Balik :</span>
                         <div class="input-group">
                             <input type="hidden" name="feedback_hasil_kerja_tambahan[{{ $index }}][surat_tugas_id]" value="{{ $item->id }}">
-                            <select class="custom-select" id="perilaku_kerja_id" name="feedback_hasil_kerja_tambahan[{{ $index }}][umpan_balik_predikat]">
-                                @include('penilaian::components.predikat-dropdown', ['jenis' => 'Predikat'])
+                            @php
+                                $penilaianSuratTugas = $item->detail->penilaian[0] ?? null;
+                                $predikat_hasiltugas = $penilaianSuratTugas?->umpan_balik_predikat;
+                                $deskripsi_hasiltugas = $penilaianSuratTugas?->umpan_balik_deskripsi;
+                            @endphp
+                            <select class="custom-select feedback-template" id="perilaku_kerja_id" name="feedback_hasil_kerja_tambahan[{{ $index }}][umpan_balik_predikat]">
+                                @if (!$predikat_hasiltugas || $predikat_hasiltugas === null)
+
+                                    @include('penilaian::components.predikat-dropdown', ['jenis' => 'Predikat', 'selected' => $predikat_hasiltugas ])
+                                @else
+                                    <option value="{{ $predikat_hasiltugas }}" selected>
+                                        {{ $predikat_hasiltugas }}
+                                    </option>
+                                @endif
                             </select>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button">
@@ -29,10 +41,13 @@
                                 </button>
                             </div>
                         </div>
+
                         <textarea
-                        class="mt-2"
+                        class="feedback-text mt-2 {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas === null ? 'd-none' : '' }}"
+                        {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas !== null ? 'disabled' : '' }}
                         name="feedback_hasil_kerja_tambahan[{{ $index }}][umpan_balik_deskripsi]"
-                        placeholder="Halo"
+                        required
+                        placeholder="{{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas !== null ? $deskripsi_hasiltugas : '' }}"
                         style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                     </td>
                 </tr>

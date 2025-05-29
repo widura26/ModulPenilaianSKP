@@ -93,7 +93,7 @@ class PenilaianController extends Controller
 
     public function getSuratTugas($pegawai_id){
         $pegawaiWhoLogin = $this->getPegawaiWhoLogin();
-        $query = SuratTugas::with(['pejabat','detail','detail.pegawai','anggota.pegawai','laporan']);
+        $query = SuratTugas::with(['pejabat','detail','detail.pegawai','anggota.pegawai','laporan', 'detail.penilaian']);
 
         $surat_tugas =  $query->where(function ($q) use ($pegawai_id) {
                             $q->where('jenis', 'individu')
@@ -225,8 +225,8 @@ class PenilaianController extends Controller
 
             $hariKerja = $jumlahHari - $jumlahHariLibur - $alpa - $cuti;
 
-            $rerataKehadiranSesuaiKetentuan = ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja;
-            $rerataKehadiranTidakSesuaiKetentuan = ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja;
+            $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
+            $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;
             // - cuti, -tugasluar
             return [
                 'pegawai' => $pegawai->nama,

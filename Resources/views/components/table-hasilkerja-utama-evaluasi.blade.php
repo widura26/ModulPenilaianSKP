@@ -23,20 +23,27 @@
                     </td>
                     <td style="width: 25%;">
                         <span>Realisasi :</span>
-                        <p>{{ $item['realisasi'] }}</p>
+                        <p>{{ $item->realisasi }}</p>
                     </td>
                     <td style="width: 25%;">
                         <span>Umpan Balik :</span>
                         <div class="input-group">
                             <input type="hidden" name="feedback[{{ $index }}][hasil_kerja_id]" value="{{ $item->id }}">
-                            <select class="custom-select" id="umpan_bali_id" name="feedback[{{ $index }}][umpan_balik_predikat]">
+
+                            <select class="custom-select feedback-template" id="umpan_bali_id" name="feedback[{{ $index }}][umpan_balik_predikat]">
                                 @php
                                     $predikatTerpilih = $item->penilaian[0]->umpan_balik_predikat ?? null;
                                 @endphp
-                                @include('penilaian::components.predikat-dropdown', [ 'jenis' => 'Predikat', 'selected' => $predikatTerpilih ])
+                                @if (!$predikatTerpilih || $predikatTerpilih === null)
+                                    @include('penilaian::components.predikat-dropdown', [ 'jenis' => 'Predikat', 'selected' => $predikatTerpilih ])
+                                @else
+                                    <option value="{{ $predikatTerpilih }}" selected>
+                                        {{ $predikatTerpilih }}
+                                    </option>
+                                @endif
                             </select>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
+                                <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#template-umpanbalik-hasilkerja-{{ $item->id }}">
                                     <i class="nav-icon fas fa-copy "></i>
                                 </button>
                             </div>
@@ -46,14 +53,13 @@
                             $predikat = $hasilKerja?->umpan_balik_predikat;
                             $deskripsi = $hasilKerja?->umpan_balik_deskripsi;
                         @endphp
-
-                        <textarea
-                            class="mt-2 {{ $predikat !== null && $deskripsi === null ? 'd-none' : '' }}"
+                        @include('penilaian::components.modal-template-umpanbalik-hasilkerja')
+                        <textarea class="feedback-text form-control mt-2 {{ $predikat !== null && $deskripsi === null ? 'd-none' : '' }}"
                             {{ $predikat !== null && $deskripsi !== null ? 'disabled' : '' }}
-                            name="feedback[{{ $index }}][umpan_balik_deskripsi]"
-                            required
+                            name="feedback[{{ $index }}][umpan_balik_deskripsi]" required
                             placeholder="{{ $predikat !== null && $deskripsi !== null ? $deskripsi : '' }}"
                             style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
+
                     </td>
                 </tr>
             @endforeach
