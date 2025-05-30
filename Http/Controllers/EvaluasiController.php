@@ -34,20 +34,21 @@ class EvaluasiController extends Controller {
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
         $rencana = $this->rencanaController->getRencana($username);
-        $hasiKerjaRecommendation = $this->hasilKerjaRecommendation($rencana, $pegawaiWhoLogin->id);
-        $perilakuRecommendation = $this->perilakuRecommendation($rencana->perilakuKerja, $pegawaiWhoLogin->id);
-
         $pegawai = Pegawai::with(['timKerjaAnggota','rencanaKerja.hasilKerja',
         'timKerjaAnggota.unit', 'timKerjaAnggota.subUnits.unit','timKerjaAnggota.parentUnit.unit',
         ])->where('username', '=', $username)->first();
 
+        $suratTugas = $this->penilaianController->getSuratTugas($pegawai->id);
+        $hasiKerjaRecommendation = $this->hasilKerjaRecommendation($rencana, $pegawaiWhoLogin->id, $suratTugas);
+        $perilakuRecommendation = $this->perilakuRecommendation($rencana->perilakuKerja, $pegawaiWhoLogin->id);
+
+
         $atasanService = new AtasanService();
         $ketua = $atasanService->getAtasanPegawai($pegawai->id);
-        $suratTugas = $this->penilaianController->getSuratTugas($pegawai->id);
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($username);
 
 
-        if($params == 'json') return response()->json($suratTugas);
+        if($params == 'json') return response()->json($hasiKerjaRecommendation);
         else return view(
             'penilaian::evaluasi-detail',
             compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran')
@@ -222,13 +223,18 @@ class EvaluasiController extends Controller {
 
     public function ubahUmpanBalik(){}
 
-    private function hasilKerjaRecommendation($rencana, $ketuaId){
+    private function hasilKerjaRecommendation($rencana, $ketuaId, $suratTugas = null){
+        $arrSuratTugas = $suratTugas->map(function ($item) use ($ketuaId) {
+            $penilaian = $item->detail->penilaian->firstWhere('ketua_tim_id', $ketuaId);
+            return $this->predikatValue($penilaian->umpan_balik_predikat ?? null);
+        });
         $arr = $rencana->hasilKerja->map(function ($item) use ($ketuaId) {
             $penilaian = $item->penilaian->firstWhere('ketua_tim_id', $ketuaId);
             return $this->predikatValue($penilaian->umpan_balik_predikat ?? null);
         });
 
-        $filtered = $arr->filter();
+        // return $arr->merge($arrSuratTugas);
+        $filtered = $arr->merge($arrSuratTugas)->filter();
         if ($filtered->isEmpty()) return null;
 
         $value = $filtered->sum();

@@ -92,21 +92,27 @@ class PenilaianController extends Controller
     }
 
     public function getSuratTugas($pegawai_id){
-        $pegawaiWhoLogin = $this->getPegawaiWhoLogin();
-        $query = SuratTugas::with(['pejabat','detail','detail.pegawai','anggota.pegawai','laporan', 'detail.penilaian']);
+        $periodeAktif = PeriodeAktif::with('periode')->where('pegawai_id', $pegawai_id)->first();
+        $start_date = $periodeAktif?->periode->start_date;
+        $end_date = $periodeAktif?->periode->end_date;
 
-        $surat_tugas =  $query->where(function ($q) use ($pegawai_id) {
+        $query = SuratTugas::with(['pejabat','detail','detail.pegawai','anggota.pegawai','laporan', 'detail.penilaian']);
+        $surat_tugas =  $query->where(function ($q) use ($pegawai_id, $start_date, $end_date) {
                             $q->where('jenis', 'individu')
-                                ->whereHas('detail', function ($q2) use ($pegawai_id) {
-                                    $q2->where('pegawai_id', $pegawai_id);
+                                ->whereHas('detail', function ($q2) use ($pegawai_id, $start_date, $end_date) {
+                                    $q2->where('pegawai_id', $pegawai_id)
+                                    ->whereDate('tanggal_mulai', '>=', $start_date)
+                                    ->whereDate('tanggal_selesai', '<=', $end_date);
                                 });
-                            $q->orWhere(function ($q3) use ($pegawai_id) {
+                            $q->orWhere(function ($q3) use ($pegawai_id, $start_date, $end_date) {
                                 $q3->where('jenis', 'tim')
-                                    ->whereHas('detail', function ($q4) use ($pegawai_id) {
-                                        $q4->where('pegawai_id', $pegawai_id);
+                                    ->whereHas('detail', function ($q4) use ($pegawai_id, $start_date, $end_date) {
+                                        $q4->where('pegawai_id', $pegawai_id)
+                                        ->whereDate('tanggal_mulai', '>=', $start_date)
+                                        ->whereDate('tanggal_selesai', '<=', $end_date);
                                     });
                             });
-                        })->latest()->get();
+                        })->get();
 
         return $surat_tugas;
     }

@@ -70,7 +70,7 @@
                             {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }}
                             name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                             required
-                            placeholder="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? $penilaian->umpan_balik_deskripsi : '' }}"
+                            placeholder="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? $penilaian->umpan_balik_deskripsi : '' }}"
                             style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                     </td>
                 </tr>
