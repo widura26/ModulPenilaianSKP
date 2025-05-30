@@ -17,6 +17,22 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="d-flex justify-content-end mb-2">
+                        <select name="" class="form-control" id="" style="width: 200px;">
+                            <option value="">-- Filter Status --</option>
+                            <option value="">Belum Ajukan Realisasi</option>
+                            <option value="">Belum Dievaluasi</option>
+                            <option value="">Sudah Dievaluasi</option>
+                        </select>
+                        <select name="" class="form-control ml-2" id="" style="width: 200px;">
+                            <option value="">-- Filter Predikat --</option>
+                            <option value="">Sangat Kurang</option>
+                            <option value="">Butuh Perbaikan</option>
+                            <option value="">Kurang</option>
+                            <option value="">Baik</option>
+                            <option value="">Sangat Baik</option>
+                        </select>
+                    </div>
                     <table id="table-pegawai" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>

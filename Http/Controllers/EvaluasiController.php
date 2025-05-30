@@ -235,6 +235,7 @@ class EvaluasiController extends Controller {
 
         // return $arr->merge($arrSuratTugas);
         $filtered = $arr->merge($arrSuratTugas)->filter();
+        // return $filtered;
         if ($filtered->isEmpty()) return null;
 
         $value = $filtered->sum();
