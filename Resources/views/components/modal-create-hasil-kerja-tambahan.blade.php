@@ -1,11 +1,11 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hasilKerjaModal">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hasilKerjaTambahanModal">
     <i class="nav-icon fas fa-plus "></i>
 </button>
-<div class="modal fade" id="hasilKerjaModal" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaModalTitle" aria-hidden="true">
+<div class="modal fade" id="hasilKerjaTambahanModal" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaTambahanModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="POST" class="modal-content" action="{{ url('/penilaian/rencana/store-hasil-kerja/' . (is_null($rencana) ? '' : $rencana->id)) }}">
             @csrf
-            <div class="modal-header">Tambah Hasil Kerja Utama</div>
+            <div class="modal-header">Tambah Hasil Kerja Tambahan</div>
             <div class="modal-body">
                 <div class="form-group">
                     <label for="peran-select">Peran</label>
