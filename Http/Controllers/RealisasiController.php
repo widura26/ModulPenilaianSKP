@@ -15,6 +15,13 @@ use Modules\Pengaturan\Entities\Anggota;
 
 class RealisasiController extends Controller {
 
+    protected $rencanaController, $penilaianController;
+
+    public function __construct(RencanaController $rencanaController, PenilaianController $penilaianController) {
+        $this->rencanaController = $rencanaController;
+        $this->penilaianController = $penilaianController;
+    }
+
     public function realisasi(Request $request){
         $authUser = Auth::user();
         $periodeController = new PeriodeController();
@@ -88,6 +95,18 @@ class RealisasiController extends Controller {
         }
     }
 
+    public function deleteRealisasi($id){
+        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
+
+        try {
+            $rencana->hasilKerja()->where('id', $id)->update(['realisasi' => null]);
+            return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
     public function batalkanPengajuanRealisasi($id){
         try {
             $rencana = RencanaKerja::find($id);
@@ -97,5 +116,4 @@ class RealisasiController extends Controller {
             return redirect()->back()->with('failed', $th->getMessage());
         }
     }
-
 }

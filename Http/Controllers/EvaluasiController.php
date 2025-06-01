@@ -233,9 +233,7 @@ class EvaluasiController extends Controller {
             return $this->predikatValue($penilaian->umpan_balik_predikat ?? null);
         });
 
-        // return $arr->merge($arrSuratTugas);
         $filtered = $arr->merge($arrSuratTugas)->filter();
-        // return $filtered;
         if ($filtered->isEmpty()) return null;
 
         $value = $filtered->sum();

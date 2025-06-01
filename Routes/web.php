@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
             Route::get('/', 'RealisasiController@realisasi');
             Route::post('/update-realisasi/{id}', 'RealisasiController@updateRealisasi');
             Route::post('/ajukan-realisasi/{id}', 'RealisasiController@ajukanRealisasi');
+            Route::post('/delete/{id}', 'RealisasiController@deleteRealisasi');
             Route::post('/batalkan-realisasi/{id}', 'RealisasiController@batalkanPengajuanRealisasi');
         });
         Route::prefix('rencana')->group(function() {

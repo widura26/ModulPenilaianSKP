@@ -92,7 +92,7 @@
                                 @if ($rencana && $rencana->hasilKerja)
                                     @foreach ($rencana->hasilKerja as $index => $item)
                                         <tr>
-                                            <th scope="row">{{ $index + 1 }}</th>
+                                            <th scope="row">{{ $index + 1 }}.</th>
                                             <td style="width: 50%;">
                                                 <p>{{ $item['deskripsi'] }}</p>
                                                 <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
@@ -111,10 +111,15 @@
                                                 <p>{{ $item['umpan_balik_predikat'] }}</p>
                                             </td>
                                             <td style="width: 10%;">
-                                                @include('penilaian::components.modals-create-realisasi')
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
-                                                    <i class="nav-icon fas fa-ban "></i>
-                                                </button>
+                                                <div class="d-flex" style="gap: 5px;">
+                                                    @include('penilaian::components.modals-create-realisasi')
+                                                    <form action="{{ url('/penilaian/realisasi/delete/' . $item->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
+                                                            <i class="nav-icon fas fa-ban "></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
