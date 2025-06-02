@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <form class="modal-content" method="POST" action="{{ url('/penilaian/matriks-peran-hasil/store/' . $indikator->id) }}">
             @csrf
-            <div class="modal-header">Tambah Cascading {{ $indikator->id }}</div>
+            <div class="modal-header">Tambah Cascading</div>
             <div class="modal-body">
                 <div class="mb-4 border p-2">
                     <p>{{ $indikator->deskripsi }}</p>

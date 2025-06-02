@@ -1,10 +1,10 @@
 <script>
     const colorStatus = (status) => {
-        if(status == 'Belum Diajukan') {
+        if(status == 'Belum Ajukan Realisasi') {
             return `danger`
         }else if (status == 'Belum Dievaluasi') {
             return `secondary`
-        }else if (status == 'Sudah Diajukan' || status == 'Sudah Dievaluasi'){
+        }else if (status == 'Sudah Dievaluasi'){
             return 'success'
         }
     }
@@ -24,8 +24,9 @@
                 type: 'GET',
                 dataSrc: function (response) {
                     try {
-                        return response.data.map((data) => {
+                        return response.data.map((data, index) => {
                             return {
+                                no: index + 1,
                                 id: data.pegawai.id,
                                 nama: data.pegawai.nama,
                                 username: data.pegawai.username,
@@ -43,8 +44,8 @@
             },
             columns: [
                 {
-                    data: 'id',
-                    name: 'id',
+                    data: 'no',
+                    name: 'no',
                     orderable: true
                 },
                 {

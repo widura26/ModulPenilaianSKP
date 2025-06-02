@@ -80,8 +80,11 @@ class EvaluasiController extends Controller {
                             $sub->where('id', $timKerjaId);
                         })->where('peran', 'Anggota');
                     });
-                })->whereHas('pegawai', function ($q) use ($username, $search) {
-                    $q->where('username', '!=', $username);
+                })->whereHas('pegawai', function ($q) use ($username, $search, $periodeId) {
+                    $q->where('username', '!=', $username)
+                    ->whereHas('rencanakerja', function ($r) use ($periodeId) {
+                        $r->where('periode_id', $periodeId);
+                    });
                     if ($search) {
                         $q->where('nama', 'like', '%' . $search . '%');
                     }

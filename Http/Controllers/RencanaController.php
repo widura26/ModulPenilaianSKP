@@ -122,13 +122,17 @@ class RencanaController extends Controller {
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
         $perilakuList = PerilakuKerja::all();
+        if(is_null($periodeId)) {
+            return redirect()->back()->with('failed', 'Periode belum diset');
+        }
         DB::beginTransaction();
         try {
+
             $rencana = RencanaKerja::create([
                 'tim_kerja_id' => session('tim_kerja_id'),
                 'periode_id' => $periodeId,
                 'status_persetujuan' => 'Belum Ajukan SKP',
-                'status_realisasi' =>  'Belum Diajukan',
+                'status_realisasi' =>  'Belum Ajukan Realisasi',
                 'pegawai_id' => $pegawai->id
             ]);
 
@@ -140,11 +144,10 @@ class RencanaController extends Controller {
             }
 
             DB::commit();
-
             return redirect()->back()->with('success', 'Berhasil Buat SKP');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response()->json($th->getMessage());
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 

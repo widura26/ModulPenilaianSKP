@@ -19,7 +19,7 @@ class CreateSkpRencanaKerjaTable extends Migration
             $table->id();
             $table->unsignedBigInteger('tim_kerja_id')->nullable();
             $table->enum('status_persetujuan', ['Belum Buat SKP', 'Belum Ajukan SKP', 'Belum Disetujui', 'Sudah Disetujui'])->default('Belum Buat SKP');
-            $table->enum('status_realisasi', ['Belum Diajukan', 'Sudah Diajukan', 'Belum Dievaluasi', 'Sudah Dievaluasi'])->default('Belum Diajukan');
+            $table->enum('status_realisasi', ['Belum Ajukan Realisasi', 'Belum Dievaluasi', 'Sudah Dievaluasi'])->default('Belum Ajukan Realisasi');
             $table->string('rating_hasil_kerja')->nullable();
             $table->text('deskripsi_rating_hasil_kerja')->nullable();
             $table->string('rating_perilaku')->nullable();

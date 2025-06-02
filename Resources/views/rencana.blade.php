@@ -32,6 +32,21 @@
                             break;
                     }
                 @endphp
+
+                @if (session('failed'))
+                    <div id="alert-failed" class="p-2">
+                        <div class="alert alert-danger">
+                            {{ session('failed') }}
+                        </div>
+                    </div>
+                @elseif(session('success'))
+                    <div class="p-2" id="alert-passed">
+                        <div id="alert-passed" class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    </div>
+                @endif
+
                 @if (is_null($rencana))
                     <div class="w-100 d-flex justify-content-end align-items-center p-4">
                         <form method="POST" action="{{ url('/penilaian/rencana/store') }}">

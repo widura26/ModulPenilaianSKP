@@ -67,7 +67,7 @@ class RealisasiController extends Controller {
         return view('penilaian::realisasi', compact('rencana', 'pegawai', 'indikatorIntervensi'));
     }
 
-    public function ajukanRealisasi(Request $request, $id){
+    public function ajukanRealisasi($id){
         try {
             $rencana = RencanaKerja::find($id);
             foreach($rencana->hasilKerja as $item){
@@ -76,7 +76,7 @@ class RealisasiController extends Controller {
                 }
             }
             $rencana->update([
-                'status_realisasi' => 'Sudah Diajukan'
+                'status_realisasi' => 'Belum Dievaluasi'
             ]);
             return redirect()->back()->with('success', 'Realiasi berhasil diajukan');
         } catch (\Throwable $th) {

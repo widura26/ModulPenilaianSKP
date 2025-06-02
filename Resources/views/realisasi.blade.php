@@ -3,7 +3,7 @@
 @section('title', 'Dasbor Simlitabmas')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Realisasi</h1>
+    <h1 class="m-0 text-dark">Realisasi SKP</h1>
 @stop
 @section('content')
     <div class="row">
@@ -23,14 +23,17 @@
                 @else
                     @php
                         switch ($rencana?->status_realisasi) {
-                            case 'Sudah Diajukan':
-                                $badgeClass = 'badge-success';
+                            case 'Belum Dievaluasi':
+                                $badgeClass = 'badge-primary';
+                                $label = 'Sudah Diajukan';
                                 break;
-                            case 'Belum Diajukan':
-                                $badgeClass = 'badge-secondary';
+                            case 'Belum Ajukan Realisasi':
+                                $badgeClass = 'badge-danger';
+                                $label = 'Belum Diajukan';
                                 break;
                             case 'Sudah Dievaluasi':
                                 $badgeClass = 'badge-success';
+                                $label = 'Sudah Dievaluasi';
                                 break;
                         }
                         $semuaSudahTerisi = $rencana->hasilKerja->every(function ($item) {
@@ -54,13 +57,13 @@
                     @endif
 
                     <div class="w-100 d-flex justify-content-between align-items-center p-2">
-                        <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $rencana->status_realisasi }}</span>
-                        @if ($rencana?->status_realisasi == 'Belum Diajukan')
+                        <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $label }}</span>
+                        @if ($rencana?->status_realisasi == 'Belum Ajukan Realisasi')
                             <form method="POST" action="{{ url('/penilaian/realisasi/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
                                 <button id="proses-umpan-balik-button" class="btn btn-primary" {{ !$semuaSudahTerisi ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
-                        @elseif($rencana?->status_realisasi == 'Sudah Diajukan')
+                        @elseif($rencana?->status_realisasi == 'Belum Dievaluasi')
                             <form method="POST" action="{{ url('/penilaian/realisasi/batalkan-realisasi/' . $rencana->id) }}">
                                 @csrf
                                 <button id="proses-umpan-balik-button" class="btn btn-danger">Batalkan Pengajuan</button>

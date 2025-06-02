@@ -76,6 +76,8 @@ class MatriksPeranHasilController extends Controller
                         })->where('peran', '!=', 'Ketua');
                     }
                 );
+            })->whereHas('pegawai', function ($q) use ($pegawaiWhoLogin) {
+                $q->where('id', '!=', $pegawaiWhoLogin->id);
             })->paginate(10);
 
             if($request->query('params') == 'json'){
