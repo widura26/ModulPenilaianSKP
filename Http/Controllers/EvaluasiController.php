@@ -48,7 +48,7 @@ class EvaluasiController extends Controller {
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($username);
 
 
-        if($params == 'json') return response()->json($hasiKerjaRecommendation);
+        if($params == 'json') return response()->json($rekapKehadiran);
         else return view(
             'penilaian::evaluasi-detail',
             compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran')

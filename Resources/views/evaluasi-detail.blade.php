@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dasbor Simlitabmas')
+@section('title', 'Detail Evaluasi')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Evaluasi SKP</h1>
@@ -17,7 +17,7 @@
                 $badgeClass = 'badge-danger';
                 break;
             default:
-                $badgeClass = 'badge-light';
+                $badgeClass = 'badge-danger';
                 break;
         }
     @endphp

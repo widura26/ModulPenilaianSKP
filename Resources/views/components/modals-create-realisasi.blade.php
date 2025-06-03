@@ -1,4 +1,4 @@
-<button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Sudah Diajukan']) ? 'disabled' : '' }} type="button" class="btn btn-primary" data-toggle="modal" data-target="#realisasi-{{ $item->id }}">
+<button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="button" class="btn btn-primary" data-toggle="modal" data-target="#realisasi-{{ $item->id }}">
     <i class="nav-icon fas fa-pencil-alt "></i>
 </button>
 

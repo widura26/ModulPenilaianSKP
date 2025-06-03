@@ -87,10 +87,6 @@ class PenilaianController extends Controller
         return $bawahan;
     }
 
-    public function kinerjaOrganisasi() {
-        return view('penilaian::kinerjaOrganisasi');
-    }
-
     public function getSuratTugas($pegawai_id){
         $periodeAktif = PeriodeAktif::with('periode')->where('pegawai_id', $pegawai_id)->first();
         $start_date = $periodeAktif?->periode->start_date;
@@ -229,7 +225,7 @@ class PenilaianController extends Controller
             $cuti = collect($presensi)->filter(fn($v) => $v === 'C')->count();
             $alpa = collect($presensi)->filter(fn($v) => $v === 'TM')->count();
 
-            $hariKerja = $jumlahHari - $jumlahHariLibur - $alpa - $cuti;
+            $hariKerja = $jumlahHari - $jumlahHariLibur - $alpa - $cuti - $dinasLuar;
 
             $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
             $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;

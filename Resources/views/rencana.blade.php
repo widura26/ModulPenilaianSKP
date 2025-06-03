@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dasbor Simlitabmas')
+@section('title', 'Rencana')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Rencana</h1>

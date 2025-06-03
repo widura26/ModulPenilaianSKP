@@ -40,7 +40,7 @@
     selectRatingHasilKerja?.addEventListener('change', () => {
         const valSelRatHasilKerja = selectRatingHasilKerja.value;
 
-        if(valSelRatHasilKerja == valRatHasilKerja) {
+        if(valSelRatHasilKerja == valRatHasilKerja || (valSelRatHasilKerja === "")) {
             textareaRatingHasilKerja.classList.add('d-none')
             textareaRatingHasilKerja.removeAttribute('required');
             textareaRatingHasilKerja.value = '';
@@ -54,12 +54,12 @@
 
     selectRatingPerilaku?.addEventListener('change', () => {
         const valSelRatPerilaku = selectRatingPerilaku.value;
-
-        if(valSelRatPerilaku == valRatPerilaku) {
+        // console.log(typeof valSelRatPerilaku);
+        if((valSelRatPerilaku == valRatPerilaku) || (valSelRatPerilaku === "")) {
             textareaRatingPerilaku.classList.add('d-none')
             textareaRatingPerilaku.removeAttribute('required');
             textareaRatingPerilaku.value = '';
-        } else {
+        } else if(valSelRatPerilaku != valRatPerilaku) {
             textareaRatingPerilaku.classList.remove('d-none')
             textareaRatingPerilaku.setAttribute('required', 'required');
         }

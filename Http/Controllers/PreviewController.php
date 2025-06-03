@@ -5,7 +5,9 @@ namespace Modules\Penilaian\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Cuti\Services\AtasanService;
 use Modules\Pengaturan\Entities\Pegawai;
+use Modules\Penilaian\Entities\CapaianKinerjaOrganisasi;
 use Modules\Penilaian\Entities\RencanaKerja;
 
 class PreviewController extends Controller {
@@ -61,11 +63,12 @@ class PreviewController extends Controller {
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($pegawaiWhoLogin->username);
+        $capaianKinerjaOrganisasi = CapaianKinerjaOrganisasi::first();
         $rencana = RencanaKerja::with([
             'hasilKerja.parent.rencanakerja',
             'hasilKerja.parent',
             'perilakuKerja',
-            'hasilKerja.penilaianHasilKerja',
+            'hasilKerja.penilaian',
             'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja',
             'hasilKerja',
             'perilakuKerja' => function ($query) use ($periodeId, $pegawaiWhoLogin) {
@@ -86,7 +89,7 @@ class PreviewController extends Controller {
         if($request->query('params') == 'json'){
             return response()->json($rencana->hasilKerja);
         }else {
-            return view('penilaian::backup-cetak-evaluasi-page', compact('pegawai', 'rencana', 'rekapKehadiran'));
+            return view('penilaian::backup-cetak-evaluasi-page', compact('pegawai', 'rencana', 'rekapKehadiran', 'capaianKinerjaOrganisasi'));
         }
     }
 
@@ -95,7 +98,8 @@ class PreviewController extends Controller {
         $authPegawai = $authUser->pegawai;
         $pegawaiUsername = $authPegawai->username;
         $pegawaiId = $authPegawai->id;
-
+        $capaianKinerjaOrganisasi = CapaianKinerjaOrganisasi::first();
+        // $pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai->nip;
         $pegawai = Pegawai::with([
             'pejabat.jabatan',
             'timKerjaAnggota',
@@ -105,10 +109,13 @@ class PreviewController extends Controller {
             'timKerjaAnggota.parentUnit.unit',
         ])->where('username', $pegawaiUsername)->first();
 
+        $atasanService = new AtasanService();
+        $atasanpejabatpenilai = $atasanService->getAtasanPegawai($pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai->id);
+
         if($request->query('params') == 'json'){
-            return response()->json($pegawai);
+            return response()->json($atasanpejabatpenilai);
         }else {
-            return view('penilaian::backup-cetak-dokevaluasi-page', compact('pegawai'));
+            return view('penilaian::backup-cetak-dokevaluasi-page', compact('pegawai', 'capaianKinerjaOrganisasi', 'atasanpejabatpenilai'));
         }
     }
 }

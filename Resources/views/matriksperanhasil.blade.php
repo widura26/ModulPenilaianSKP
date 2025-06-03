@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dasbor Simlitabmas')
+@section('title', 'Matriks Peran Hasil')
 
 
 @section('content_header')

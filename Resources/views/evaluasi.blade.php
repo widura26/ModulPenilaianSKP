@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dasbor Simlitabmas')
+@section('title', 'Evaluasi | Daftar Pegawai')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Evaluasi SKP</h1>

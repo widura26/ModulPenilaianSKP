@@ -110,7 +110,7 @@ class RealisasiController extends Controller {
     public function batalkanPengajuanRealisasi($id){
         try {
             $rencana = RencanaKerja::find($id);
-            $rencana->update([ 'status_realisasi' => 'Belum Diajukan' ]);
+            $rencana->update([ 'status_realisasi' => 'Belum Ajukan Realisasi' ]);
             return redirect()->back()->with('success', 'Pengajuan Realiasi berhasil dibatalkan');
         } catch (\Throwable $th) {
             return redirect()->back()->with('failed', $th->getMessage());

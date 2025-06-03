@@ -53,7 +53,11 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
             Route::post('/store/{id}', 'MatriksPeranHasilController@storeCascading');
             Route::get('/anggota', 'MatriksPeranHasilController@getAnggota');
         });
-        Route::get('/kinerja-organisasi', 'PenilaianController@kinerjaOrganisasi');
+        Route::prefix('kinerja-organisasi')->group(function() {
+            Route::get('/', 'CapaianKinerjaOrganisasiController@kinerjaOrganisasi');
+            Route::post('/set-tahun', 'CapaianKinerjaOrganisasiController@setTahun');
+            Route::post('/set-capaian-kinerja', 'CapaianKinerjaOrganisasiController@setCapaianKinerja');
+        });
         Route::get('/predikat-kinerja', 'EvaluasiController@predikatKinerja');
         Route::get('/', 'PenilaianController@index');
     });

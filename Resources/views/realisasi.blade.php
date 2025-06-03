@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dasbor Simlitabmas')
+@section('title', 'Realisasi')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Realisasi SKP</h1>
@@ -118,7 +118,7 @@
                                                     @include('penilaian::components.modals-create-realisasi')
                                                     <form action="{{ url('/penilaian/realisasi/delete/' . $item->id) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
+                                                        <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
                                                             <i class="nav-icon fas fa-ban "></i>
                                                         </button>
                                                     </form>

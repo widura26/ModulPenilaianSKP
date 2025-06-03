@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Evaluasi Kinerja Pegawai</title>
+    <title>Dokumen</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #table-evaluasi th, #table-evaluasi td {
@@ -17,14 +17,16 @@
         }
 
         .width {
-            width: 794px;   /* Lebar A4 */
-            height: 1123px; /* Tinggi A4 */
+            width: 794px;
             margin: auto;
         }
         @media print {
+            @page {
+                size: A4;
+                margin: 1.016cm;
+            }
             .width {
                 width: auto;
-                margin: auto;
             }
             .button-cetak {
                 display: none;
@@ -48,15 +50,14 @@
 </head>
 <body>
     <div class="width">
-        <button onclick="printPage()" class="button-cetak">Test cetak</button>
-        <div class="text-center mb-4">
+        <div class="text-center my-4">
             <h6>EVALUASI KINERJA PEGAWAI</h6>
             <p class="mb-0">PENDEKATAN HASIL KERJA KUANTITATIF <br> BAGI PEJABAT FUNGSIONAL PRANATA HUBUNGAN MASYARAKAT</p>
             <p class="mb-0"><strong>PERIODE: {{
             \Carbon\Carbon::parse($rencana->periode->start_date)->translatedFormat('F')
             }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p>
         </div>
-
+        <button onclick="printPage()" class="button-cetak btn btn-primary mb-2">Cetak</button>
         <table id="table-evaluasi" class="mb-2" cellspacing="0" cellpadding="5" width="100%" style="font-size: 12px;">
             <thead style="background-color: #f2f2f2;">
                 <tr>
@@ -93,7 +94,7 @@
         <table id="table-evaluasi" class="mb-2" cellspacing="0" cellpadding="5" width="100%" style="font-size: 12px;">
             <thead>
                 <tr>
-                    <th style="background-color: #f2f2f2;">CAPAIAN KINERJA ORGANISASI : ISTIMEWA</th>
+                    <th style="background-color: #f2f2f2;">CAPAIAN KINERJA ORGANISASI : {{ $capaianKinerjaOrganisasi->capaian_kinerja }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,7 +102,17 @@
                     <td  style="background-color: #f2f2f2;">
                         <p>POLA DISTRIBUSI :</p>
                         <div class="">
-                            No Data
+                            @if ($capaianKinerjaOrganisasi->capaian_kinerja == 'Istimewa')
+                                <img src="{{ asset('modules/penilaian/images/Istimewa.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Baik')
+                                <img src="{{ asset('modules/penilaian/images/baik.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Butuh Perbaikan')
+                                <img src="{{ asset('modules/penilaian/images/butuhperbaikan.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Kurang')
+                                <img src="{{ asset('modules/penilaian/images/kurang.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Sangat Kurang')
+                                <img src="{{ asset('modules/penilaian/images/sangat kurang.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -138,7 +149,7 @@
                         </td>
                         <td style="vertical-align: top;">{{ $item['realisasi'] }}</td>
                         @php
-                            $hasilKerja = $item->penilaianHasilKerja[0] ?? null;
+                            $hasilKerja = $item->penilaian[0] ?? null;
                             $predikat = $hasilKerja?->umpan_balik_predikat;
                             $deskripsi = $hasilKerja?->umpan_balik_deskripsi;
                         @endphp
@@ -172,18 +183,34 @@
                         <tr>
                             <td style="width: 3%;">{{ $index + 1 }}</td>
                             <td style="width: 47%;">
-                                {{ $item->deskripsi }}
-                                {{
-                                    $item->deskripsi == 'Berorientasi Pelayanan'
-                                    ? '( Sebagai Pertimbangan : ' . number_format($rekapKehadiran['rerata_kehadiran_tunjangan'], 2) . '%)'
-                                    : ''
-                                }}
+                                <p class="mb-0">{{ $item->deskripsi }}</p>
+                                @if ($item->deskripsi == 'Berorientasi Pelayanan')
+                                    <p class="mb-0 badge badge-primary">
+                                        Kehadiran sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_sesuai_ketentuan'], 2) }}%
+                                    </p>
+                                    <p class="mb-0 badge badge-primary">
+                                        Kehadiran tidak sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_tidak_sesuai_ketentuan'], 2) }}%
+                                    </p>
+                                @endif
+                                @php
+                                    $sentence = $item->kriteria;
+                                    $lists = array_filter(array_map('trim', explode(';', $sentence)));
+                                @endphp
+                                <ul class="mb-0 pl-4">
+                                    @foreach ($lists as $list)
+                                        <li>{{ $list }}</li>
+                                    @endforeach
+                                </ul>
                             </td>
-                            <td style="width: 25%;" class="text-center">{{ $item->ekspektasi_pimpinan == null ? '-' : $item->ekspektasi_pimpinan }}</td>
+                            <td style="width: 25%;">
+                                Ekspektasi Khusus Pimpinan :
+                                <br>
+                                {{ $item->ekspektasi_pimpinan == null ? '-' : $item->ekspektasi_pimpinan }}
+                            </td>
                             @php
                                 $penilaian = $item->rencanaPerilaku->penilaianPerilakuKerja[0] ?? null;
                             @endphp
-                            <td style="width: 25%;" class="text-center">{{ $penilaian->umpan_balik_predikat }}</td>
+                            <td style="width: 25%;" class="">{{ $penilaian->umpan_balik_predikat }}</td>
                         </tr>
                     @endforeach
                 @endif
