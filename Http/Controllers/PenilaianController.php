@@ -225,21 +225,24 @@ class PenilaianController extends Controller
             $cuti = collect($presensi)->filter(fn($v) => $v === 'C')->count();
             $alpa = collect($presensi)->filter(fn($v) => $v === 'TM')->count();
 
-            $hariKerja = $jumlahHari - $jumlahHariLibur - $alpa - $cuti - $dinasLuar;
+            $hariKerja = $jumlahHari - $jumlahHariLibur - $cuti - $dinasLuar;
 
             $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
             $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;
+            $rerataAlpa = $hariKerja != 0 ? ($alpa * 100) / $hariKerja : 0;
             // - cuti, -tugasluar
+            // alpa = harikerja - kehadiran
             return [
                 'pegawai' => $pegawai->nama,
                 'jumlahHari_dalam_periode' => $jumlahHari,
                 'hari_libur_dalam_periode' => $jumlahHariLibur,
                 'dinas_luar' => $dinasLuar,
                 'cuti' => $cuti,
-                'alpa' => $alpa,
+                'alpa' => $hariKerja - $jumlahHariKehadiran_sesuai_ketentuan - $jumlahHariKehadiran_tidak_sesuai_ketentuan,
                 'hari_kerja_dalam_periode' => $hariKerja,
                 'jumlahHariKehadiran_sesuai_ketentuan' => $jumlahHariKehadiran_sesuai_ketentuan,
                 'jumlahHariKehadiran_tidak_sesuai_ketentuan' => $jumlahHariKehadiran_tidak_sesuai_ketentuan,
+                'rerata_alpa' => $rerataAlpa,
                 'rerata_kehadiran_sesuai_ketentuan' => $rerataKehadiranSesuaiKetentuan,
                 'rerata_kehadiran_tidak_sesuai_ketentuan' => $rerataKehadiranTidakSesuaiKetentuan,
                 'total' => $rerataKehadiranSesuaiKetentuan + $rerataKehadiranTidakSesuaiKetentuan

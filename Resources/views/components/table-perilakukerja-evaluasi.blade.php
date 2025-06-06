@@ -13,14 +13,6 @@
                         <p class="mb-0">
                             {{ $item->deskripsi }}
                         </p>
-                        @if ($item->deskripsi == 'Berorientasi Pelayanan')
-                            <p class="mb-0 badge badge-primary">
-                                Kehadiran sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_sesuai_ketentuan'], 2) }}%
-                            </p>
-                            <p class="mb-0 badge badge-primary">
-                                Kehadiran tidak sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_tidak_sesuai_ketentuan'], 2) }}%
-                            </p>
-                        @endif
                         @php
                             $sentence = $item->kriteria;
                             $lists = array_filter(array_map('trim', explode(';', $sentence)));
@@ -30,6 +22,17 @@
                                 <li>{{ $list }}</li>
                             @endforeach
                         </ul>
+                        @if ($item->deskripsi == 'Berorientasi Pelayanan')
+                            <p class="mb-0 badge badge-primary">
+                                Kehadiran sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_sesuai_ketentuan'], 2) }}%
+                            </p>
+                            <p class="mb-0 badge badge-warning">
+                                Kehadiran tidak sesuai ketentuan : {{ number_format($rekapKehadiran['rerata_kehadiran_tidak_sesuai_ketentuan'], 2) }}%
+                            </p>
+                            <p class="mb-0 badge badge-danger">
+                                Alpa : {{ number_format($rekapKehadiran['rerata_alpa'], 2) }}%
+                            </p>
+                        @endif
                     </td>
                     <td style="width: 25%;">
                         <span>Ekspektasi Khusus Pimpinan:</span>
@@ -59,14 +62,14 @@
                             </select>
 
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#template-umpanbalik-perilaku-{{ $item->id }}">
+                                <button {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }} class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#template-umpanbalik-perilaku-{{ $item->id }}">
                                     <i class="nav-icon fas fa-copy "></i>
                                 </button>
                             </div>
                         </div>
                         @include('penilaian::components.modal-template-umpanbalik-perilaku')
                         <textarea
-                            class="feedback-perilaku-text mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
+                            class="form-control feedback-perilaku-text mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
                             {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }}
                             name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                             required

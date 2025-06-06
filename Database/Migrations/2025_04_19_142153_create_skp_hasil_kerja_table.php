@@ -19,6 +19,7 @@ class CreateSkpHasilKerjaTable extends Migration
             $table->unsignedInteger('parent_hasil_kerja_id')->nullable();
             $table->unsignedInteger('kategori_id')->nullable();
             $table->text('realisasi')->nullable();
+            $table->string('bukti_dukung')->nullable();
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();
             $table->text('deskripsi')->nullable();

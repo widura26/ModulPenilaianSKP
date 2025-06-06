@@ -25,7 +25,7 @@
                     <option value="">-- Pilih hasil kerja yang diintervensi --</option>
                     @if (!is_null($parentHasilKerja))
                         @foreach ($parentHasilKerja as $index => $parent)
-                            <option data-peran-id="{{ $parent->rencanakerja->pegawai->timKerjaAnggota[0]->id }}" value="{{ $parent->id }}">{{ $parent->deskripsi }}</option>
+                            {{-- <option data-peran-id="{{ $parent->rencanakerja->pegawai->timKerjaAnggota[0]->id }}" value="{{ $parent->id }}">{{ $parent->deskripsi }}</option> --}}
                         @endforeach
                     @endif
                   </select>

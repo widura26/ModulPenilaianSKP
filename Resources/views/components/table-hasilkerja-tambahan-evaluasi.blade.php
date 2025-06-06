@@ -43,7 +43,7 @@
                         </div>
 
                         <textarea
-                        class="feedback-text mt-2 {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas === null ? 'd-none' : '' }}"
+                        class="form-control feedback-text mt-2 {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas === null ? 'd-none' : '' }}"
                         {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas !== null ? 'disabled' : '' }}
                         name="feedback_hasil_kerja_tambahan[{{ $index }}][umpan_balik_deskripsi]"
                         required

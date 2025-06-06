@@ -58,6 +58,18 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
             Route::post('/set-tahun', 'CapaianKinerjaOrganisasiController@setTahun');
             Route::post('/set-capaian-kinerja', 'CapaianKinerjaOrganisasiController@setCapaianKinerja');
         });
+        Route::prefix('arsip-skp')->group(function() {
+            Route::get('/', 'ArsipController@index');
+            Route::get('/rencana', 'ArsipController@index');
+            Route::get('/evaluasi', 'ArsipController@evaluasi');
+            Route::get('/dok-evaluasi', 'ArsipController@dokevaluasi');
+            Route::get('/rencana/pegawai', 'ArsipController@getArsipRencana');
+            Route::get('/evaluasi/pegawai', 'ArsipController@getArsipEvaluasi');
+            Route::get('/dok-evaluasi/pegawai', 'ArsipController@getArsipDokEvaluasi');
+            Route::post('/store', 'ArsipController@store');
+            Route::post('/update/{id}', 'ArsipController@update');
+            Route::post('/delete/{id}', 'ArsipController@delete');
+        });
         Route::get('/predikat-kinerja', 'EvaluasiController@predikatKinerja');
         Route::get('/', 'PenilaianController@index');
     });

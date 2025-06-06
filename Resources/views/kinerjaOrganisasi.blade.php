@@ -17,10 +17,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="bg-white p-4">
-                    {{-- <div class="d-flex justify-content-end">
-                        <button class="btn btn-success">Refresh</button>
-                    </div> --}}
+                {{-- <div class="bg-white p-4">
                     <div class="mb-3">
                         <form class="form-inline" action="{{ url('/penilaian/kinerja-organisasi/set-capaian-kinerja') }}" method="POST">
                             @csrf
@@ -53,6 +50,43 @@
                     @else
                         <p>Capaian Kinerja Organisasi belum diset</p>
                     @endif
+                </div> --}}
+                <div class="bg-white p-4">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                            <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Periode</th>
+                            <th scope="col">Capaian Kinerja Organisasi</th>
+                            <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Triwulan 1</td>
+                                <td>
+                                    <select class="form-control" name="" id="">
+                                        <option value="">--- Silahkan Pilih ---</option>
+                                        <option value="Istimewa">Istimewa</option>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Butuh Perbaikan">Butuh Perbaikan</option>
+                                        <option value="Kurang">Kurang</option>
+                                        <option value="Sangat Kurang">Sangat Kurang</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success">Kurva</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>
+                                    <button class="btn btn-primary">Simpan</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

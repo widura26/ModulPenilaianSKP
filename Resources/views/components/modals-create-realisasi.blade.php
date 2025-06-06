@@ -26,6 +26,15 @@
                         <div class="invalid-feedback">Realisasi tidak boleh kosong</div>
                     </div>
                 </div>
+                <div class="d-flex align-items-start mt-2">
+                    <div class="mr-1" style="width:30%">Bukti dukung</div>
+                    <div class="" style="width: 100%">
+                        <input name="bukti_dukung" class="form-control" placeholder="Bukti dukung"></input>
+                        <small id="passwordHelpBlock" class="form-text text-muted">
+                            Bukti dukung (opsional) dapat diunggah dalam bentuk tautan Google Drive.
+                        </small>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

@@ -24,7 +24,7 @@ class MenuPenilaianTableSeeder extends Seeder
             'label' => 'Penilaian SKP',
             'url' => '',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
-            'can' => serialize(['terdaftar', 'operator', 'admin']),
+            'can' => serialize(['terdaftar', 'operator', 'admin', 'pegawai', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'dosen']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => 0,
@@ -35,7 +35,7 @@ class MenuPenilaianTableSeeder extends Seeder
             'label' => 'Evaluasi',
             'url' => 'penilaian/evaluasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
-            'can' => serialize(['terdaftar']),
+            'can' => serialize(['terdaftar', 'kajur', 'wadir1', 'wadir2', 'wadir3']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
@@ -46,7 +46,7 @@ class MenuPenilaianTableSeeder extends Seeder
             'label' => 'Realisasi',
             'url' => 'penilaian/realisasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
-            'can' => serialize(['terdaftar', 'operator']),
+            'can' => serialize(['terdaftar', 'operator','pegawai', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'dosen']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
@@ -57,7 +57,7 @@ class MenuPenilaianTableSeeder extends Seeder
             'label' => 'Rencana',
             'url' => 'penilaian/rencana',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
-            'can' => serialize(['terdaftar', 'operator']),
+            'can' => serialize(['terdaftar', 'operator', 'pegawai', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'dosen']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
@@ -92,6 +92,16 @@ class MenuPenilaianTableSeeder extends Seeder
             'urut' => 1,
             'parent_id' => $menu->id,
             'active' => serialize(['penilaian/matriks-peran-hasil', 'penilaian/matriks-peran-hasil*']),
+        ]);
+        Menu::create([
+            'modul' => 'Penilaian',
+            'label' => 'Arsip SKP',
+            'url' => 'penilaian/arsip-skp',
+            'can' => serialize(['terdaftar', 'admin']),
+            'icon' => 'far fa-circle',
+            'urut' => 1,
+            'parent_id' => $menu->id,
+            'active' => serialize(['penilaian/arsip-skp', 'penilaian/arsip-skp*']),
         ]);
     }
 }
