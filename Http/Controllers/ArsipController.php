@@ -17,6 +17,13 @@ class ArsipController extends Controller
         return view('penilaian::arsip.index', compact('arsips'));
    }
 
+   public function detail(Arsip $arsip) {
+        $arsipData = Arsip::where('id', $arsip->id)
+        ->where('pegawai_id', $arsip->pegawai->id)
+        ->where('jenis_arsip', $arsip->jenis_arsip)->first();
+        return view('penilaian::arsip.detail', compact('arsipData'));
+   }
+
     public function store(Request $request){
         $periodeController = new PeriodeController();
         $penilaianController = new PenilaianController();
@@ -130,6 +137,23 @@ class ArsipController extends Controller
     public function getArsipDokEvaluasi(Request $request){
         $arsipsDokEvaluasi = $this->getArsips($request, 'Dokumen Evaluasi');
         return $arsipsDokEvaluasi;
+    }
+
+    public function verification(Request $request, Arsip $arsip) {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        try {
+            $arsipData = Arsip::where('id', $arsip->id)
+                        ->where('pegawai_id', $arsip->pegawai->id)
+                        ->where('jenis_arsip', $arsip->jenis_arsip)->first();
+
+            $arsipData->update([ 'status' => $request->status ]);
+            return redirect()->back()->with('success', 'Arsip berhasil diverifikasi');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
 }

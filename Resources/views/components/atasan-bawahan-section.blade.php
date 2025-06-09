@@ -17,7 +17,7 @@
             <td style="width: 20%;">NIP</td>
             <td style="width: 70%;">{{ $pegawai->nip }}</td>
           </tr>
-          <tr>
+          {{-- <tr>
             <th style="width: 10%;" scope="row">3</th>
             <td style="width: 20%;">Pangkat / Gol</td>
             <td style="width: 70%;">-</td>
@@ -26,7 +26,7 @@
             <th style="width: 10%;" scope="row">4</th>
             <td style="width: 20%;">Jabatan</td>
             <td style="width: 70%;">-</td>
-          </tr>
+          </tr> --}}
           <tr>
             <th style="width: 10%;" scope="row">5</th>
             <td style="width: 20%;">Unit Kerja</td>
@@ -54,7 +54,7 @@
               <td style="width: 20%;">NIP</td>
               <td style="width: 70%;">{{ optional($pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai)->nip ?? '-' }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
               <th style="width: 10%;" scope="row">3</th>
               <td style="width: 20%;">Pangkat / Gol</td>
               <td style="width: 70%;">-</td>
@@ -63,7 +63,7 @@
               <th style="width: 10%;" scope="row">4</th>
               <td style="width: 20%;">Jabatan</td>
               <td style="width: 70%;">-</td>
-            </tr>
+            </tr> --}}
             <tr>
                 <th style="width: 10%;" scope="row">5</th>
                 <td style="width: 20%;">Unit Kerja</td>

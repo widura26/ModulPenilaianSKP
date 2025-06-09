@@ -16,8 +16,8 @@
                 <tr>
                     <th>No</th>
                     <th>Nama</th>
-                    <th>Jenis Arsip</th>
                     <th>Periode</th>
+                    <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -46,8 +46,8 @@
                 <tr>
                     <th>No</th>
                     <th>Nama</th>
-                    <th>Jenis Arsip</th>
                     <th>Periode</th>
+                    <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>

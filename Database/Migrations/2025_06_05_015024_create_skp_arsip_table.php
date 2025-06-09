@@ -19,6 +19,7 @@ class CreateSkpArsipTable extends Migration
             $table->unsignedBigInteger('pegawai_id');
             $table->enum('jenis_arsip', ['Rencana', 'Evaluasi', 'Dokumen Evaluasi']);
             $table->string('file');
+            $table->enum('status', ['Belum Verifikasi', 'Sudah Verifikasi'])->default('Belum Verifikasi');
             $table->timestamps();
 
             $table->foreign('periode_id')->references('id')->on('periodes')->onDelete('cascade');

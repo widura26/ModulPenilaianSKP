@@ -1,5 +1,16 @@
 <script>
 
+    const colorStatus = (status) => {
+        switch (status) {
+            case 'Belum Verifikasi':
+                return 'danger'
+                break;
+            default:
+                return 'primary'
+                break;
+        }
+    }
+
     setTimeout(() => {
         const alertfailed = document.getElementById('alert-failed');
         const alertpassed = document.getElementById('alert-passed');
@@ -10,210 +21,96 @@
         }
     }, 3000);
 
-    let tableRencana = $('#table-arsip-rencana').DataTable({
-        language: {
-            search: "",
-            searchPlaceholder: "Cari nama pegawai..."
-        },
-        responsive: true,
-        scrollX: true,
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '/penilaian/arsip-skp/rencana/pegawai',
-            type: 'GET',
-            dataSrc: function (response) {
-                try {
-                    return response.data.map((data, index) => {
-                        return {
-                            no: index + 1,
-                            nama: data.pegawai.nama,
-                            jenis_arsip: data.jenis_arsip,
-                            periode: data.periode.start_date
-                        }
-                    })
-                } catch (error) {
-                    console.log(response)
-                }
+
+
+    const templateDatatable = (name, tableName, url, urlDetail) => {
+        $(tableName).DataTable({
+            language: {
+                search: "",
+                searchPlaceholder: "Cari nama pegawai..."
             },
-            data: function(d) {
-                d.search_value = $('#search-input').val();
+            responsive: true,
+            scrollX: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: url,
+                type: 'GET',
+                dataSrc: function (response) {
+                    try {
+                        return response.data.map((data, index) => {
+                            return {
+                                id: data.id,
+                                no: index + 1,
+                                nama: data.pegawai.nama,
+                                jenis_arsip: data.jenis_arsip,
+                                periode: data.periode.start_date,
+                                status: data.status
+                            }
+                        })
+                    } catch (error) {
+                        console.log(response)
+                    }
+                },
+                data: function(d) {
+                    d.search_value = $('#search-input').val();
+                },
             },
-        },
-        columns: [
-            {
-                data: 'no',
-                name: 'no',
-                orderable: true
-            },
-            {
-                data: 'nama',
-                name: 'nama',
-                orderable: true
-            },
-            {
-                data: 'jenis_arsip',
-                name: 'jenis_arsip',
-                orderable: true
-            },
-            {
-                data: 'periode',
-                name: 'periode',
-                orderable: true
-            },
-            {
-                data: null,
-                orderable: false,
-                searchable: false,
-                render: () => {
-                    return `<button class="btn btn-primary">Update</button>`
-                }
-            },
-        ],
-        pageLength: 10,
-        lengthMenu: [10, 25, 50, 100],
-        processing: true,
-        serverSide: true,
-        stateSave: true,
-    });
+            columns: [
+                {
+                    data: 'no',
+                    name: 'no',
+                    orderable: true
+                },
+                {
+                    data: 'nama',
+                    name: 'nama',
+                    orderable: true
+                },
+                {
+                    data: 'periode',
+                    name: 'periode',
+                    orderable: true
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    orderable: true,
+                    render: (data, type, row) => {
+                        return `<span class='badge badge-${colorStatus(row.status)}'>${row.status}</span>`
+                    }
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: (data,type, row) => {
+                        return `<button type="button" class="btn btn-primary" onclick="window.location.href='${urlDetail}/${row.id}'">
+                            <i class="nav-icon fas fa-pencil-alt"></i>
+                        </button>`
+                    }
+                },
+            ],
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+        });
+    }
+
+    templateDatatable('rencana', '#table-arsip-rencana',
+    '/penilaian/arsip-skp/rencana/pegawai', '/penilaian/arsip-skp/rencana/detail')
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         const target = $(e.target).attr("href");
         if (target === "#evaluasi" && !$.fn.dataTable.isDataTable('#table-arsip-evaluasi')) {
-            let tableEvaluasi = $('#table-arsip-evaluasi').DataTable({
-                language: {
-                    search: "",
-                    searchPlaceholder: "Cari nama pegawai..."
-                },
-                responsive: true,
-                scrollX: true,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '/penilaian/arsip-skp/evaluasi/pegawai',
-                    type: 'GET',
-                    dataSrc: function (response) {
-                        try {
-                            return response.data.map((data, index) => {
-                                return {
-                                    no: index + 1,
-                                    nama: data.pegawai.nama,
-                                    jenis_arsip: data.jenis_arsip,
-                                    periode: data.periode.start_date
-                                }
-                            })
-                        } catch (error) {
-                            console.log(response)
-                        }
-                    },
-                    data: function(d) {
-                        d.search_value = $('#search-input').val();
-                    },
-                },
-                columns: [
-                    {
-                        data: 'no',
-                        name: 'no',
-                        orderable: true
-                    },
-                    {
-                        data: 'nama',
-                        name: 'nama',
-                        orderable: true
-                    },
-                    {
-                        data: 'jenis_arsip',
-                        name: 'jenis_arsip',
-                        orderable: true
-                    },
-                    {
-                        data: 'periode',
-                        name: 'periode',
-                        orderable: true
-                    },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: () => {
-                            return `<button class="btn btn-primary">Update</button>`
-                        }
-                    },
-                ],
-                pageLength: 10,
-                lengthMenu: [10, 25, 50, 100],
-                processing: true,
-                serverSide: true,
-                stateSave: true,
-            });
+            templateDatatable('evaluasi', '#table-arsip-evaluasi',
+            '/penilaian/arsip-skp/evaluasi/pegawai', '/penilaian/arsip-skp/evaluasi/detail')
         }
         if (target === "#dok" && !$.fn.dataTable.isDataTable('#table-arsip-dokevaluasi')) {
-            let dokEvaluasi = $('#table-arsip-dokevaluasi').DataTable({
-                language: {
-                    search: "",
-                    searchPlaceholder: "Cari nama pegawai..."
-                },
-                responsive: true,
-                scrollX: true,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '/penilaian/arsip-skp/dok-evaluasi/pegawai',
-                    type: 'GET',
-                    dataSrc: function (response) {
-                        try {
-                            return response.data.map((data, index) => {
-                                return {
-                                    no: index + 1,
-                                    nama: data.pegawai.nama,
-                                    jenis_arsip: data.jenis_arsip,
-                                    periode: data.periode.start_date
-                                }
-                            })
-                        } catch (error) {
-                            console.log(response)
-                        }
-                    },
-                    data: function(d) {
-                        d.search_value = $('#search-input').val();
-                    },
-                },
-                columns: [
-                    {
-                        data: 'no',
-                        name: 'no',
-                        orderable: true
-                    },
-                    {
-                        data: 'nama',
-                        name: 'nama',
-                        orderable: true
-                    },
-                    {
-                        data: 'jenis_arsip',
-                        name: 'jenis_arsip',
-                        orderable: true
-                    },
-                    {
-                        data: 'periode',
-                        name: 'periode',
-                        orderable: true
-                    },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: () => {
-                            return `<button class="btn btn-primary">Update</button>`
-                        }
-                    },
-                ],
-                pageLength: 10,
-                lengthMenu: [10, 25, 50, 100],
-                processing: true,
-                serverSide: true,
-                stateSave: true,
-            });
+            templateDatatable('dok-evaluasi', '#table-arsip-dokevaluasi',
+            '/penilaian/arsip-skp/dok-evaluasi/pegawai', '/penilaian/arsip-skp/dok-evaluasi/detail')
         }
 
         setTimeout(() => {

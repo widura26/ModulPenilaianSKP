@@ -61,7 +61,7 @@
                         @if ($rencana?->status_realisasi == 'Belum Ajukan Realisasi')
                             <form method="POST" action="{{ url('/penilaian/realisasi/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ !$semuaSudahTerisi ? 'disabled' : '' }}>Ajukan Realisasi</button>
+                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ !$semuaSudahTerisi || is_null($rencana->hasil_kerja) ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
                         @elseif($rencana?->status_realisasi == 'Belum Dievaluasi')
                             <form method="POST" action="{{ url('/penilaian/realisasi/batalkan-realisasi/' . $rencana->id) }}">

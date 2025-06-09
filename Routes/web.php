@@ -60,15 +60,31 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         });
         Route::prefix('arsip-skp')->group(function() {
             Route::get('/', 'ArsipController@index');
-            Route::get('/rencana', 'ArsipController@index');
-            Route::get('/evaluasi', 'ArsipController@evaluasi');
-            Route::get('/dok-evaluasi', 'ArsipController@dokevaluasi');
-            Route::get('/rencana/pegawai', 'ArsipController@getArsipRencana');
-            Route::get('/evaluasi/pegawai', 'ArsipController@getArsipEvaluasi');
-            Route::get('/dok-evaluasi/pegawai', 'ArsipController@getArsipDokEvaluasi');
+            Route::prefix('rencana')->group(function() {
+                Route::get('/', 'ArsipController@index');
+                Route::get('/pegawai', 'ArsipController@getArsipRencana');
+                Route::get('/detail/{arsip}', 'ArsipController@detail');
+                Route::post('/verifikasi/{arsip}', 'ArsipController@verification');
+            });
+            Route::prefix('evaluasi')->group(function() {
+                Route::get('/', 'ArsipController@evaluasi');
+                Route::get('/pegawai', 'ArsipController@getArsipEvaluasi');
+                Route::get('/detail/{arsip}', 'ArsipController@detail');
+                Route::post('/verifikasi/{arsip}', 'ArsipController@verification');
+            });
+            Route::prefix('dok-evaluasi')->group(function() {
+                Route::get('/', 'ArsipController@dokevaluasi');
+                Route::get('/pegawai', 'ArsipController@getArsipDokEvaluasi');
+                Route::get('/detail/{arsip}', 'ArsipController@detail');
+                Route::post('/verifikasi/{arsip}', 'ArsipController@verification');
+            });
             Route::post('/store', 'ArsipController@store');
             Route::post('/update/{id}', 'ArsipController@update');
             Route::post('/delete/{id}', 'ArsipController@delete');
+        });
+        Route::prefix('monitoring')->group(function() {
+            Route::get('/', 'MonitoringController@index');
+            Route::get('/data', 'MonitoringController@monitoring');
         });
         Route::get('/predikat-kinerja', 'EvaluasiController@predikatKinerja');
         Route::get('/', 'PenilaianController@index');

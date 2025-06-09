@@ -1,0 +1,69 @@
+@extends('adminlte::page')
+
+@section('title', 'Dasbor Simlitabmas')
+
+@section('content_header')
+    <h1 class="m-0 text-dark">Detail Arsip</h1>
+@stop
+
+@php
+    switch ($arsipData->jenis_arsip) {
+        case 'Rencana':
+            $url = '/penilaian/arsip-skp/rencana/';
+            break;
+        case 'Evaluasi':
+            $url = '/penilaian/arsip-skp/evaluasi/';
+            break;
+        case 'Dokumen Evaluasi':
+            $url = '/penilaian/arsip-skp/dok-evaluasi/';
+            break;
+        default:
+            break;
+    }
+@endphp
+@section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="bg-white p-4">
+                    <form method="POST" action="{{ url($url . 'verifikasi/' . $arsipData->id) }}">
+                        @csrf
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="nama-pegawai">Nama Pegawai</label>
+                                <input disabled value="{{ $arsipData->pegawai->nama }}" type="text" class="form-control" id="nama-pegawai">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="jenis-arsip">Jenis Arsip</label>
+                                <input disabled value="{{ $arsipData->jenis_arsip }}" type="text" class="form-control" id="jenis-arsip">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="status">Status</label>
+                                <select id="status" class="form-control" name="status">
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="Belum Verifikasi" {{ $arsipData->status === 'Belum Verifikasi' ? 'selected' : '' }}>Belum Verifikasi</option>
+                                    <option value="Sudah Verifikasi" {{ $arsipData->status === 'Sudah Verifikasi' ? 'selected' : '' }}>Sudah Verifikasi</option>
+                                </select>
+                                @error('status')
+                                    <small class="text-danger">status wajib dipilih</small>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="status">File</label>
+                                <button class="form-control">File</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@stop
+@section('css')
+@stop
+@push('js')
+
+@endpush
