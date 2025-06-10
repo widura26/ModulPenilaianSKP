@@ -19,7 +19,6 @@
                                 <th>No</th>
                                 <th>Periode</th>
                                 <th>Capaian Kinerja</th>
-                                <th>Kurva</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -32,18 +31,13 @@
                                         - {{ \Carbon\Carbon::parse($periode->end_date)->translatedFormat('j F Y') }} ({{ $periode->jenis_periode }})
                                     </td>
                                     <td>
-                                        <select name="" id="" class="form-control">
-                                            <option value=""></option>
-                                        </select>
+                                        {{ $periode->capaian_kinerja == null ? '-' : $periode->capaian_kinerja }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-success">Kurva</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning" title="update">
+                                        <button class="btn btn-warning" title="update" onclick="window.location.href='{{ url('/penilaian/periode/' . $periode->id) }}'">
                                             <i class="nav-icon fas fa-pencil-alt "></i>
                                         </button>
-                                        <button class="btn btn-danger" title="update">
+                                        <button class="btn btn-danger" title="delete">
                                             <i class="nav-icon fas fa-trash "></i>
                                         </button>
                                     </td>

@@ -9,7 +9,7 @@
 
 @php
     $selectedId = request('hasil_kerja_id');
-    $selected = $rencana->hasilKerja->firstWhere('id', $selectedId);
+    $selected = $rencana->hasilKerja->where('jenis', 'utama')->firstWhere('id', $selectedId);
 @endphp
 
 @section('content')
@@ -22,7 +22,7 @@
                             <label for="hasil-kerja-select">Hasil Kerja</label>
                             <select class="form-control" id="hasil-kerja-select" name="hasil_kerja_id" onchange="this.form.submit()">
                                 <option value="">-- Pilih Hasil Kerja --</option>
-                                @foreach ($rencana->hasilKerja as $item)
+                                @foreach ($rencana->hasilKerja->where('jenis', 'utama') as $item)
                                     <option value="{{ $item->id }}" {{ request('hasil_kerja_id') == $item->id ? 'selected' : '' }}>{{ $item->deskripsi }}</option>
                                 @endforeach
                             </select>

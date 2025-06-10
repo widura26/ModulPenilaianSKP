@@ -16,7 +16,9 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         Route::prefix('periode')->group(function() {
             Route::get('/', 'PeriodeController@index');
             Route::post('/store', 'PeriodeController@store');
+            Route::post('/update/{id}', 'PeriodeController@update');
             Route::post('/set', 'PeriodeController@setPeriode');
+            Route::get('/{id}', 'PeriodeController@detail');
         });
         Route::prefix('preview')->group(function() {
             Route::get('/evaluasi', 'PreviewController@previewEvaluasi');
@@ -46,7 +48,8 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         Route::prefix('rencana')->group(function() {
             Route::get('/', 'RencanaController@index');
             Route::post('/store', 'RencanaController@store');
-            Route::post('/store-hasil-kerja/{id}', 'RencanaController@storeHasilKerja');
+            Route::post('/store-hasil-kerja-utama/{id}', 'RencanaController@storeHasilKerjaUtama');
+            Route::post('/store-hasil-kerja-tambahan/{id}', 'RencanaController@storeHasilKerjaTambahan');
         });
         Route::prefix('matriks-peran-hasil')->group(function() {
             Route::get('/', 'MatriksPeranHasilController@matriksperanhasil');

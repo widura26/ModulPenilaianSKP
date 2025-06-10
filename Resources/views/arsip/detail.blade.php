@@ -50,9 +50,12 @@
                                     <small class="text-danger">status wajib dipilih</small>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-6">
+
+                            <div class="d-flex flex-column col-md-6">
                                 <label for="status">File</label>
-                                <button class="form-control">File</button>
+                                <button class="btn btn-primary w-50" onclick="window.open({{ url('/penilaian/') }}, '_blank')">
+                                    <i class="fas fa-file-alt"></i> Dokumen
+                                </button>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

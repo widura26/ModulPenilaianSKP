@@ -32,7 +32,7 @@ class CreatePeriodeAktifTable extends Migration
     public function down()
     {
         Schema::table('skp_periode_aktif', function (Blueprint $table) {
-            $table->dropForeign(['skp_periode_aktif_periode_id_foreign']);
+            $table->dropForeign(['periode_id']);
             $table->dropForeign(['pegawai_id']);
         });
         Schema::dropIfExists('skp_periode_aktif');

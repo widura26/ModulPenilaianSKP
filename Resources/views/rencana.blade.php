@@ -31,6 +31,19 @@
                             $badgeClass = 'badge-secondary';
                             break;
                     }
+
+                    $hasilKerjaUtama = collect();
+                    $hasilKerjaTambahan = collect();
+
+                    if (!is_null($rencana) && !is_null($rencana->hasilKerja)) {
+                        $hasilKerjaUtama = $rencana->hasilKerja->filter(function($item) {
+                            return $item->jenis === 'utama';
+                        })->values();
+
+                        $hasilKerjaTambahan = $rencana->hasilKerja->filter(function($item) {
+                            return $item->jenis === 'tambahan';
+                        })->values();
+                    }
                 @endphp
 
                 @if (session('failed'))
@@ -58,7 +71,6 @@
 
                 @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
                 <div class="bg-white p-4">
-                    {{-- Hasil kerja --}}
                     <table class="table mb-0" style="width: 100%;">
                         <thead>
                             <tr>
@@ -74,8 +86,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($rencana && count($rencana->hasilKerja) != 0)
-                                @foreach ($rencana->hasilKerja as $index => $item)
+                            @if ($hasilKerjaUtama->count())
+                                @foreach ($hasilKerjaUtama as $index => $item)
                                     <tr>
                                         <th style="width: 0%;" scope="row">{{ $index + 1 }}</th>
                                         <td>
@@ -111,26 +123,32 @@
                         </thead>
                         <tbody>
                             <tbody>
-                                <tr>
-                                    <td colspan="5">-</td>
-                                </tr>
+                                @if ($hasilKerjaTambahan->count())
+                                    @foreach ($hasilKerjaTambahan as $indexTambahan => $item)
+                                        <tr>
+                                            <th style="width: 0%;" scope="row">{{ $indexTambahan + 1 }}</th>
+                                            <td>
+                                                <p>{{ $item['deskripsi'] }}</p>
+                                                <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
+                                                <ul>
+                                                    @foreach ($item->indikator as $indikator)
+                                                        <li>{{ $indikator['deskripsi'] }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                            <td style="width: 10%;">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                @else
+                                    <tr>
+                                        <td colspan="5">-</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </tbody>
                     </table>
-                    {{-- <table class="table mb-0" style="width: 100%;">
-                        <thead>
-                          <tr>
-                            <th colspan="5">PERILAKU KERJA</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            @if ($rencana && $rencana->perilakuKerja)
-                                @foreach ($rencana->perilakuKerja as $index => $item)
-
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table> --}}
                 </div>
             </div>
         </div>

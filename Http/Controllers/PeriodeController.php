@@ -23,6 +23,11 @@ class PeriodeController extends Controller {
         return view('penilaian::periode.index', compact('periodes'));
     }
 
+    public function detail(Request $request, $id){
+        $periode = Periode::find($id);
+        return view('penilaian::periode.detail', compact('periode'));
+    }
+
     public function store(Request $request){
         try {
             Periode::create([
@@ -36,6 +41,22 @@ class PeriodeController extends Controller {
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
         }
+    }
+
+    public function update(Request $request, $id){
+        $periode = Periode::find($id);
+
+        $request->validate([
+            'capaian_kinerja' => 'required|string',
+            'kurva' => 'required|file|mimes:jpg,png|max:10240'
+        ]);
+        $path = $request->file('kurva')->store('kurva', 'public');
+
+        $periode->update([
+            'capaian_kinerja' => $request->capaian_kinerja,
+            'kurva' => $path
+        ]);
+        return redirect()->back()->with('success', 'berhasil');
     }
 
     public function setPeriode(Request $request){

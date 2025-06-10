@@ -83,16 +83,16 @@ class MenuPenilaianTableSeeder extends Seeder
             'parent_id' => $menu->id,
             'active' => serialize(['penilaian/arsip-skp', 'penilaian/arsip-skp*']),
         ]);
-        Menu::create([
-            'modul' => 'Penilaian',
-            'label' => 'Kinerja Organisasi',
-            'url' => 'penilaian/kinerja-organisasi',
-            'can' => serialize(['admin']),
-            'icon' => 'far fa-circle',
-            'urut' => 1,
-            'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/kinerja-organisasi', 'penilaian/kinerja-organisasi*']),
-        ]);
+        // Menu::create([
+        //     'modul' => 'Penilaian',
+        //     'label' => 'Kinerja Organisasi',
+        //     'url' => 'penilaian/kinerja-organisasi',
+        //     'can' => serialize(['admin']),
+        //     'icon' => 'far fa-circle',
+        //     'urut' => 1,
+        //     'parent_id' => $menu->id,
+        //     'active' => serialize(['penilaian/kinerja-organisasi', 'penilaian/kinerja-organisasi*']),
+        // ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Periode',

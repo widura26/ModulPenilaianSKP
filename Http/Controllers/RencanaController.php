@@ -151,7 +151,7 @@ class RencanaController extends Controller {
         }
     }
 
-    public function storeHasilKerja(Request $request, $id) {
+    public function storeHasilKerjaUtama(Request $request, $id) {
         try {
             $indikators = $request->indikators;
             $arrayIndikators = array_filter(array_map('trim', explode(';', $indikators)));
@@ -162,6 +162,36 @@ class RencanaController extends Controller {
                 'deskripsi' => $request->deskripsi,
                 'indikator' => $indikators
             ];
+
+            DB::transaction(function () use ($requestHasilKerja, $arrayIndikators) {
+                $hasilKerja = HasilKerja::create($requestHasilKerja);
+                foreach ($arrayIndikators as $indikator) {
+                    Indikator::create([
+                        'hasil_kerja_id' => $hasilKerja->id,
+                        'deskripsi' => $indikator
+                    ]);
+                }
+            });
+
+            return redirect()->back()->with('success', 'Berhasil menambahkan hasil kerja');
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage());
+        }
+    }
+
+    public function storeHasilKerjaTambahan(Request $request, $id) {
+        try {
+            $indikators = $request->indikators;
+            $arrayIndikators = array_filter(array_map('trim', explode(';', $indikators)));
+
+            $requestHasilKerja = [
+                'rencana_id' => $id,
+                'deskripsi' => $request->deskripsi,
+                'indikator' => $indikators,
+                'jenis' => 'tambahan'
+            ];
+
+            // return response()->json($requestHasilKerja);
 
             DB::transaction(function () use ($requestHasilKerja, $arrayIndikators) {
                 $hasilKerja = HasilKerja::create($requestHasilKerja);

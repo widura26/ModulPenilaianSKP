@@ -19,6 +19,8 @@ class CreatePeriodesTable extends Migration
             $table->date('end_date');
             $table->year('tahun');
             $table->string('jenis_periode');
+            $table->enum('capaian_kinerja', ['Istimewa', 'Baik', 'Butuh Perbaikan', 'Kurang', 'Sangat Kurang'])->nullable();
+            $table->string('kurva')->nullable();
             $table->timestamps();
         });
     }

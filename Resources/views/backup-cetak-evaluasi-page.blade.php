@@ -94,7 +94,7 @@
         <table id="table-evaluasi" class="mb-2" cellspacing="0" cellpadding="5" width="100%" style="font-size: 12px;">
             <thead>
                 <tr>
-                    <th style="background-color: #f2f2f2;">CAPAIAN KINERJA ORGANISASI : {{ $capaianKinerjaOrganisasi->capaian_kinerja }}</th>
+                    <th style="background-color: #f2f2f2;">CAPAIAN KINERJA ORGANISASI : {{ $periode->capaian_kinerja }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -102,15 +102,15 @@
                     <td  style="background-color: #f2f2f2;">
                         <p>POLA DISTRIBUSI :</p>
                         <div class="">
-                            @if ($capaianKinerjaOrganisasi->capaian_kinerja == 'Istimewa')
+                            @if ($periode->capaian_kinerja == 'Istimewa')
                                 <img src="{{ asset('modules/penilaian/images/Istimewa.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
-                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Baik')
+                            @elseif($periode->capaian_kinerja == 'Baik')
                                 <img src="{{ asset('modules/penilaian/images/baik.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
-                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Butuh Perbaikan')
+                            @elseif($periode->capaian_kinerja == 'Butuh Perbaikan')
                                 <img src="{{ asset('modules/penilaian/images/butuhperbaikan.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
-                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Kurang')
+                            @elseif($periode->capaian_kinerja == 'Kurang')
                                 <img src="{{ asset('modules/penilaian/images/kurang.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
-                            @elseif($capaianKinerjaOrganisasi->capaian_kinerja == 'Sangat Kurang')
+                            @elseif($periode->capaian_kinerja == 'Sangat Kurang')
                                 <img src="{{ asset('modules/penilaian/images/sangat kurang.png') }}" alt="" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
                             @endif
                         </div>

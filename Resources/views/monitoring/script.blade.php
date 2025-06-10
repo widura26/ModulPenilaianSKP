@@ -20,6 +20,7 @@
                                 no: index + 1,
                                 nip: data.pegawai.nip,
                                 nama: data.pegawai.nama,
+                                status: data.status_persetujuan
                             }
                         })
                     } catch (error) {
@@ -50,7 +51,7 @@
                     data: 'status',
                     name: 'status',
                     render: function(data, type, row) {
-                        return `Hello`
+                        return row.status
                     }
                 },
                 {

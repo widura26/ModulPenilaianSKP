@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Cuti\Services\AtasanService;
 use Modules\Pengaturan\Entities\Pegawai;
 use Modules\Penilaian\Entities\CapaianKinerjaOrganisasi;
+use Modules\Penilaian\Entities\Periode;
 use Modules\Penilaian\Entities\RencanaKerja;
 
 class PreviewController extends Controller {
@@ -62,6 +63,7 @@ class PreviewController extends Controller {
     public function backupPreviewEvaluasi(Request $request){
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
+        $periode = Periode::find($periodeId);
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($pegawaiWhoLogin->username);
         $capaianKinerjaOrganisasi = CapaianKinerjaOrganisasi::first();
         $rencana = RencanaKerja::with([
@@ -89,7 +91,7 @@ class PreviewController extends Controller {
         if($request->query('params') == 'json'){
             return response()->json($rencana->hasilKerja);
         }else {
-            return view('penilaian::backup-cetak-evaluasi-page', compact('pegawai', 'rencana', 'rekapKehadiran', 'capaianKinerjaOrganisasi'));
+            return view('penilaian::backup-cetak-evaluasi-page', compact('pegawai', 'rencana', 'rekapKehadiran', 'periode'));
         }
     }
 

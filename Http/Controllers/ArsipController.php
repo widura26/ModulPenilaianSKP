@@ -156,4 +156,14 @@ class ArsipController extends Controller
         }
     }
 
+    public function preview($filename){
+        $path = storage_path("app/public/arsip/{$filename}");
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
+    }
+
 }
