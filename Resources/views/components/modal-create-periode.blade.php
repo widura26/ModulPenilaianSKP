@@ -27,6 +27,7 @@
                             <option value="Triwulan 1">Triwulan 1</option>
                             <option value="Triwulan 2">Triwulan 2</option>
                             <option value="Triwulan 3">Triwulan 3</option>
+                            <option value="Triwulan 4">Triwulan 4</option>
                         </select>
                     </div>
                 </div>
