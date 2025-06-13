@@ -88,6 +88,8 @@
                             <div class="d-flex">
                                 @include('penilaian::components.modal-cetak-evaluasi')
                                 @include('penilaian::components.modal-cetak-dokevaluasi')
+                                {{-- <button class="btn btn-primary" onclick="window.location.href='{{ url('/penilaian/preview/backup-evaluasi') }}'">Cetak Evaluasi</button> --}}
+                                {{-- <button class="btn btn-primary ml-2">Cetak Dok. Evaluasi</button> --}}
                             </div>
                         @endif
                     </div>
