@@ -213,7 +213,7 @@ class EvaluasiController extends Controller {
         $periodeId = $this->periodeController->periode_aktif();
         try {
             RencanaKerja::where('pegawai_id', $pegawai->id)->where('periode_id', $periodeId)->update([
-                'status_realisasi' => 'Sudah Diajukan',
+                'status_realisasi' => 'Belum Dievaluasi',
                 'rating_hasil_kerja' => null,
                 'rating_perilaku' => null,
                 'predikat_akhir' => null
