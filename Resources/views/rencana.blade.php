@@ -62,7 +62,7 @@
 
                 @if (is_null($rencana))
                     <div class="w-100 d-flex justify-content-end align-items-center p-4">
-                        <form method="POST" action="{{ url('/penilaian/rencana/store') }}">
+                        <form method="POST" action="{{ url('/skp/rencana/store') }}">
                             @csrf
                             <button type="submit" class="btn btn-primary">Buat SKP</button>
                         </form>

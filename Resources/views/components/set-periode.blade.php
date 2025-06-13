@@ -1,5 +1,5 @@
 <div class="p-4">
-    <form method="POST" action="{{ url('/penilaian/periode/set') }}">
+    <form method="POST" action="{{ url('/skp/periode/set') }}">
         @csrf
         <div class="d-flex align-content-center">
             <select name="periodetahun" id="periode-tahun" class="form-control mr-2">

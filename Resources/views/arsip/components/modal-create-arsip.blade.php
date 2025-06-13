@@ -3,7 +3,7 @@
 </button>
 <div class="modal fade" id="tambah-arsip" tabindex="-1" role="dialog" aria-labelledby="tambah-arsipTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form method="POST" class="modal-content" action="{{ url('/penilaian/arsip-skp/store') }}" enctype="multipart/form-data">
+        <form method="POST" class="modal-content" action="{{ url('/skp/arsip-skp/store') }}" enctype="multipart/form-data">
             @csrf
             <div class="modal-header">Tambah Arsip</div>
             <div class="modal-body">

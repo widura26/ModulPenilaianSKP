@@ -50,7 +50,7 @@
                 </div>
                 @include('penilaian::components.atasan-bawahan-section')
                 <div class="bg-white p-4">
-                    <form method="POST" action="{{ url('/penilaian/evaluasi/proses-umpan-balik/' . $pegawai->username) }}">
+                    <form method="POST" action="{{ url('/skp/evaluasi/proses-umpan-balik/' . $pegawai->username) }}">
                         @csrf
                         @include('penilaian::components.table-hasilkerja-utama-evaluasi')
                         @include('penilaian::components.table-hasilkerja-tambahan-evaluasi')

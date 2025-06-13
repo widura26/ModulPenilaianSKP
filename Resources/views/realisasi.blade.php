@@ -73,12 +73,12 @@
                     <div class="w-100 d-flex justify-content-between align-items-center p-2">
                         <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $label }}</span>
                         @if ($rencana?->status_realisasi == 'Belum Ajukan Realisasi')
-                            <form method="POST" action="{{ url('/penilaian/realisasi/ajukan-realisasi/' . $rencana->id) }}">
+                            <form method="POST" action="{{ url('/skp/realisasi/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
                                 <button id="proses-umpan-balik-button" class="btn btn-primary" {{ $realisasiKosong || ($hasilKerjaUtama->isEmpty() && $hasilKerjaTambahan->isEmpty()) ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
                         @elseif($rencana?->status_realisasi == 'Belum Dievaluasi')
-                            <form method="POST" action="{{ url('/penilaian/realisasi/batalkan-realisasi/' . $rencana->id) }}">
+                            <form method="POST" action="{{ url('/skp/realisasi/batalkan-realisasi/' . $rencana->id) }}">
                                 @csrf
                                 <button id="proses-umpan-balik-button" class="btn btn-danger">Batalkan Pengajuan</button>
                             </form>
@@ -88,7 +88,7 @@
                             <div class="d-flex">
                                 {{-- @include('penilaian::components.modal-cetak-evaluasi')
                                 @include('penilaian::components.modal-cetak-dokevaluasi') --}}
-                                <button class="btn btn-primary" onclick="window.location.href='{{ url('/penilaian/preview/backup-evaluasi') }}'">Cetak Evaluasi</button>
+                                <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/preview/backup-evaluasi') }}'">Cetak Evaluasi</button>
                                 <button class="btn btn-primary ml-2">Cetak Dok. Evaluasi</button>
                             </div>
                         @endif
@@ -136,7 +136,7 @@
                                             <td style="width: 10%;">
                                                 <div class="d-flex" style="gap: 5px;">
                                                     @include('penilaian::components.modals-create-realisasi')
-                                                    <form action="{{ url('/penilaian/realisasi/delete/' . $item->id) }}" method="POST">
+                                                    <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
                                                         @csrf
                                                         <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
                                                             <i class="nav-icon fas fa-ban "></i>
@@ -185,7 +185,7 @@
                                                 <td style="width: 10%;">
                                                     <div class="d-flex" style="gap: 5px;">
                                                         @include('penilaian::components.modals-create-realisasi')
-                                                        <form action="{{ url('/penilaian/realisasi/delete/' . $item->id) }}" method="POST">
+                                                        <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
                                                             @csrf
                                                             <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
                                                                 <i class="nav-icon fas fa-ban "></i>

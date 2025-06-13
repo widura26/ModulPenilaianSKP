@@ -3,7 +3,7 @@
 </button>
 <div class="modal fade" id="delete-arsip-{{ $arsip->id }}" tabindex="-1" role="dialog" aria-labelledby="delete-arsip-{{ $arsip->id }}Title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form method="POST" class="modal-content" action="{{ url('/penilaian/arsip-skp/delete/' . $arsip->id) }}">
+        <form method="POST" class="modal-content" action="{{ url('/skp/arsip-skp/delete/' . $arsip->id) }}">
             @csrf
             <div class="modal-body">
                 Apakah anda yakin untuk menghapus arsip?

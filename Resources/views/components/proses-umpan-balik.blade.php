@@ -1,5 +1,5 @@
 <div class="mt-4">
-    <form class="needs-validation" novalidate method="POST" action="{{ url('/penilaian/evaluasi/simpan-hasil-evaluasi/' . $pegawai->id) }}">
+    <form class="needs-validation" novalidate method="POST" action="{{ url('/skp/evaluasi/simpan-hasil-evaluasi/' . $pegawai->id) }}">
         @csrf
         <table class="table mb-0" style="table-layout: fixed; width: 100%;">
             <thead>

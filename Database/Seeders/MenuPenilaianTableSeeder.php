@@ -33,55 +33,55 @@ class MenuPenilaianTableSeeder extends Seeder
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Rencana',
-            'url' => 'penilaian/rencana',
+            'url' => 'skp/rencana',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
             'can' => serialize(['terdaftar', 'operator', 'pegawai', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'dosen']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/rencana', 'penilaian/rencana*']),
+            'active' => serialize(['skp/rencana', 'skp/rencana*']),
         ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Matriks Peran Hasil',
-            'url' => 'penilaian/matriks-peran-hasil',
+            'url' => 'skp/matriks-peran-hasil',
             'can' => serialize(['terdaftar']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/matriks-peran-hasil', 'penilaian/matriks-peran-hasil*']),
+            'active' => serialize(['skp/matriks-peran-hasil', 'skp/matriks-peran-hasil*']),
         ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Realisasi',
-            'url' => 'penilaian/realisasi',
+            'url' => 'skp/realisasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
             'can' => serialize(['terdaftar', 'operator','pegawai', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'dosen']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/realisasi', 'penilaian/realisasi*']),
+            'active' => serialize(['skp/realisasi', 'skp/realisasi*']),
         ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Evaluasi',
-            'url' => 'penilaian/evaluasi',
+            'url' => 'skp/evaluasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
             'can' => serialize(['terdaftar', 'kajur', 'wadir1', 'wadir2', 'wadir3']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/evaluasi', 'penilaian/evaluasi*']),
+            'active' => serialize(['skp/evaluasi', 'skp/evaluasi*']),
         ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Arsip',
-            'url' => 'penilaian/arsip-skp',
+            'url' => 'skp/arsip-skp',
             'can' => serialize(['terdaftar', 'admin']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/arsip-skp', 'penilaian/arsip-skp*']),
+            'active' => serialize(['skp/arsip-skp', 'skp/arsip-skp*']),
         ]);
         // Menu::create([
         //     'modul' => 'Penilaian',
@@ -96,22 +96,22 @@ class MenuPenilaianTableSeeder extends Seeder
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Periode',
-            'url' => 'penilaian/periode',
+            'url' => 'skp/periode',
             'can' => serialize(['admin']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/periode', 'penilaian/periode*']),
+            'active' => serialize(['skp/periode', 'skp/periode*']),
         ]);
         Menu::create([
             'modul' => 'Penilaian',
             'label' => 'Monitoring',
-            'url' => 'penilaian/monitoring',
+            'url' => 'skp/monitoring',
             'can' => serialize(['admin']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,
-            'active' => serialize(['penilaian/monitoring', 'penilaian/monitoring*']),
+            'active' => serialize(['skp/monitoring', 'skp/monitoring*']),
         ]);
     }
 }
