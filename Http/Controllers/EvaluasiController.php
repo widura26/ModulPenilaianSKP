@@ -115,27 +115,26 @@ class EvaluasiController extends Controller {
     }
 
     public function prosesUmpanBalik(Request $request){
+
+        $request->validate([
+            // 'feedback' => 'required|array|min:1',
+            // 'feedback.*.hasil_kerja_id' => 'required|integer|exists:hasil_kerja,id',
+            'feedback.*.umpan_balik_predikat' => 'required|string',
+            'feedback.*.umpan_balik_deskripsi' => 'required|string',
+
+            // 'feedback_hasil_kerja_tambahan' => 'required|array|min:1',
+            // 'feedback_hasil_kerja_tambahan.*.surat_tugas_id' => 'required|integer|exists:detail_surat_tugas,id',
+            'feedback_hasil_kerja_tambahan.*.umpan_balik_predikat' => 'required|string',
+            'feedback_hasil_kerja_tambahan.*.umpan_balik_deskripsi' => 'required|string',
+
+            // 'feedback_perilaku_kerja' => 'required|array|min:1',
+            // 'feedback_perilaku_kerja.*.perilaku_kerja_id' => 'required|integer|exists:rencana_perilaku,id',
+            'feedback_perilaku_kerja.*.perilaku_umpan_balik_predikat' => 'required|string',
+            'feedback_perilaku_kerja.*.perilaku_umpan_balik_deskripsi' => 'nullable|string',
+        ]);
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         DB::beginTransaction();
         try {
-            // return response()->json([
-            //     'feedback_hasil_kerja_utama' => $request->feedback,
-            //     'feedback_hasil_kerja_tambahan' => $request->feedback_hasil_kerja_tambahan,
-            //     'feedback_perilaku_kerja' => $request->feedback_perilaku_kerja,
-            // ]);
-
-            // foreach ($request->feedback as $item) {
-            //     PenilaianHasilKerja::updateOrCreate([
-            //             'hasil_kerja_id' => $item['hasil_kerja_id'],
-            //             'ketua_tim_id' => $pegawaiWhoLogin->id,
-            //         ],
-            //         [
-            //             'umpan_balik_predikat' => $item['umpan_balik_predikat'],
-            //             'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'] ?? null,
-            //         ]
-            //     );
-            // }
-
             foreach ($request->feedback as $item) {
                 PenilaianHasilKerja::updateOrCreate(
                     [

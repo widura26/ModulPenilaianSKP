@@ -41,6 +41,9 @@
                                 </button>
                             </div>
                         </div>
+                        @error('feedback_hasil_kerja_tambahan.' . $index . '.umpan_balik_predikat')
+                            <small class="text-danger">Predikat wajib diisi</small>
+                        @enderror
 
                         <textarea
                         class="form-control feedback-text mt-2 {{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas === null ? 'd-none' : '' }}"
@@ -49,6 +52,9 @@
                         required
                         placeholder="{{ $predikat_hasiltugas !== null && $deskripsi_hasiltugas !== null ? $deskripsi_hasiltugas : '' }}"
                         style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
+                        @error('feedback_hasil_kerja_tambahan.' . $index . '.umpan_balik_deskripsi')
+                            <small class="text-danger">Deskripsi wajib diisi</small>
+                        @enderror
                     </td>
                 </tr>
             @endforeach

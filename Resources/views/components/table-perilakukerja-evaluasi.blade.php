@@ -60,13 +60,15 @@
                                     </option>
                                 @endif
                             </select>
-
                             <div class="input-group-append">
                                 <button {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }} class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#template-umpanbalik-perilaku-{{ $item->id }}">
                                     <i class="nav-icon fas fa-copy "></i>
                                 </button>
                             </div>
                         </div>
+                        @error('feedback_perilaku_kerja.' . $index . '.perilaku_umpan_balik_predikat')
+                            <small class="text-danger">Predikat wajib diisi</small>
+                        @enderror
                         @include('penilaian::components.modal-template-umpanbalik-perilaku')
                         <textarea
                             class="form-control feedback-perilaku-text mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
@@ -75,6 +77,10 @@
                             required
                             placeholder="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? $penilaian->umpan_balik_deskripsi : '' }}"
                             style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
+
+                        @error('feedback_perilaku_kerja.' . $index . '.perilaku_umpan_balik_deskripsi')
+                            <small class="text-danger">Deskripsi wajib diisi</small>
+                        @enderror
                     </td>
                 </tr>
             @endforeach

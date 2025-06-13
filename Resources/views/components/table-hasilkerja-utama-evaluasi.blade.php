@@ -55,16 +55,18 @@
                                 </button>
                             </div>
                         </div>
-                        {{-- @php
-
-                        @endphp --}}
+                        @error('feedback.' . $index . '.umpan_balik_predikat')
+                            <small class="text-danger">Predikat wajib diisi</small>
+                        @enderror
                         @include('penilaian::components.modal-template-umpanbalik-hasilkerja')
                         <textarea class="feedback-text form-control mt-2 {{ $predikat !== null && $deskripsi === null ? 'd-none' : '' }}"
                             {{ $predikat !== null && $deskripsi !== null ? 'disabled' : '' }}
                             name="feedback[{{ $index }}][umpan_balik_deskripsi]" required
                             placeholder="{{ $predikat !== null && $deskripsi !== null ? $deskripsi : '' }}"
                             style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
-
+                        @error('feedback.' . $index . '.umpan_balik_deskripsi')
+                            <small class="text-danger">Deskripsi wajib diisi</small>
+                        @enderror
                     </td>
                 </tr>
             @endforeach
