@@ -13,11 +13,7 @@ use Modules\Cuti\Entities\Cuti;
 use Modules\RekapKehadiran\Entities\KehadiranII;
 use Modules\Setting\Entities\Libur;
 
-class PenilaianController extends Controller
-{
-    public function index(){
-        return view('penilaian::index');
-    }
+class PenilaianController extends Controller {
 
     public function getPegawaiWhoLogin($filterTimKerjaId = null){
         $authUser = Auth::user();

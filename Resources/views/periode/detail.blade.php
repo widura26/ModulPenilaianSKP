@@ -20,7 +20,7 @@
                             </ul>
                         </div>
                     @endif
-                    <form method="POST" action="{{ url('/penilaian/periode/update/' . $periode->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url('/skp/periode/update/' . $periode->id) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">

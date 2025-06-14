@@ -26,7 +26,7 @@ class MatriksPeranHasilController extends Controller
         $rencana = RencanaKerja::with('hasilKerja.indikator')->where('pegawai_id', $pegawai->id)->first();
 
         if($request->query('params') == 'json') return response()->json($rencana);
-        else return view('penilaian::matriksperanhasil', compact('rencana'));
+        else return view('penilaian::rencana.matriksperanhasil', compact('rencana'));
     }
 
     public function storeCascading (Request $request, $id) {

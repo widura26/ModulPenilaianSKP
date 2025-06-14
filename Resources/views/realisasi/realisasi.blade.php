@@ -135,7 +135,7 @@
                                             </td>
                                             <td style="width: 10%;">
                                                 <div class="d-flex" style="gap: 5px;">
-                                                    @include('penilaian::components.modals-create-realisasi')
+                                                    @include('penilaian::realisasi.components.modals-create-realisasi')
                                                     <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
                                                         @csrf
                                                         <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
@@ -184,7 +184,7 @@
                                                 </td>
                                                 <td style="width: 10%;">
                                                     <div class="d-flex" style="gap: 5px;">
-                                                        @include('penilaian::components.modals-create-realisasi')
+                                                        @include('penilaian::realisasi.components.modals-create-realisasi')
                                                         <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
                                                             @csrf
                                                             <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
@@ -224,5 +224,5 @@
 
 @push('js')
     @include('penilaian::evaluasi.script-periode')
-    @include('penilaian::realisasi.script-realisasi')
+    @include('penilaian::realisasi.scripts.script-realisasi')
 @endpush

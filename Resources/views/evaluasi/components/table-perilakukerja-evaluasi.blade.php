@@ -69,7 +69,7 @@
                         @error('feedback_perilaku_kerja.' . $index . '.perilaku_umpan_balik_predikat')
                             <small class="text-danger">Predikat wajib diisi</small>
                         @enderror
-                        @include('penilaian::components.modal-template-umpanbalik-perilaku')
+                        @include('penilaian::evaluasi.components.modal-template-umpanbalik-perilaku')
                         <textarea
                             class="form-control feedback-perilaku-text mt-2 {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi === null) ? 'd-none' : '' }}"
                             {{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? 'disabled' : '' }}

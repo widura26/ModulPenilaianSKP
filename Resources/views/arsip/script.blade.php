@@ -100,17 +100,17 @@
     }
 
     templateDatatable('rencana', '#table-arsip-rencana',
-    '/penilaian/arsip-skp/rencana/pegawai', '/penilaian/arsip-skp/rencana/detail')
+    '/skp/arsip-skp/rencana/pegawai', '/skp/arsip-skp/rencana/detail')
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         const target = $(e.target).attr("href");
         if (target === "#evaluasi" && !$.fn.dataTable.isDataTable('#table-arsip-evaluasi')) {
             templateDatatable('evaluasi', '#table-arsip-evaluasi',
-            '/penilaian/arsip-skp/evaluasi/pegawai', '/penilaian/arsip-skp/evaluasi/detail')
+            '/skp/arsip-skp/evaluasi/pegawai', '/skp/arsip-skp/evaluasi/detail')
         }
         if (target === "#dok" && !$.fn.dataTable.isDataTable('#table-arsip-dokevaluasi')) {
             templateDatatable('dok-evaluasi', '#table-arsip-dokevaluasi',
-            '/penilaian/arsip-skp/dok-evaluasi/pegawai', '/penilaian/arsip-skp/dok-evaluasi/detail')
+            '/skp/arsip-skp/dok-evaluasi/pegawai', '/skp/arsip-skp/dok-evaluasi/detail')
         }
 
         setTimeout(() => {

@@ -114,7 +114,7 @@ class RencanaController extends Controller {
                 'parent_hasil_kerja' => $parentHasilKerja
             ]);
         }else {
-            return view('penilaian::rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
+            return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
         }
     }
 
