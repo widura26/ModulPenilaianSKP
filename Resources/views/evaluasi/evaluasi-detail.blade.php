@@ -46,15 +46,15 @@
                 @endif
                 <div class="w-100 justify-content-between align-items-center p-4 {{ $rencana->predikat_akhir == null ? 'd-none' : 'd-flex' }}">
                     <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $rencana->predikat_akhir }}</span>
-                    @include('penilaian::components.modal-batalkan-evaluasi')
+                    @include('penilaian::evaluasi.components.modal-batalkan-evaluasi')
                 </div>
                 @include('penilaian::components.atasan-bawahan-section')
                 <div class="bg-white p-4">
-                    <form method="POST" action="{{ url('/penilaian/evaluasi/proses-umpan-balik/' . $pegawai->username) }}">
+                    <form method="POST" action="{{ url('/skp/evaluasi/proses-umpan-balik/' . $pegawai->username) }}">
                         @csrf
-                        @include('penilaian::components.table-hasilkerja-utama-evaluasi')
-                        @include('penilaian::components.table-hasilkerja-tambahan-evaluasi')
-                        @include('penilaian::components.table-perilakukerja-evaluasi')
+                        @include('penilaian::evaluasi.components.table-hasilkerja-utama-evaluasi')
+                        @include('penilaian::evaluasi.components.table-hasilkerja-tambahan-evaluasi')
+                        @include('penilaian::evaluasi.components.table-perilakukerja-evaluasi')
 
                         @php
                             $loggedInKetuaId = $pegawaiWhoLogin->id;
@@ -72,7 +72,7 @@
                     </form>
 
                     @if($semuaSudahTerisi && count($rencana->hasilKerja) !== 0)
-                        <div>@include('penilaian::components.proses-umpan-balik')</div>
+                        <div>@include('penilaian::evaluasi.components.proses-umpan-balik')</div>
                     @endif
                 </div>
             </div>

@@ -40,7 +40,7 @@
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-cascading-{{ $indikator->id }}">
                                             <i class="nav-icon fas fa-plus "></i>
                                         </button>
-                                        @include('penilaian::components.modal-create-cascading', [
+                                        @include('penilaian::rencana.components.modal-create-cascading', [
                                             'indikator' => $indikator,
                                             'hasil_kerja_id' => $selectedId
                                         ])
@@ -88,7 +88,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: '/penilaian/matriks-peran-hasil/anggota',
+                        url: '/skp/matriks-peran-hasil/anggota',
                         type: 'GET',
                         dataSrc: function (response) {
                             try {

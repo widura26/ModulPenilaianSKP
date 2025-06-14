@@ -64,7 +64,7 @@ class RealisasiController extends Controller {
         $rencana = RencanaKerja::with('hasilKerja')->where('pegawai_id', '=', $pegawaiId)->where('periode_id', $periodeId)->first();
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja')->where('pegawai_id', $pegawaiId)->get();
         if($request->query('params') == 'json') return response()->json($rencana);
-        return view('penilaian::realisasi', compact('rencana', 'pegawai', 'indikatorIntervensi'));
+        return view('penilaian::realisasi.realisasi', compact('rencana', 'pegawai', 'indikatorIntervensi'));
     }
 
     public function ajukanRealisasi($id){

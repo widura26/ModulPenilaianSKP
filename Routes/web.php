@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => ['auth', 'permission']], function() {
-    Route::prefix('penilaian')->group(function() {
+    Route::prefix('skp')->group(function() {
         Route::prefix('periode')->group(function() {
             Route::get('/', 'PeriodeController@index');
             Route::post('/store', 'PeriodeController@store');
@@ -91,5 +91,12 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         });
         Route::get('/predikat-kinerja', 'EvaluasiController@predikatKinerja');
         Route::get('/', 'PenilaianController@index');
+
+        Route::prefix('persetujuan-skp')->group(function () {
+            Route::get('/', 'PersetujuanController@persetujuanSkp');
+        });
+        Route::prefix('unggah-skp')->group(function () {
+            Route::get('/', 'UnggahController@unggahSkp');
+        });
     });
 });

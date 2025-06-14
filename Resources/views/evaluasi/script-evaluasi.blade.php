@@ -20,7 +20,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '/penilaian/evaluasi/data-pegawai',
+                url: '/skp/evaluasi/data-pegawai',
                 type: 'GET',
                 dataSrc: function (response) {
                     try {
@@ -99,7 +99,7 @@
                             <button ${
                                 row.rencanakerja[0]?.status_realisasi == 'Belum Diajukan' || row.rencanakerja[0]?.status == 'Belum Ajukan SKP' || row.rencanakerja[0] == null
                                 ? 'disabled' : ''
-                            } onclick="window.location.href='/penilaian/evaluasi/${row.username}/detail'" type="button" class="btn btn-primary"><i class="nav-icon fas fa-pencil-alt "></i></button>
+                            } onclick="window.location.href='/skp/evaluasi/${row.username}/detail'" type="button" class="btn btn-primary"><i class="nav-icon fas fa-pencil-alt "></i></button>
                         `;
                     }
                 },

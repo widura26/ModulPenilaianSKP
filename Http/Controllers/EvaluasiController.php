@@ -26,7 +26,7 @@ class EvaluasiController extends Controller {
     }
 
     public function evaluasi() {
-        return view('penilaian::evaluasi');
+        return view('penilaian::evaluasi.evaluasi');
     }
 
     public function evaluasiDetail(Request $request, $username) {
@@ -49,8 +49,7 @@ class EvaluasiController extends Controller {
 
 
         if($params == 'json') return response()->json($rekapKehadiran);
-        else return view(
-            'penilaian::evaluasi-detail',
+        else return view('penilaian::evaluasi.evaluasi-detail',
             compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran')
         );
     }

@@ -9,13 +9,13 @@
 @php
     switch ($arsipData->jenis_arsip) {
         case 'Rencana':
-            $url = '/penilaian/arsip-skp/rencana/';
+            $url = '/skp/arsip-skp/rencana/';
             break;
         case 'Evaluasi':
-            $url = '/penilaian/arsip-skp/evaluasi/';
+            $url = '/skp/arsip-skp/evaluasi/';
             break;
         case 'Dokumen Evaluasi':
-            $url = '/penilaian/arsip-skp/dok-evaluasi/';
+            $url = '/skp/arsip-skp/dok-evaluasi/';
             break;
         default:
             break;

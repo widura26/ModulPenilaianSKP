@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="bg-white p-4">
                     <div class="d-flex justify-content-end">
-                        @include('penilaian::components.modal-create-periode')
+                        @include('penilaian::periode.components.modal-create-periode')
                     </div>
                     <table id="table-periode" class="mt-4 table table-bordered" style="width:100%">
                         <thead>
@@ -34,7 +34,7 @@
                                         {{ $periode->capaian_kinerja == null ? '-' : $periode->capaian_kinerja }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-warning" title="update" onclick="window.location.href='{{ url('/penilaian/periode/' . $periode->id) }}'">
+                                        <button class="btn btn-warning" title="update" onclick="window.location.href='{{ url('/skp/periode/' . $periode->id) }}'">
                                             <i class="nav-icon fas fa-pencil-alt "></i>
                                         </button>
                                         <button class="btn btn-danger" title="delete">

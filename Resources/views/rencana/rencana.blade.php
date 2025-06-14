@@ -62,7 +62,7 @@
 
                 @if (is_null($rencana))
                     <div class="w-100 d-flex justify-content-end align-items-center p-4">
-                        <form method="POST" action="{{ url('/penilaian/rencana/store') }}">
+                        <form method="POST" action="{{ url('/skp/rencana/store') }}">
                             @csrf
                             <button type="submit" class="btn btn-primary">Buat SKP</button>
                         </form>
@@ -80,7 +80,7 @@
                                 <th colspan="2" style="width: 90%">A. Utama</th>
                                 <th colspan="1" style="width: 10%">
                                     @if (!is_null($rencana))
-                                        @include('penilaian::components.modal-create-hasil-kerja-utama')
+                                        @include('penilaian::rencana.components.modal-create-hasil-kerja-utama')
                                     @endif
                                 </th>
                             </tr>
@@ -116,7 +116,7 @@
                                 <th colspan="2" style="width: 90%">A. Tambahan</th>
                                 <th colspan="1" style="width: 10%">
                                     @if (!is_null($rencana))
-                                        @include('penilaian::components.modal-create-hasil-kerja-tambahan')
+                                        @include('penilaian::rencana.components.modal-create-hasil-kerja-tambahan')
                                     @endif
                                 </th>
                             </tr>
@@ -169,5 +169,5 @@
 
 @push('js')
     @include('penilaian::evaluasi.script-periode')
-    @include('penilaian::evaluasi.script-hasilkerja')
+    @include('penilaian::rencana.script.script-hasilkerja')
 @endpush

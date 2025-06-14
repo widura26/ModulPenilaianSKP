@@ -1,6 +1,6 @@
 <div class="modal fade bd-example-modal-lg" id="create-cascading-{{ $indikator->id }}" tabindex="-1" role="dialog" aria-labelledby="create-cascadingTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <form class="modal-content" method="POST" action="{{ url('/penilaian/matriks-peran-hasil/store/' . $indikator->id) }}">
+        <form class="modal-content" method="POST" action="{{ url('/skp/matriks-peran-hasil/store/' . $indikator->id) }}">
             @csrf
             <div class="modal-header">Tambah Cascading</div>
             <div class="modal-body">

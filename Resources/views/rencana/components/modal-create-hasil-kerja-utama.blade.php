@@ -3,7 +3,7 @@
 </button>
 <div class="modal fade" id="hasilKerjaModalUtama" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaModalUtamaTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form method="POST" class="modal-content" action="{{ url('/penilaian/rencana/store-hasil-kerja-utama/' . (is_null($rencana) ? '' : $rencana->id)) }}">
+        <form method="POST" class="modal-content" action="{{ url('/skp/rencana/store-hasil-kerja-utama/' . (is_null($rencana) ? '' : $rencana->id)) }}">
             @csrf
             <div class="modal-header">Tambah Hasil Kerja Utama</div>
             <div class="modal-body">
