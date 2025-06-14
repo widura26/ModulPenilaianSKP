@@ -28,7 +28,7 @@
             <td style="width: 70%;">-</td>
           </tr> --}}
           <tr>
-            <th style="width: 10%;" scope="row">5</th>
+            <th style="width: 10%;" scope="row">3</th>
             <td style="width: 20%;">Unit Kerja</td>
             <td style="max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 {{ $pegawai->timKerjaAnggota[0]->unit->nama }}
@@ -65,7 +65,7 @@
               <td style="width: 70%;">-</td>
             </tr> --}}
             <tr>
-                <th style="width: 10%;" scope="row">5</th>
+                <th style="width: 10%;" scope="row">3</th>
                 <td style="width: 20%;">Unit Kerja</td>
                 <td style="max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     {{ $pegawai->timKerjaAnggota[0]->parentUnit?->unit?->nama ?? '-' }}
