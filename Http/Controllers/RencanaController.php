@@ -115,6 +115,7 @@ class RencanaController extends Controller {
             ]);
         }else {
             return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
+            // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }
     }
 

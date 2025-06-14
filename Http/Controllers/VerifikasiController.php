@@ -8,13 +8,9 @@ use Illuminate\Routing\Controller;
 
 class VerifikasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+    public function verifikasiSkp()
     {
-        return view('penilaian::index');
+        return view('penilaian::rencana.verifikasi-skp');
     }
 
     /**

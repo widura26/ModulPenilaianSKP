@@ -8,13 +8,10 @@ use Illuminate\Routing\Controller;
 
 class UnggahController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+
+    public function unggahSkp()
     {
-        return view('penilaian::index');
+        return view('penilaian::rencana.unggah-skp');
     }
 
     /**
@@ -23,7 +20,7 @@ class UnggahController extends Controller
      */
     public function create()
     {
-        return view('penilaian::create');
+        // return view('perencanaan::unggah-skp');
     }
 
     /**
@@ -33,7 +30,7 @@ class UnggahController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -43,7 +40,7 @@ class UnggahController extends Controller
      */
     public function show($id)
     {
-        return view('penilaian::show');
+        return view('perencanaan::show');
     }
 
     /**
@@ -53,7 +50,7 @@ class UnggahController extends Controller
      */
     public function edit($id)
     {
-        return view('penilaian::edit');
+        return view('perencanaan::edit');
     }
 
     /**

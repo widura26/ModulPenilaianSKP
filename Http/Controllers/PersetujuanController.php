@@ -8,13 +8,9 @@ use Illuminate\Routing\Controller;
 
 class PersetujuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+    public function persetujuanSkp()
     {
-        return view('penilaian::index');
+        return view('penilaian::rencana.persetujuan-skp');
     }
 
     /**
