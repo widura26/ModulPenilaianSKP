@@ -30,8 +30,12 @@ class ArsipController extends Controller
         $periodeAktif = $periodeController->periode_aktif();
         $pegawaiWhoLogin = $penilaianController->getPegawaiWhoLogin();
         $request->validate([
-            'jenis_arsip' => 'required|string',
-            'file_arsip' => 'required|mimes:pdf|max:10240'
+            'file_arsip' => 'required|file|mimetypes:application/pdf|max:1024',
+            'jenis_arsip' => 'required'
+        ], [
+            'file_arsip.mimetypes' => 'File harus berupa PDF.',
+            'file_arsip.max' => 'Ukuran file maksimal 1 MB.',
+            'file_arsip.required' => 'File arsip wajib diunggah.',
         ]);
         $path = $request->file('file_arsip')->store('arsip', 'public');
         try {
@@ -59,8 +63,13 @@ class ArsipController extends Controller
         $arsip = Arsip::findOrFail($id);
 
         $request->validate([
-            'file_arsip' => 'required|mimes:pdf|max:10240',
+            'file_arsip' => 'nullable|file|mimetypes:application/pdf|max:1024',
             'jenis_arsip' => 'required'
+        ], [
+            'file_arsip.mimetypes' => 'File harus berupa PDF.',
+            'file_arsip.max' => 'Ukuran file maksimal 1 MB.',
+            'jenis_arsip.required' => 'Jenis arsip wajib dipilih'
+            // 'file_arsip.required' => 'File arsip wajib diunggah.',
         ]);
 
         try {
@@ -71,6 +80,8 @@ class ArsipController extends Controller
 
                 $newPath = $request->file('file_arsip')->store('arsip', 'public');
                 $arsip->file = $newPath;
+            } else {
+                $arsip->file = $request->input('old_file');
             }
 
             $arsip->jenis_arsip = $request->jenis_arsip;
