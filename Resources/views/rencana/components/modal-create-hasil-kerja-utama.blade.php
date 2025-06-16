@@ -12,23 +12,44 @@
                     <select class="form-control" id="peran-select" name="peran">
                         <option value="">-- Pilih Peran --</option>
                         @foreach ($pegawai->timKerjaAnggota as $item)
-                            <option value="{{ $item->pivot->peran == 'Ketua' ? ($item->parentUnit->id ?? $item->id) : $item->id  }}">
-                                {{ $item->pivot->peran }} {{ $item->unit->nama }}
-                            </option>
+                        <option value="{{ $item->pivot->peran == 'Ketua' ? ($item->parentUnit->id ?? $item->id) : $item->id  }}">
+                            {{ $item->pivot->peran }} {{ $item->unit->nama }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="form-group">
-                  <label for="hasil-kerja-diintervensi">Hasil Kerja yang diintervensi</label>
-                  <select class="form-control" id="hasil-kerja-diintervensi" name="parent_hasil_kerja_id">
-                    <option value="">-- Pilih hasil kerja yang diintervensi --</option>
-                    @if (!is_null($parentHasilKerja))
-                        @foreach ($parentHasilKerja as $index => $parent)
-                            <option data-peran-id="{{ $parent->rencanakerja->pegawai->timKerjaAnggota[0]->id }}" value="{{ $parent->id }}">{{ $parent->deskripsi }}</option>
+                    <label for="hasil-kerja-diintervensi">Hasil Kerja yang diintervensi</label>
+                    <select class="form-control" id="hasil-kerja-diintervensi" name="parent_hasil_kerja_id">
+                        <option value="">-- Pilih hasil kerja yang diintervensi --</option>
+                        @foreach ($parentHasilKerja as $parent)
+                        @if ($parent && $parent->rencanakerja && optional($parent->rencanakerja->pegawai)->timKerjaAnggota->first())
+                        <option data-peran-id="{{ $parent->rencanakerja->pegawai->timKerjaAnggota[0]->id }}" value="{{ $parent->id }}">
+                            {{ $parent->deskripsi }}
+                        </option>
+                        @endif
                         @endforeach
-                    @endif
-                  </select>
+
+                        <!-- @if (!is_null($parentHasilKerja))
+                        @foreach ($parentHasilKerja as $index => $parent)
+                        <option data-peran-id="{{ optional(optional($parent->rencanakerja)->pegawai)->timKerjaAnggota[0]->id ?? '' }}" value="{{ $parent->id }}">
+                            {{ $parent->deskripsi }}
+                        </option>
+
+                        <option data-peran-id="{{ $parent->rencanakerja->pegawai->timKerjaAnggota[0]->id }}" value="{{ $parent->id }}">{{ $parent->deskripsi }}</option>
+                        @endforeach
+                        @endif -->
+                        <!-- @foreach ($parentHasilKerja as $parent)
+    @if ($parent->rencanakerja && $parent->rencanakerja->pegawai)
+        <option value="{{ $parent->id }}">
+            {{ $parent->rencanakerja->pegawai->nama }}
+        </option>
+    @endif
+@endforeach -->
+
+
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -44,8 +65,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="indikator">Indikator</label>
-                  <textarea class="form-control" id="indikator" rows="3" name="indikators"></textarea>
+                    <label for="indikator">Indikator</label>
+                    <textarea class="form-control" id="indikator" rows="3" name="indikators"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
