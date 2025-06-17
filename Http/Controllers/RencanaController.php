@@ -18,32 +18,39 @@ use Modules\Penilaian\Entities\PerilakuKerja;
 use Modules\Penilaian\Entities\PeriodeAktif;
 use Modules\Penilaian\Entities\RencanaPerilaku;
 
-class RencanaController extends Controller {
+class RencanaController extends Controller
+{
 
     protected $penilaianController;
     protected $periodeController;
 
-    public function __construct(PenilaianController $penilaianController, PeriodeController $periodeController) {
+    public function __construct(PenilaianController $penilaianController, PeriodeController $periodeController)
+    {
         $this->penilaianController = $penilaianController;
         $this->periodeController = $periodeController;
     }
 
-    public function getRencana($username){
+    public function getRencana($username)
+    {
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
 
-        $pegawai = Pegawai::with(['timKerjaAnggota','rencanaKerja.hasilKerja',
-            'timKerjaAnggota.unit', 'timKerjaAnggota.subUnits.unit','timKerjaAnggota.parentUnit.unit',
+        $pegawai = Pegawai::with([
+            'timKerjaAnggota',
+            'rencanaKerja.hasilKerja',
+            'timKerjaAnggota.unit',
+            'timKerjaAnggota.subUnits.unit',
+            'timKerjaAnggota.parentUnit.unit',
         ])->where('username', '=', $username)->first();
 
         $rencana = RencanaKerja::with([
             'hasilKerja.parent.rencanakerja',
             'hasilKerja.parent',
             'perilakuKerja',
-            'hasilKerja.penilaian' => function ($query) use ($pegawaiWhoLogin){
+            'hasilKerja.penilaian' => function ($query) use ($pegawaiWhoLogin) {
                 $query->where('ketua_tim_id', $pegawaiWhoLogin->id);
             },
-            'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja' => function ($query) use ($pegawaiWhoLogin){
+            'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja' => function ($query) use ($pegawaiWhoLogin) {
                 $query->where('ketua_tim_id', $pegawaiWhoLogin->id);
             },
             'hasilKerja', // aktifkan ini jika hasilKerja ingin ditampilkan walaupun dari intervensi yang berbeda
@@ -56,34 +63,39 @@ class RencanaController extends Controller {
                 $query->with(['rencanaPerilaku' => function ($q) use ($periodeId, $pegawai) {
                     $q->whereHas('rencanakerja', function ($qr) use ($periodeId, $pegawai) {
                         $qr->where('periode_id', $periodeId)
-                        ->where('pegawai_id', $pegawai->id);
+                            ->where('pegawai_id', $pegawai->id);
                     });
                 }]);
-            }])
-        ->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
+            }
+        ])
+            ->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
 
         return $rencana;
     }
 
-    public function getAnggota(Request $request) {
+    public function getAnggota(Request $request)
+    {
         try {
             $pegawai = $this->penilaianController->getPegawaiWhoLogin();
 
             $timKerjaId = $pegawai->timKerjaAnggota[0]->id;
 
             $bawahan = Anggota::with(['timKerja', 'pegawai'])
-            ->where(function ($query) use ($timKerjaId) {
-                $query->whereHas('timKerja', function ($q) use ($timKerjaId) {
-                        $q->where('parent_id', $timKerjaId);
-                    }
-                )->orWhere(function ($q) use ($timKerjaId) {
-                        $q->whereHas('timKerja', function ($sub) use ($timKerjaId) {
-                            $sub->where('id', $timKerjaId);
-                        })
-                        ->where('peran', '!=', 'Ketua');
-                    }
-                );
-            })->paginate(10);
+                ->where(function ($query) use ($timKerjaId) {
+                    $query->whereHas(
+                        'timKerja',
+                        function ($q) use ($timKerjaId) {
+                            $q->where('parent_id', $timKerjaId);
+                        }
+                    )->orWhere(
+                        function ($q) use ($timKerjaId) {
+                            $q->whereHas('timKerja', function ($sub) use ($timKerjaId) {
+                                $sub->where('id', $timKerjaId);
+                            })
+                                ->where('peran', '!=', 'Ketua');
+                        }
+                    );
+                })->paginate(10);
 
             return response()->json([
                 'status' => 'success',
@@ -97,7 +109,8 @@ class RencanaController extends Controller {
         }
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
@@ -105,25 +118,62 @@ class RencanaController extends Controller {
         $rencana = RencanaKerja::with('hasilKerja')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota')->where('pegawai_id', $pegawai->id)->get();
         $parentHasilKerja = $indikatorIntervensi->pluck('indikator.hasilKerja')->unique('id')->values();
+        // filter null dan yang gak punya rencanakerja
+        // $parentHasilKerja = $indikatorIntervensi
+        //     ->pluck('indikator.hasilKerja')
+        //     ->filter(fn($item) => $item !== null && $item->rencanakerja !== null)
+        //     ->unique('id')
+        //     ->values();
+        // $parentHasilKerja = HasilKerja::where('jenis', 'utama')
+        // ->whereHas('rencanakerja', function ($query) use ($periodeId, $pegawai) {
+        //     $query->where('periode_id', $periodeId)
+        //           ->where('pegawai_id', $pegawai->id);
+        // })
+        // ->with(['rencanakerja.pegawai.timKerjaAnggota'])
+        // ->get();
+        // dd($parentHasilKerja);
+        // $indikatorIntervensi = Cascading::with([
+        //     'indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota'
+        // ])->where('pegawai_id', $pegawai->id)->get();
+        
+        // $indikatorIntervensi = Cascading::with('indikator.hasilkerja.rencanakerja.pegawai')->get();
+        // $parentHasilKerja = $indikatorIntervensi
+        // ->pluck('indikator.hasilkerja')
+        // ->filter(fn($item) => $item && $item->rencanakerja && $item->rencanakerja->pegawai)
+        // ->unique('id')
+        // ->values();
+    
+        // $parentHasilKerja = $indikatorIntervensi
+        //     ->pluck('indikator.hasilKerja')
+        //     ->filter(function ($item) {
+        //         return !is_null($item) && !is_null($item->rencanakerja);
+        //     })
+        //     ->unique('id')
+        //     ->values();
+
+            // dd($indikatorIntervensi->pluck('indikator.hasilKerja'));
+
+
 
         $atasanService = new AtasanService();
         $ketua = $atasanService->getAtasanPegawai($pegawai->id);
 
-        if($request->query('params') == 'json'){
+        if ($request->query('params') == 'json') {
             return response()->json([
                 'parent_hasil_kerja' => $parentHasilKerja
             ]);
-        }else {
+        } else {
             return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
             // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }
     }
 
-    public function store(){
+    public function store()
+    {
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
         $perilakuList = PerilakuKerja::all();
-        if(is_null($periodeId)) {
+        if (is_null($periodeId)) {
             return redirect()->back()->with('failed', 'Periode belum diset');
         }
         DB::beginTransaction();
@@ -152,7 +202,8 @@ class RencanaController extends Controller {
         }
     }
 
-    public function storeHasilKerjaUtama(Request $request, $id) {
+    public function storeHasilKerjaUtama(Request $request, $id)
+    {
         try {
             $indikators = $request->indikators;
             $arrayIndikators = array_filter(array_map('trim', explode(';', $indikators)));
@@ -180,7 +231,8 @@ class RencanaController extends Controller {
         }
     }
 
-    public function storeHasilKerjaTambahan(Request $request, $id) {
+    public function storeHasilKerjaTambahan(Request $request, $id)
+    {
         try {
             $indikators = $request->indikators;
             $arrayIndikators = array_filter(array_map('trim', explode(';', $indikators)));

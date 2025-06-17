@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
             Route::post('/store', 'RencanaController@store');
             Route::post('/store-hasil-kerja-utama/{id}', 'RencanaController@storeHasilKerjaUtama');
             Route::post('/store-hasil-kerja-tambahan/{id}', 'RencanaController@storeHasilKerjaTambahan');
+            // Route::post('/store-intervensi/{id}', 'RencanaController@storeDeskripsiHasilKerja');
         });
         Route::prefix('matriks-peran-hasil')->group(function() {
             Route::get('/', 'MatriksPeranHasilController@matriksperanhasil');
@@ -97,6 +98,10 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         });
         Route::prefix('unggah-skp')->group(function () {
             Route::get('/', 'UnggahController@unggahSkp');
+        });
+        Route::prefix('intervensi')->group(function () {
+            Route::get('/', 'IntervensiController@index');
+            Route::post('/store-intervensi/{id}', 'IntervensiController@storeDeskripsiHasilKerja');
         });
     });
 });
