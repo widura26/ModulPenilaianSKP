@@ -55,10 +55,11 @@
     <body>
         <div class="width">
             <div class="text-center my-4">
+                @include('penilaian::realisasi.components.garuda-image')
                 <p class="mb-0">DOKUMEN EVALUASI KINERJA PEGAWAI</p>
-                {{-- <p class="mb-0"><strong>PERIODE: {{
+                <p class="mb-0"><strong>PERIODE: {{
             \Carbon\Carbon::parse($rencana->periode->start_date)->translatedFormat('F')
-            }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p> --}}
+            }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p>
             </div>
             <button onclick="window.print()" class="button-cetak btn btn-primary mb-2">Cetak</button>
             <table id="table-penilaian" cellspacing="0" cellpadding="5" width="100%">
@@ -131,7 +132,7 @@
                         <th colspan="3">EVALUASI KINERJA</th>
                     </tr>
                     <tr>
-                        <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja }}</td>
+                        <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja ?? null }}</td>
                     </tr>
                     <tr>
                         <td>PREDIKAT KINERJA PEGAWAI</td><td>:</td><td>{{ $pegawai->rencanaKerja[0]->predikat_akhir }}</td>

@@ -6,10 +6,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @page {
-            margin-top: {{ $margin_top ?? '0mm' }};
-            margin-bottom: {{ $margin_bottom ?? '0mm' }};
-            margin-left: {{ $margin_left ?? '0mm' }};
-            margin-right: {{ $margin_right ?? '0mm' }};
+            margin-top: {{ $margin_top ?? '10mm' }};
+            margin-bottom: {{ $margin_bottom ?? '10mm' }};
+            margin-left: {{ $margin_left ?? '10mm' }};
+            margin-right: {{ $margin_right ?? '10mm' }};
         }
         body {
             font-size: 10px;

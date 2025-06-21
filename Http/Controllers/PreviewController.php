@@ -62,6 +62,7 @@ class PreviewController extends Controller {
 
     public function backupPreviewEvaluasi(Request $request){
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
         $periodeId = $this->periodeController->periode_aktif();
         $periode = Periode::find($periodeId);
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($pegawaiWhoLogin->username);
@@ -96,6 +97,9 @@ class PreviewController extends Controller {
     }
 
     public function backupPreviewDokEvaluasi(Request $request){
+        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
+
         $authUser = Auth::user();
         $authPegawai = $authUser->pegawai;
         $pegawaiUsername = $authPegawai->username;
@@ -117,7 +121,7 @@ class PreviewController extends Controller {
         if($request->query('params') == 'json'){
             return response()->json($atasanpejabatpenilai);
         }else {
-            return view('penilaian::backup-cetak-dokevaluasi-page', compact('pegawai', 'capaianKinerjaOrganisasi', 'atasanpejabatpenilai'));
+            return view('penilaian::backup-cetak-dokevaluasi-page', compact('pegawai', 'rencana', 'capaianKinerjaOrganisasi', 'atasanpejabatpenilai'));
         }
     }
 }

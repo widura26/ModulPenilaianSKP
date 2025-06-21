@@ -92,7 +92,6 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         });
         Route::get('/predikat-kinerja', 'EvaluasiController@predikatKinerja');
         Route::get('/', 'PenilaianController@index');
-
         Route::prefix('persetujuan-skp')->group(function () {
             Route::get('/', 'PersetujuanController@persetujuanSkp');
         });
