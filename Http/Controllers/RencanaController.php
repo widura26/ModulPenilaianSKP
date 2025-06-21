@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Cuti\Services\AtasanService;
 use Modules\Pengaturan\Entities\Pegawai;
 use Modules\Penilaian\Entities\Cascading;
+use Modules\Penilaian\Entities\DefinisiOperasional;
 use Modules\Penilaian\Entities\HasilKerja;
 use Modules\Penilaian\Entities\Indikator;
 use Modules\Penilaian\Entities\PerilakuKerja;
@@ -118,52 +119,19 @@ class RencanaController extends Controller
         $rencana = RencanaKerja::with('hasilKerja')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota')->where('pegawai_id', $pegawai->id)->get();
         $parentHasilKerja = $indikatorIntervensi->pluck('indikator.hasilKerja')->unique('id')->values();
-        // filter null dan yang gak punya rencanakerja
-        // $parentHasilKerja = $indikatorIntervensi
-        //     ->pluck('indikator.hasilKerja')
-        //     ->filter(fn($item) => $item !== null && $item->rencanakerja !== null)
-        //     ->unique('id')
-        //     ->values();
-        // $parentHasilKerja = HasilKerja::where('jenis', 'utama')
-        // ->whereHas('rencanakerja', function ($query) use ($periodeId, $pegawai) {
-        //     $query->where('periode_id', $periodeId)
-        //           ->where('pegawai_id', $pegawai->id);
-        // })
-        // ->with(['rencanakerja.pegawai.timKerjaAnggota'])
-        // ->get();
-        // dd($parentHasilKerja);
-        // $indikatorIntervensi = Cascading::with([
-        //     'indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota'
-        // ])->where('pegawai_id', $pegawai->id)->get();
-        
-        // $indikatorIntervensi = Cascading::with('indikator.hasilkerja.rencanakerja.pegawai')->get();
-        // $parentHasilKerja = $indikatorIntervensi
-        // ->pluck('indikator.hasilkerja')
-        // ->filter(fn($item) => $item && $item->rencanakerja && $item->rencanakerja->pegawai)
-        // ->unique('id')
-        // ->values();
-    
-        // $parentHasilKerja = $indikatorIntervensi
-        //     ->pluck('indikator.hasilKerja')
-        //     ->filter(function ($item) {
-        //         return !is_null($item) && !is_null($item->rencanakerja);
-        //     })
-        //     ->unique('id')
-        //     ->values();
-
-            // dd($indikatorIntervensi->pluck('indikator.hasilKerja'));
-
-
 
         $atasanService = new AtasanService();
         $ketua = $atasanService->getAtasanPegawai($pegawai->id);
+        $definisiOperasional = DefinisiOperasional::all();
+        // $definisiOperasional = \Modules\Penilaian\Entities\DefinisiOperasional::all();
+
 
         if ($request->query('params') == 'json') {
             return response()->json([
                 'parent_hasil_kerja' => $parentHasilKerja
             ]);
         } else {
-            return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja'));
+            return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja', 'definisiOperasional'));
             // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }
     }
@@ -259,6 +227,45 @@ class RencanaController extends Controller
             return redirect()->back()->with('success', 'Berhasil menambahkan hasil kerja');
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
+        }
+    }
+
+    public function editHasilKerja($id)
+    {
+        // $hasilKerja = HasilKerja::with('deskripsi')->findOrFail($id);
+        // return response()->json($hasilKerja);
+        $hasilKerja = HasilKerja::findOrFail($id); // benar
+        return response()->json($hasilKerja);
+    }
+
+    public function updateHasilKerja(Request $request, $id)
+    {
+        try {
+            $hasilKerja = HasilKerja::findOrFail($id);
+
+            $hasilKerja->update([
+                'deskripsi' => $request->deskripsi, // dari field 'deskripsi' baru
+            ]);
+
+            return redirect()->back()->with('success', 'Berhasil mengubah deskripsi hasil kerja');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function storeManualIndikator(Request $request, $id)
+    {
+        try {
+            DefinisiOperasional::create([
+                'hasil_kerja_id' => $id,
+                'topik' => $request->topik,
+                'sub_topik' => $request->sub_topik,
+                'deskripsi' => $request->deskripsi
+            ]);
+
+            return redirect()->back()->with('success', 'Indikator berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 }

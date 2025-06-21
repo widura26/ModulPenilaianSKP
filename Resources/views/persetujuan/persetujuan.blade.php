@@ -12,58 +12,36 @@
 <div class="row">
   <div class="col-12">
     <div class="card">
-      <div class="card-body">
-        <!-- Example single danger button -->
-        <!-- <form> -->
-        <div class="form-row d-flex justify-content-end">
-          <div class="form-group ">
-            <select id="inputState" class="form-control">
-              <option selected>Tahun</option>
-              <option>2023</option>
-              <option>2024</option>
-              <option>2025</option>
-              <option>2026</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <select id="inputState" class="form-control">
-              <option selected>Periode</option>
-              <option>01 Januari 2023 - 31 Desember 2023</option>
-              <option>01 Januari 2024 - 31 Desember 2024</option>
-              <option>01 Januari 2025 - 31 Desember 2025</option>
-              <option>01 Januari 2026 - 31 Desember 2026</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <input type="text" class="form-control" id="inputAddress" placeholder="Unit Kerja">
-          </div>
-          <div class="form-group col-md-2">
-            <input type="text" class="form-control" id="inputAddress" placeholder="Jabatan">
-          </div>
-          <div>
-            <a href="#" class="btn btn-primary">SET</a>
-          </div>
-        </div>
-
-
-      </div>
-
+      @include('penilaian::components.set-periode')
     </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+
     <div class="card">
       <div class="card-body">
+        @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
         <table id="example" class="table table-striped">
           <thead>
             <tr>
               <th>No</th>
               <th>Nama</th>
-              <th>File Rencana SKP</th>
+              <th>Jabatan</th>
               <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>3</td>
+            <!-- <tr>
+              <td>2</td>
               <td>Tiger Nixon</td>
               <td>System Architect</td>
               <td>
@@ -88,37 +66,12 @@
                     </svg></button>
                 </div>
               </td>
-            </tr>
-            
-            <tr>
-              <td>2</td>
-
-              <td>Cedric Kelly</td>
-              <td>Senior Javascript Developer</td>
-              <td>
-                <div class="d-grid gap-2 d-md-block">
-                  <button class="btn btn-danger" type="button" disabled>Belum Verifikasi</button>
-                </div>
-              </td>
-              <td>
-                <div class="d-grid gap-2 d-md-block">
-                  <button class="btn btn-primary" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                    </svg></button>
-                  <button class="btn btn-success" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                      <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                    </svg></button>
-                  <button class="btn btn-danger" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16">
-                      <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
-                    </svg></button>
-                </div>
-              </td>
-            </tr>
-            <tr>
+            </tr> -->
+            <!-- <tr>
+              
               <td>1</td>
 
-              <td>Airi Satou</td>
+              <td>Nur Lailatul Hidayah</td>
               <td>Accountant</td>
               <td>
                 <div class="d-grid gap-2 d-md-block">
@@ -129,17 +82,38 @@
                 <div class="d-grid gap-2 d-md-block">
                   <button class="btn btn-primary" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                       <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                    </svg></button>
+                    </svg>Detail</button>
                   <button class="btn btn-success" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                       <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                    </svg></button>
+                    </svg>Setuju</button>
                   <button class="btn btn-danger" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16">
                       <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
-                    </svg></button>
+                    </svg>Tolak</button>
                 </div>
               </td>
+            </tr> -->
+            @foreach ($rencana as $index => $rk)
+
+
+            <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $rk->pegawai->nama }}{{ $rk->pegawai->nip }}</td>
+              <td>{{ $rk->pegawai->jabatan->jabatan ?? '-' }}</td>
+              <td>{{ $rk->status_persetujuan }}</td>
+              <td>
+                <a href="{{ url('/skp/persetujuan/detail/'. $rk->pegawai_id) }}" class="btn btn-sm btn-info far fa-check-circle">Detail</a>
+                <form action="{{ url('/skp/persetujuan/setujui/. $rk->id') }}" method="POST" style="display:inline">
+                  @csrf
+                  <button class="btn btn-sm btn-success fas fa-search">Setujui</button>
+                </form>
+                <form action="{{ url('/skp/persetujuan/tolak/. $rk->id') }}" method="POST" style="display:inline">
+                  @csrf
+                  <button class="btn btn-sm btn-danger fas fa-ban">Tolak</button>
+                </form>
+              </td>
             </tr>
+            @endforeach
 
           </tbody>
 
@@ -154,7 +128,7 @@
 <link rel="stylesheet" href="/assets/css/admin_custom.css">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
 <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css"> -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.bootstrap5.css">
 @stop
 

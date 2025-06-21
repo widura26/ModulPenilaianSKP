@@ -1,5 +1,5 @@
 <div class="bg-white d-flex p-4">
-    <table class="table" style="width: 100%;">
+    <table class="table table-bordered" style="width: 100%;">
         <thead>
           <tr>
             <th style="width: 10%;" scope="col">No</th>
@@ -36,7 +36,7 @@
           </tr>
         </tbody>
     </table>
-    <table class="table" style="width: 100%;">
+    <table class="table table-bordered" style="width: 100%;">
         <thead>
           <tr>
             <th style="width: 10%;" scope="col">No</th>

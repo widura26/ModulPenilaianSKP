@@ -1,11 +1,11 @@
-<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#hasilKerjaModalUtama">
-    <i class="nav-icon fas fa-plus "></i>
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#edithasilKerjaModalUtama">
+    <i class="nav-icon fas fa-pen "></i>
 </button>
-<div class="modal fade" id="hasilKerjaModalUtama" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaModalUtamaTitle" aria-hidden="true">
+<div class="modal fade" id="edithasilKerjaModalUtama" tabindex="-1" role="dialog" aria-labelledby="edithasilKerjaModalUtamaTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="POST" class="modal-content" action="{{ url('/skp/rencana/store-hasil-kerja-utama/' . (is_null($rencana) ? '' : $rencana->id)) }}">
             @csrf
-            <div class="modal-header">Tambah Hasil Kerja Utama</div>
+            <div class="modal-header">Edit Indikator Hasil Kerja Utama</div>
             <div class="modal-body">
                 <div class="form-group">
                     <label for="peran-select">Peran</label>
