@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cetakEvaluasiModal">Cetak Evaluasi</button>
 <div class="modal fade" id="cetakEvaluasiModal" tabindex="-1" role="dialog" aria-labelledby="cetakEvaluasiModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" method="GET" action="{{ url('/penilaian/cetak/evaluasi') }}">
+        <form class="modal-content" method="GET" action="{{ url('/skp/cetak/evaluasi') }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Pengaturan Halaman</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
