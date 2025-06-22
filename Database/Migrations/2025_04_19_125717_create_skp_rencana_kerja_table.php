@@ -28,11 +28,13 @@ class CreateSkpRencanaKerjaTable extends Migration
             $table->unsignedBigInteger('periode_id')->nullable();
             $table->unsignedBigInteger('pegawai_id')->nullable();
             $table->unsignedBigInteger('lampiran_id')->nullable();
+            // $table->unsignedBigInteger('jabatan_id')->nullable();
             $table->timestamps();
 
             $table->foreign('periode_id')->references('id')->on('periodes')->onDelete('cascade');
             $table->foreign('pegawai_id')->references('id')->on('pegawais')->onDelete('cascade');
             $table->foreign('tim_kerja_id')->references('id')->on('tim_kerja')->onDelete('cascade');
+            // $table->foreign('jabatan_id')->references('id')->on('jabatans')->onDelete('cascade');
         });
     }
 

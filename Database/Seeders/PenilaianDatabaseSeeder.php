@@ -19,6 +19,7 @@ class PenilaianDatabaseSeeder extends Seeder
         $this->call(MenuPenilaianTableSeeder::class);
         $this->call(PerilakuKerjaTableSeeder::class);
         $this->call(PeriodeTableSeeder::class);
+        $this->call(DefinisiOperationalSeederTableSeeder::class);
 
     }
 }

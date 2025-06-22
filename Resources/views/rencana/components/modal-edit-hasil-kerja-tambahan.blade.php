@@ -1,7 +1,7 @@
-<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#hasilKerjaTambahanModal">
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edithasilKerjaTambahanModal">
     <i class="nav-icon fas fa-plus "></i>
 </button>
-<div class="modal fade" id="hasilKerjaTambahanModal" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaTambahanModalTitle" aria-hidden="true">
+<div class="modal fade" id="edithasilKerjaTambahanModal" tabindex="-1" role="dialog" aria-labelledby="edithasilKerjaTambahanModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="POST" class="modal-content" action="{{ url('/skp/rencana/store-hasil-kerja-tambahan/' . (is_null($rencana) ? '' : $rencana->id)) }}">
             @csrf

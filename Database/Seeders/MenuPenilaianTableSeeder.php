@@ -75,6 +75,17 @@ class MenuPenilaianTableSeeder extends Seeder
         ]);
         Menu::create([
             'modul' => 'Penilaian',
+            'label' => 'Persetujuan',
+            'url' => 'skp/persetujuan',
+            // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
+            'can' => serialize(['terdaftar', 'kajur', 'wadir1', 'wadir2', 'wadir3']),
+            'icon' => 'far fa-circle',
+            'urut' => 1,
+            'parent_id' => $menu->id,
+            'active' => serialize(['skp/persetujuan', 'skp/persetujuan*']),
+        ]);
+        Menu::create([
+            'modul' => 'Penilaian',
             'label' => 'Evaluasi',
             'url' => 'skp/evaluasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
