@@ -20,7 +20,20 @@
                 $badgeClass = 'badge-danger';
                 break;
         }
+        $hasilKerjaUtama = collect();
+        $hasilKerjaTambahan = collect();
+
+        if (!is_null($rencana) && !is_null($rencana->hasilKerja)) {
+            $hasilKerjaUtama = $rencana->hasilKerja->filter(function($item) {
+                return $item->jenis === 'utama';
+            })->values();
+
+            $hasilKerjaTambahan = $rencana->hasilKerja->filter(function($item) {
+                return $item->jenis === 'tambahan';
+            })->values()->merge($suratTugas);
+        }
     @endphp
+
     <div class="row">
         <div class="col-12">
             <div class="card">

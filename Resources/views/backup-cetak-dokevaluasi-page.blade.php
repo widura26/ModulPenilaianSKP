@@ -111,19 +111,19 @@
                         <th colspan="3">ATASAN PEJABAT PENILAI KINERJA</th>
                     </tr>
                     <tr>
-                        <td>NAMA</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>NAMA</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nama : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>NIP</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>NIP</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nip : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Pangkat/Gol</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Pangkat/Gol</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Jabatan</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Jabatan</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Unit Kerja</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Unit Kerja</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->timKerjaAnggota[0]->unit?->nama : '-' }}</td>
                     </tr>
                 </tbody>
                 <tbody>
