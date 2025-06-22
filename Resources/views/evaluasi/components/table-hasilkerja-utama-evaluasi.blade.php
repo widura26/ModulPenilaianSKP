@@ -9,7 +9,7 @@
     </thead>
     <tbody>
         @if ($rencana && $rencana->hasilKerja)
-            @foreach ($rencana->hasilKerja as $index => $item)
+            @foreach ($hasilKerjaUtama as $index => $item)
                 <tr>
                     <th scope="row">{{ $index + 1 }}</th>
                     <td style="width: 50%;">
