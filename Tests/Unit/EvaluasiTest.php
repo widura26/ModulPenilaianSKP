@@ -1,20 +1,17 @@
 <?php
 
 namespace Modules\Penilaian\Tests\Unit;
-namespace Modules\Penilaian\Http\Controllers;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Penilaian\Http\Controllers\EvaluasiController;
 
 class EvaluasiTest extends TestCase {
 
     protected $evaluasicontroller;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->evaluasicontroller = new EvaluasiController();
+        $this->evaluasicontroller = app(EvaluasiController::class);
     }
 
     public function test_predikatKinerja_passed(){
@@ -28,6 +25,13 @@ class EvaluasiTest extends TestCase {
         $this->assertEquals('Data tidak valid', $this->evaluasicontroller->predikatKinerja(null, null));
         $this->assertEquals('Data tidak valid', $this->evaluasicontroller->predikatKinerja('Dibawah Ekspektasi', null));
         $this->assertEquals('Data tidak valid', $this->evaluasicontroller->predikatKinerja(null, 'Dibawah Ekspektasi'));
+    }
+
+    public function test_predikatValue_passed(){
+        $this->assertEquals(1, $this->evaluasicontroller->predikatValue('Dibawah Ekspektasi'));
+        $this->assertEquals(2, $this->evaluasicontroller->predikatValue('Sesuai Ekspektasi'));
+        $this->assertEquals(3, $this->evaluasicontroller->predikatValue('Diatas Ekspektasi'));
+        $this->assertEquals(0, $this->evaluasicontroller->predikatValue(null));
     }
 
 }

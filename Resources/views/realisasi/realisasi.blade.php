@@ -86,10 +86,10 @@
 
                         @if ($rencana?->predikat_akhir !== null)
                             <div class="d-flex">
-                                @include('penilaian::components.modal-cetak-evaluasi')
-                                @include('penilaian::components.modal-cetak-dokevaluasi')
-                                {{-- <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/preview/backup-evaluasi') }}'">Cetak Evaluasi</button> --}}
-                                {{-- <button class="btn btn-primary ml-2" onclick="window.location.href='{{ url('/skp/preview/backup-dok-evaluasi') }}'">Cetak Dok. Evaluasi</button> --}}
+                                {{-- @include('penilaian::components.modal-cetak-evaluasi')
+                                @include('penilaian::components.modal-cetak-dokevaluasi') --}}
+                                <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/preview/backup-evaluasi') }}'">Cetak Evaluasi</button>
+                                <button class="btn btn-primary ml-2" onclick="window.location.href='{{ url('/skp/preview/backup-dok-evaluasi') }}'">Cetak Dok. Evaluasi</button>
                             </div>
                         @endif
                     </div>

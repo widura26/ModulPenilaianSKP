@@ -6,14 +6,15 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @page {
-            margin-top: {{ $margin_top ?? '0mm' }};
-            margin-bottom: {{ $margin_bottom ?? '0mm' }};
-            margin-left: {{ $margin_left ?? '0mm' }};
-            margin-right: {{ $margin_right ?? '0mm' }};
+            margin-top: {{ $margin_top ?? '20mm' }};
+            margin-bottom: {{ $margin_bottom ?? '20mm' }};
+            margin-left: {{ $margin_left ?? '20mm' }};
+            margin-right: {{ $margin_right ?? '20mm' }};
         }
 
         body {
             font-size: 10px;
+            font-family: "Times New Roman", Times, serif;
         }
         #table-penilaian th, #table-penilaian td {
             vertical-align: top;
@@ -40,7 +41,8 @@
             }
 
             body {
-            font-size: 10px;
+                font-size: 10px;
+                font-family: "Times New Roman", Times, serif;
             }
             #table-penilaian th, #table-penilaian td {
                 vertical-align: top;
@@ -57,9 +59,12 @@
 </head>
     <body>
         <div class="text-center mb-4">
+            @include('penilaian::realisasi.components.garuda-image')
             <h6>EVALUASI KINERJA PEGAWAI</h6>
-            <p class="mb-0">PENDEKATAN HASIL KERJA KUANTITATIF <br> BAGI PEJABAT FUNGSIONAL PRANATA HUBUNGAN MASYARAKAT</p>
-            <p class="mb-0"><strong>PERIODE: JANUARI–DESEMBER 2023</strong></p>
+            <p class="mb-0">DOKUMEN EVALUASI KINERJA PEGAWAI</p>
+                <p class="mb-0"><strong>PERIODE: {{
+            \Carbon\Carbon::parse($rencana->periode->start_date)->translatedFormat('F')
+            }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p>
         </div>
         <table id="table-penilaian" cellspacing="0" cellpadding="5" width="100%" style="font-size: 10px;">
             <tbody>
@@ -74,10 +79,10 @@
                     <td>NIP</td><td>:</td><td>{{ $pegawai->nip }}</td>
                 </tr>
                 <tr>
-                    <td>Pangkat/Gol</td><td>:</td><td>Penata Muda Tk.I / III.b</td>
+                    <td>Pangkat/Gol</td><td>:</td><td>-</td>
                 </tr>
                 <tr>
-                    <td>Jabatan</td><td>:</td><td>Pranata Humas Ahli Pertama</td>
+                    <td>Jabatan</td><td>:</td><td>-</td>
                 </tr>
                 <tr>
                     <td>Unit Kerja</td><td>:</td><td>{{ $pegawai->timKerjaAnggota[0]->unit->nama }}</td>
@@ -95,10 +100,10 @@
                     <td>NIP</td><td>:</td><td>{{ optional($pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai)->nip ?? '-' }}</td>
                 </tr>
                 <tr>
-                    <td>Pangkat/Gol</td><td>:</td><td>Penata Muda Tk.I / III.b</td>
+                    <td>Pangkat/Gol</td><td>:</td><td>-</td>
                 </tr>
                 <tr>
-                    <td>Jabatan</td><td>:</td><td>Pranata Humas Ahli Pertama</td>
+                    <td>Jabatan</td><td>:</td><td>-</td>
                 </tr>
                 <tr>
                     <td>Unit Kerja</td><td>:</td><td>{{ $pegawai->timKerjaAnggota[0]->parentUnit?->unit?->nama ?? '-' }}</td>
@@ -110,19 +115,19 @@
                     <th colspan="3">ATASAN PEJABAT PENILAI KINERJA</th>
                 </tr>
                 <tr>
-                    <td>NAMA</td><td>:</td><td>Widura Hasta Sasangka</td>
+                    <td>NAMA</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nama : '-' }}</td>
                 </tr>
                 <tr>
-                    <td>NIP</td><td>:</td><td>198607292020122002</td>
+                    <td>NIP</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nip : '-' }}</td>
                 </tr>
                 <tr>
-                    <td>Pangkat/Gol</td><td>:</td><td>Penata Muda Tk.I / III.b</td>
+                    <td>Pangkat/Gol</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                 </tr>
                 <tr>
-                    <td>Jabatan</td><td>:</td><td>Pranata Humas Ahli Pertama</td>
+                    <td>Jabatan</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                 </tr>
                 <tr>
-                    <td>Unit Kerja</td><td>:</td><td>Bagian Umum dan Kepegawaian, Biro Sumber Daya Manusia</td>
+                    <td>Unit Kerja</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->timKerjaAnggota[0]->unit?->nama : '-' }}</td>
                 </tr>
             </tbody>
             <tbody>
@@ -131,7 +136,7 @@
                     <th colspan="3">EVALUASI KINERJA</th>
                 </tr>
                 <tr>
-                    <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>ISTIMEWA</td>
+                    <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja ?? null }}</td>
                 </tr>
                 <tr>
                     <td>PREDIKAT KINERJA PEGAWAI</td><td>:</td><td>{{ $pegawai->rencanaKerja[0]->predikat_akhir }}</td>

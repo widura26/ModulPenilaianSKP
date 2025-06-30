@@ -2,7 +2,7 @@
 
 <div class="modal fade" id="batalkan-evaluasi-modal" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" action="{{ url('/penilaian/evaluasi/batalkan-evaluasi/' . $pegawai->username) }}" method="POST">
+        <form class="modal-content" action="{{ url('/skp/evaluasi/batalkan-evaluasi/' . $pegawai->username) }}" method="POST">
             @csrf
             <div class="modal-body">
                 <p>Apakah Anda yakin ingin membatalkan evaluasi?</p>

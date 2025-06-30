@@ -20,6 +20,14 @@
             width: 794px;
             margin: auto;
         }
+
+        .print-input {
+            display: inline;
+        }
+
+        .print-value {
+            display: none;
+        }
         @media print {
             @page {
                 size: A4;
@@ -44,6 +52,14 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 margin-top: 20px;
+            }
+
+            .print-input {
+                display: none;
+            }
+
+            .print-value {
+                display: inline;
             }
         }
     </style>
@@ -210,7 +226,7 @@
                             @php
                                 $penilaian = $item->rencanaPerilaku->penilaianPerilakuKerja[0] ?? null;
                             @endphp
-                            <td style="width: 25%;" class="">{{ $penilaian->umpan_balik_predikat }}</td>
+                            <td style="width: 25%;" class="">{{ $penilaian->umpan_balik_deskripsi }}</td>
                         </tr>
                     @endforeach
                 @endif
@@ -237,7 +253,10 @@
             <tbody>
                 <tr>
                     <td style="width:50%; text-align: center;"></td>
-                    <td style="width:50%; text-align: center;">{{ $print_date ?? '-' }}</td>
+                    <td style="width:50%; text-align: center;">
+                        <p class="print-value"></p>
+                        <input type="text" class="print-input" value="Banyuwangi , {{ $periode->start_date }}">
+                    </td>
                 </tr>
                 <tr>
                     <td style="width:50%; text-align: center;"></td>
@@ -263,5 +282,14 @@
     const printPage = () => {
         window.print();
     }
+
+    window.addEventListener('beforeprint', function () {
+        const inputs = document.querySelectorAll('.print-input');
+        const p = document.querySelectorAll('.print-value');
+
+        inputs.forEach((input, index) => {
+            p[index].textContent = input.value;
+        });
+    });
 </script>
 </html>

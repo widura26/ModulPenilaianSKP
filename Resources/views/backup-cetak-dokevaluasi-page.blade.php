@@ -18,11 +18,20 @@
 
         body {
             font-size: 12pt;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .width {
             width: 794px;
             margin: auto;
+        }
+
+        .print-input {
+            display: inline;
+        }
+
+        .print-value {
+            display: none;
         }
         @media print {
             @page {
@@ -38,6 +47,7 @@
 
             body {
                 font-size: 12pt;
+                font-family: "Times New Roman", Times, serif;
             }
             #table-penilaian th, #table-penilaian td {
                 vertical-align: top;
@@ -48,6 +58,14 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 margin-top: 20px;
+            }
+
+            .print-input {
+                display: none;
+            }
+
+            .print-value {
+                display: inline;
             }
         }
     </style>
@@ -152,8 +170,14 @@
             <table class="mt-4" cellspacing="0" cellpadding="0" width="100%">
                 <tbody>
                     <tr>
-                        <td class="text-center" style="width: 50%;">{{ $ttd_pegawai_date ?? '-' }}</td>
-                        <td class="text-center" style="width: 50%;">{{ $ttd_pejabat_date ?? '-' }}</td>
+                        <td class="text-center" style="width: 50%;">
+                            <p class="print-value"></p>
+                            <input type="text" class="print-input" value="Banyuwangi , 26 Juni 2025">
+                        </td>
+                        <td class="text-center" style="width: 50%;">
+                            <p class="print-value"></p>
+                            <input type="text" class="print-input" value="Banyuwangi , 26 Juni 2025">
+                        </td>
                     </tr>
                     <tr>
                         <td class="text-center" style="width: 50%;">Pegawai yang Dinilai</td>
@@ -175,4 +199,14 @@
             </table>
         </div>
     </body>
+    <script>
+        window.addEventListener('beforeprint', function () {
+            const inputs = document.querySelectorAll('.print-input');
+            const p = document.querySelectorAll('.print-value');
+
+            inputs.forEach((input, index) => {
+                p[index].textContent = input.value;
+            });
+        });
+    </script>
 </html>
