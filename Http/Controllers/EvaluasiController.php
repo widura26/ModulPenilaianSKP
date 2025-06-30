@@ -239,7 +239,13 @@ class EvaluasiController extends Controller {
         }
     }
 
-    public function ubahUmpanBalik(){}
+    public function ubahUmpanBalik($id){
+        try {
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     private function hasilKerjaRecommendation($rencana, $ketuaId, $suratTugas = null){
         $arrSuratTugas = $suratTugas->map(function ($item) use ($ketuaId) {

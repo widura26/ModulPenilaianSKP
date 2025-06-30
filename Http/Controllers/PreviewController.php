@@ -22,28 +22,45 @@ class PreviewController extends Controller {
     }
 
     public function previewEvaluasi(){
-        $authUser = Auth::user();
-        $authPegawai = $authUser->pegawai;
-        $pegawaiUsername = $authPegawai->username;
-        $pegawaiId = $authPegawai->id;
+        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
+        $periodeId = $this->periodeController->periode_aktif();
+        $periode = Periode::find($periodeId);
+        $rekapKehadiran = $this->penilaianController->getRekapKehadiran($pegawaiWhoLogin->username);
+        $capaianKinerjaOrganisasi = CapaianKinerjaOrganisasi::first();
+        $rencana = RencanaKerja::with([
+            'hasilKerja.parent.rencanakerja',
+            'hasilKerja.parent',
+            'perilakuKerja',
+            'hasilKerja.penilaian',
+            'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja',
+            'hasilKerja',
+            'perilakuKerja' => function ($query) use ($periodeId, $pegawaiWhoLogin) {
+                $query->with(['rencanaPerilaku' => function ($q) use ($periodeId, $pegawaiWhoLogin) {
+                    $q->whereHas('rencanakerja', function ($qr) use ($periodeId, $pegawaiWhoLogin) {
+                        $qr->where('periode_id', $periodeId)
+                        ->where('pegawai_id', $pegawaiWhoLogin->id);
+                    });
+                }]);
+            }])
+        ->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawaiWhoLogin->id)->first();
 
         $pegawai = Pegawai::with([
-            'pejabat.jabatan',
-            'timKerjaAnggota',
-            'rencanaKerja.hasilKerja',
-            'timKerjaAnggota.unit',
-            'timKerjaAnggota.subUnits.unit',
-            'timKerjaAnggota.parentUnit.unit',
-        ])->where('username', $pegawaiUsername)->first();
-        return view('penilaian::cetak-evaluasi-page', compact('pegawai'));
+            'pejabat.jabatan', 'timKerjaAnggota', 'rencanaKerja.hasilKerja',
+            'timKerjaAnggota.unit', 'timKerjaAnggota.subUnits.unit', 'timKerjaAnggota.parentUnit.unit',
+        ])->where('username', $pegawaiWhoLogin->username)->first();
+        return view('penilaian::cetak-evaluasi-page', compact('pegawai', 'rencana', 'rekapKehadiran', 'periode'));
     }
 
     public function previewDokEvaluasi(Request $request){
+        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
+
         $authUser = Auth::user();
         $authPegawai = $authUser->pegawai;
         $pegawaiUsername = $authPegawai->username;
         $pegawaiId = $authPegawai->id;
-
+        $capaianKinerjaOrganisasi = CapaianKinerjaOrganisasi::first();
         $pegawai = Pegawai::with([
             'pejabat.jabatan',
             'timKerjaAnggota',
@@ -52,11 +69,14 @@ class PreviewController extends Controller {
             'timKerjaAnggota.subUnits.unit',
             'timKerjaAnggota.parentUnit.unit',
         ])->where('username', $pegawaiUsername)->first();
+
+        $atasanService = new AtasanService();
+        $atasanpejabatpenilai = $atasanService->getAtasanPegawai($pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai->id);
 
         if($request->query('params') == 'json'){
             return response()->json($pegawai);
         }else {
-            return view('penilaian::cetak-dokevaluasi-page', compact('pegawai'));
+            return view('penilaian::cetak-dokevaluasi-page', compact('pegawai', 'rencana', 'capaianKinerjaOrganisasi', 'atasanpejabatpenilai'));
         }
     }
 
