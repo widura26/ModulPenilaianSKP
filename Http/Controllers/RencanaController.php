@@ -15,6 +15,7 @@ use Modules\Penilaian\Entities\Cascading;
 use Modules\Penilaian\Entities\DefinisiOperasional;
 use Modules\Penilaian\Entities\HasilKerja;
 use Modules\Penilaian\Entities\Indikator;
+use Modules\Penilaian\Entities\Lampiran;
 use Modules\Penilaian\Entities\PerilakuKerja;
 use Modules\Penilaian\Entities\PeriodeAktif;
 use Modules\Penilaian\Entities\RencanaPerilaku;
@@ -116,7 +117,32 @@ class RencanaController extends Controller
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
 
-        $rencana = RencanaKerja::with('hasilKerja')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
+        $rencana = RencanaKerja::with('hasilKerja.lampirans')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
+        $dataLengkap = false;
+        $statusTombol = 'buat'; // default
+
+        if ($rencana) {
+            $jumlahHasil = $rencana->hasilKerja->count();
+            $jumlahLampiran = $rencana->hasilKerja->flatMap->lampirans->count();
+
+            // Cek kelengkapan indikator & definisi operasional
+            $dataLengkap = $rencana->hasilKerja->filter(fn($hasil) => $hasil->jenis === 'utama')
+                ->every(function ($hasil) {
+                    return $hasil->indikator->count() > 0 &&
+                        $hasil->indikator->every(fn($indikator) => $indikator->definisiOperasional->count() > 0);
+                });
+
+            // Ganti status tombol
+            if ($rencana->status_persetujuan === 'Sudah Diajukan') {
+                $statusTombol = 'batalkan';
+            } elseif ($dataLengkap && $jumlahLampiran > 0) {
+                $statusTombol = 'ajukan';
+            } else {
+                $statusTombol = 'reset';
+            }
+        }
+
+
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota')->where('pegawai_id', $pegawai->id)->get();
         $parentHasilKerja = $indikatorIntervensi->pluck('indikator.hasilKerja')->unique('id')->values();
 
@@ -124,17 +150,63 @@ class RencanaController extends Controller
         $ketua = $atasanService->getAtasanPegawai($pegawai->id);
         $definisiOperasional = DefinisiOperasional::all();
         // $definisiOperasional = \Modules\Penilaian\Entities\DefinisiOperasional::all();
+        // Ambil seluruh kombinasi topik-sub_topik yang unik
+        $dataUnik = DefinisiOperasional::select('topik', 'sub_topik')
+            ->distinct()
+            ->orderBy('topik')
+            ->orderBy('sub_topik')
+            ->get();
 
+        // Atau jika hanya ingin sub_topik-nya unik saja:
+        $subTopikUnik = DefinisiOperasional::select('sub_topik')
+            ->distinct()
+            ->orderBy('sub_topik')
+            ->get();
 
         if ($request->query('params') == 'json') {
             return response()->json([
                 'parent_hasil_kerja' => $parentHasilKerja
             ]);
         } else {
-            return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja', 'definisiOperasional'));
+            return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja', 'definisiOperasional', 'dataUnik', 'subTopikUnik', 'dataLengkap', 'statusTombol'));
             // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }
     }
+
+    public function ajukanSKP($id)
+    {
+        $rencana = RencanaKerja::findOrFail($id);
+        $rencana->update(['status_persetujuan' => 'Sudah Diajukan']);
+        return redirect()->back()->with('success', 'SKP berhasil diajukan.');
+    }
+
+    public function batalkanPengajuan($id)
+    {
+        $rencana = RencanaKerja::findOrFail($id);
+        $rencana->update(['status_persetujuan' => 'Belum Ajukan SKP']);
+        return redirect()->back()->with('success', 'Pengajuan SKP dibatalkan.');
+    }
+
+    public function resetSKP($id)
+    {
+        DB::transaction(function () use ($id) {
+            $rencana = RencanaKerja::findOrFail($id);
+            foreach ($rencana->hasilKerja as $hasil) {
+                foreach ($hasil->indikator as $indikator) {
+                    $indikator->definisiOperasional()->delete();
+                    $indikator->delete();
+                }
+                $hasil->lampirans()->delete();
+                $hasil->delete();
+            }
+
+            $rencana->perilakuKerja()->delete();
+            $rencana->delete();
+        });
+
+        return redirect()->back()->with('success', 'SKP berhasil direset.');
+    }
+
 
     public function store()
     {
@@ -256,16 +328,132 @@ class RencanaController extends Controller
     public function storeManualIndikator(Request $request, $id)
     {
         try {
+            // DefinisiOperasional::create([
+            //     'hasil_kerja_id' => $request->hasil_kerja_id,
+            //     'topik' => $request->topik,
+            //     'sub_topik' => $request->sub_topik,
+            //     'deskripsi' => $request->deskripsi
+            // ]);
+
             DefinisiOperasional::create([
-                'hasil_kerja_id' => $id,
+                'hasil_kerja_id' => $request->hasil_kerja_id,
+                'indikator_id' => $request->indikator_id,
                 'topik' => $request->topik,
                 'sub_topik' => $request->sub_topik,
                 'deskripsi' => $request->deskripsi
             ]);
 
+
             return redirect()->back()->with('success', 'Indikator berhasil ditambahkan');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function storeLampiran(Request $request)
+    {
+        $request->validate([
+            'jenis_lampiran' => 'required|in:Dukungan Sumber Daya,Skema Pertanggung Jawaban,Konsekuensi',
+            'deskripsi_lampiran' => 'required',
+            'hasil_kerja_id' => 'required|exists:skp_hasil_kerja,id'
+        ]);
+
+        $deskripsiArray = array_map('trim', explode(';', $request->deskripsi_lampiran));
+
+        foreach ($deskripsiArray as $deskripsi) {
+            Lampiran::create([
+                'jenis_lampiran' => $request->jenis_lampiran,
+                'deskripsi_lampiran' => $deskripsi,
+                'hasil_kerja_id' => $request->hasil_kerja_id,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Lampiran berhasil ditambahkan.');
+    }
+
+    public function salinSKP()
+    {
+        $pegawai = $this->penilaianController->getPegawaiWhoLogin();
+        $periodeId = $this->periodeController->periode_aktif();
+
+        $rencanaLama = RencanaKerja::where('pegawai_id', $pegawai->id)
+            ->where('periode_id', '<', $periodeId)
+            ->latest('periode_id')
+            ->first();
+
+        if (!$rencanaLama || $rencanaLama->tim_kerja_id !== session('tim_kerja_id')) {
+            return redirect()->back()->with('failed', 'Tidak dapat menyalin SKP karena tim kerja berbeda atau tidak ditemukan.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $rencanaBaru = RencanaKerja::create([
+                'tim_kerja_id' => session('tim_kerja_id'),
+                'periode_id' => $periodeId,
+                'status_persetujuan' => 'Belum Ajukan SKP',
+                'status_realisasi' => 'Belum Ajukan Realisasi',
+                'pegawai_id' => $pegawai->id
+            ]);
+
+            foreach ($rencanaLama->hasilKerja as $hasil) {
+                $hasilBaru = HasilKerja::create([
+                    'rencana_id' => $rencanaBaru->id,
+                    'deskripsi' => $hasil->deskripsi,
+                    'jenis' => $hasil->jenis
+                ]);
+
+                foreach ($hasil->indikator as $indikator) {
+                    $indikatorBaru = Indikator::create([
+                        'hasil_kerja_id' => $hasilBaru->id,
+                        'deskripsi' => $indikator->deskripsi
+                    ]);
+
+                    foreach ($indikator->definisiOperasional as $definisi) {
+                        DefinisiOperasional::create([
+                            'hasil_kerja_id' => $hasilBaru->id,
+                            'indikator_id' => $indikatorBaru->id,
+                            'topik' => $definisi->topik,
+                            'sub_topik' => $definisi->sub_topik,
+                            'deskripsi' => $definisi->deskripsi
+                        ]);
+                    }
+                }
+
+                foreach ($hasil->lampirans as $lampiran) {
+                    Lampiran::create([
+                        'hasil_kerja_id' => $hasilBaru->id,
+                        'jenis_lampiran' => $lampiran->jenis_lampiran,
+                        'deskripsi_lampiran' => $lampiran->deskripsi_lampiran
+                    ]);
+                }
+            }
+
+            $perilakuList = PerilakuKerja::all();
+            foreach ($perilakuList as $perilaku) {
+                RencanaPerilaku::create([
+                    'rencana_id' => $rencanaBaru->id,
+                    'perilaku_kerja_id' => $perilaku->id,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'SKP berhasil disalin.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('failed', 'Gagal menyalin SKP: ' . $th->getMessage());
+        }
+    }
+
+    public function updateIndikator(Request $request, $id)
+    {
+        try {
+            $indikator = Indikator::findOrFail($id);
+            $indikator->deskripsi = $request->indikator;
+            $indikator->save();
+
+            return redirect()->back()->with('success', 'Indikator berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui indikator: ' . $e->getMessage());
         }
     }
 }

@@ -135,5 +135,15 @@ class MenuPenilaianTableSeeder extends Seeder
             'parent_id' => $menu->id,
             'active' => serialize(['skp/monitoring', 'skp/monitoring*']),
         ]);
+        Menu::create([
+            'modul' => 'Penilaian',
+            'label' => 'Definisi Operasional',
+            'url' => 'skp/definisi-operasional',
+            'can' => serialize(['admin']),
+            'icon' => 'far fa-circle',
+            'urut' => 1,
+            'parent_id' => $menu->id,
+            'active' => serialize(['skp/definisi-operasional', 'skp/definisi-operasional*']),
+        ]);
     }
 }

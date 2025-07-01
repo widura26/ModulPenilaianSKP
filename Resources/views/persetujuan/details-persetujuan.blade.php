@@ -221,7 +221,15 @@
                 @endforeach
               </tbody>
             </table>
-            <button type="submit" class="btn btn-success">Simpan Ekspektasi</button>
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{{ url('/skp/persetujuan') }}" class="btn btn-secondary">
+                Batal
+              </a>
+              <button type="submit" class="btn btn-success">
+                Simpan Ekspektasi
+              </button>
+            </div>
+
           </form>
 
         </div>

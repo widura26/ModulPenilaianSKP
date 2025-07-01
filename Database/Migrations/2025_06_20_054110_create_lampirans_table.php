@@ -15,9 +15,12 @@ class CreateLampiransTable extends Migration
     {
         Schema::create('lampirans', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('hasil_kerja_id')->nullable();
             $table->enum('jenis_lampiran', ['Dukungan Sumber Daya', 'Skema Pertanggung Jawaban', 'Konsekuensi']);
             $table->text('deskripsi_lampiran')->nullable();
             $table->timestamps();
+
+            $table->foreign('hasil_kerja_id')->references('id')->on('skp_hasil_kerja')->onDelete('cascade');
         });
     }
 

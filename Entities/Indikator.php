@@ -11,11 +11,18 @@ class Indikator extends Model
     protected $table = 'skp_indikators';
     protected $guarded = ['id'];
 
-    public function hasilkerja() {
+    public function hasilkerja()
+    {
         return $this->belongsTo(HasilKerja::class, 'hasil_kerja_id');
     }
 
-    public function cascading(){
+    public function cascading()
+    {
         return $this->hasMany(Cascading::class);
+    }
+
+    public function definisiOperasional()
+    {
+        return $this->hasMany(DefinisiOperasional::class, 'indikator_id');
     }
 }

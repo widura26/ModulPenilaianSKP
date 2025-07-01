@@ -11,11 +11,13 @@ class HasilKerja extends Model
     protected $table = 'skp_hasil_kerja';
     protected $guarded = ['id'];
 
-    public function rencanakerja() {
+    public function rencanakerja()
+    {
         return $this->belongsTo(RencanaKerja::class, 'rencana_id');
     }
 
-    public function parent(){
+    public function parent()
+    {
         return $this->belongsTo(HasilKerja::class, 'parent_hasil_kerja_id', 'id');
     }
 
@@ -24,7 +26,8 @@ class HasilKerja extends Model
         return $this->hasMany(HasilKerja::class, 'parent_hasil_kerja_id');
     }
 
-    public function indikator(){
+    public function indikator()
+    {
         return $this->hasMany(Indikator::class);
     }
 
@@ -32,7 +35,18 @@ class HasilKerja extends Model
     //     return $this->hasMany(PenilaianHasilKerja::class, 'hasil_kerja_id', 'id');
     // }
 
-    public function penilaian() {
+    public function penilaian()
+    {
         return $this->morphMany(PenilaianHasilKerja::class, 'target');
+    }
+
+    // public function definisiOperasional()
+    // {
+    //     return $this->hasMany(DefinisiOperasional::class, 'hasil_kerja_id');
+    // }
+
+    public function lampirans()
+    {
+        return $this->hasMany(Lampiran::class, 'hasil_kerja_id');
     }
 }
