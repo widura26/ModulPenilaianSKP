@@ -29,18 +29,55 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <table id="example" class="table table-striped">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Nama</th>
-              <th>Jabatan</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- <tr>
+        <form action="" method="POST" id="form-terpilih">
+          @csrf
+          <div class="d-flex justify-content-end mb-2">
+            <select name="" class="form-control" id="" style="width: 200px;">
+              <option value="">-- Filter Status --</option>
+              <option value="">Belum Buat Rencana</option>
+              <option value="">Belum Ajukan Rencana</option>
+              <option value="">Belum Disetujui</option>
+              <option value="">Sudah Disetujui</option>
+            </select>
+            <!-- <select name="" class="form-control ml-2" id="" style="width: 200px;">
+            <option value="">-- Filter Predikat --</option>
+            <option value="">Sangat Kurang</option>
+            <option value="">Butuh Perbaikan</option>
+            <option value="">Kurang</option>
+            <option value="">Baik</option>
+            <option value="">Sangat Baik</option>
+          </select> -->
+            <form method="POST" action="{{ url('/skp/persetujuan/setujui-terpilih') }}">
+              @csrf
+              <input type="hidden" name="rencana_id[]" value="...">
+              <button type="submit" class="btn btn-primary">Setujui Terpilih</button>
+            </form>
+
+            <form method="POST" action="{{ url('/skp/persetujuan/tolak-terpilih') }}">
+              @csrf
+              <input type="hidden" name="rencana_id[]" value="...">
+              <button type="submit" class="btn btn-danger">Tolak Terpilih</button>
+            </form>
+          </div>
+          <table id="example" class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <input type="checkbox" id="checkAll">
+                    </div>
+                  </div>
+                </th>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <tr>
               <td>2</td>
               <td>Tiger Nixon</td>
               <td>System Architect</td>
@@ -67,7 +104,7 @@
                 </div>
               </td>
             </tr> -->
-            <!-- <tr>
+              <!-- <tr>
               
               <td>1</td>
 
@@ -93,31 +130,40 @@
                 </div>
               </td>
             </tr> -->
-            @foreach ($rencana as $index => $rk)
+              @foreach ($rencana as $index => $rk)
 
 
-            <tr>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $rk->pegawai->nama }}{{ $rk->pegawai->nip }}</td>
-              <td>{{ $rk->pegawai->jabatan->jabatan ?? '-' }}</td>
-              <td>{{ $rk->status_persetujuan }}</td>
-              <td>
-                <a href="{{ url('/skp/persetujuan/detail/'. $rk->pegawai_id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i></a>
-                <form action="{{ url('/skp/persetujuan/setujui/. $rk->id') }}" method="POST" style="display:inline">
-                  @csrf
-                  <button class="btn btn-sm btn-success "><i class="far fa-check-circle"></i></button>
-                </form>
-                <form action="{{ url('/skp/persetujuan/tolak/. $rk->id') }}" method="POST" style="display:inline">
-                  @csrf
-                  <button class="btn btn-sm btn-danger "><i class="fas fa-ban"></i></button>
-                </form>
-              </td>
-            </tr>
-            @endforeach
+              <tr>
+                <td>
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <input type="checkbox" name="rencana_id[]" value="{{ $rk->id }}" class="checkItem">
+                    </div>
+                  </div>
+                </td>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $rk->pegawai->nama }}{{ $rk->pegawai->nip }}</td>
+                <td>{{ $rk->pegawai->jabatan->jabatan ?? '-' }}</td>
+                <td>{{ $rk->status_persetujuan }}</td>
+                <td>
+                  <a href="{{ url('/skp/persetujuan/detail/'. $rk->pegawai_id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i></a>
+                  <form action="{{ url('/skp/persetujuan/setujui/' . $rk->pegawai_id) }}" method="POST" style="display:inline">
+                    @csrf
+                    <button class="btn btn-sm btn-success"><i class="far fa-check-circle"></i></button>
+                  </form>
 
-          </tbody>
+                  <form action="{{ url('/skp/persetujuan/tolak/' . $rk->pegawai_id) }}" method="POST" style="display:inline">
+                    @csrf
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-ban"></i></button>
+                  </form>
+                </td>
+              </tr>
+              @endforeach
 
-        </table>
+            </tbody>
+
+          </table>
+        </form>
       </div>
     </div>
   </div>
@@ -143,7 +189,28 @@
 
   // const tdStatus = document.querySelector('#td-status')
   // console.log(tdStatus.innerText)
+
+  // Select All Checkbox Logic
+  $('#checkAll').click(function() {
+    $('.checkItem').prop('checked', this.checked);
+  });
+
+  function submitFormTerpilih(action) {
+    event.preventDefault();
+
+    const form = document.getElementById('form-terpilih');
+    const input = document.getElementById('form-action');
+
+    if (action === 'setujui') {
+      form.action = "{{ url('/skp/persetujuan/setujui-terpilih') }}";
+    } else if (action === 'tolak') {
+      form.action = "{{ url('/skp/persetujuan/tolak-terpilih') }}";
+    }
+
+    form.submit();
+  }
 </script>
+
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
