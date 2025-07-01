@@ -37,9 +37,9 @@
                                 break;
                         }
 
-                        $realisasiKosong = $rencana->hasilKerja->every(function ($item) {
+                        $semuaRealisasiSudahDiisi  = $rencana->hasilKerja->every(function ($item) {
                             $realisasi = $item->realisasi;
-                            return is_null($realisasi);
+                            return !is_null($realisasi);
                         });
 
                         $hasilKerjaUtama = collect();
@@ -75,7 +75,7 @@
                         @if ($rencana?->status_realisasi == 'Belum Ajukan Realisasi')
                             <form method="POST" action="{{ url('/skp/realisasi/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ $realisasiKosong || ($hasilKerjaUtama->isEmpty() && $hasilKerjaTambahan->isEmpty()) ? 'disabled' : '' }}>Ajukan Realisasi</button>
+                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ !$semuaRealisasiSudahDiisi || ($hasilKerjaUtama->isEmpty() && $hasilKerjaTambahan->isEmpty()) ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
                         @elseif($rencana?->status_realisasi == 'Belum Dievaluasi')
                             <form method="POST" action="{{ url('/skp/realisasi/batalkan-realisasi/' . $rencana->id) }}">
@@ -89,7 +89,7 @@
                                 {{-- @include('penilaian::components.modal-cetak-evaluasi')
                                 @include('penilaian::components.modal-cetak-dokevaluasi') --}}
                                 <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/preview/backup-evaluasi') }}'">Cetak Evaluasi</button>
-                                <button class="btn btn-primary ml-2">Cetak Dok. Evaluasi</button>
+                                <button class="btn btn-primary ml-2" onclick="window.location.href='{{ url('/skp/preview/backup-dok-evaluasi') }}'">Cetak Dok. Evaluasi</button>
                             </div>
                         @endif
                     </div>

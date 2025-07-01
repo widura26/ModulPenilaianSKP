@@ -47,10 +47,22 @@ class EvaluasiController extends Controller {
         $ketua = $atasanService->getAtasanPegawai($pegawai->id);
         $rekapKehadiran = $this->penilaianController->getRekapKehadiran($username);
 
+        $hasilKerjaUtama = collect();
+        $hasilKerjaTambahan = collect();
 
-        if($params == 'json') return response()->json($rekapKehadiran);
+        if (!is_null($rencana) && !is_null($rencana->hasilKerja)) {
+            $hasilKerjaUtama = $rencana->hasilKerja->filter(function($item) {
+                return $item->jenis === 'utama';
+            })->values();
+
+            $hasilKerjaTambahan = $rencana->hasilKerja->filter(function($item) {
+                return $item->jenis === 'tambahan';
+            })->values()->merge($suratTugas);
+        }
+
+        if($params == 'json') return response()->json($hasilKerjaTambahan);
         else return view('penilaian::evaluasi.evaluasi-detail',
-            compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran')
+            compact('suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran', 'hasilKerjaTambahan')
         );
     }
 
@@ -116,22 +128,15 @@ class EvaluasiController extends Controller {
     public function prosesUmpanBalik(Request $request){
 
         $request->validate([
-            // 'feedback' => 'required|array|min:1',
-            // 'feedback.*.hasil_kerja_id' => 'required|integer|exists:hasil_kerja,id',
             'feedback.*.umpan_balik_predikat' => 'required|string',
             'feedback.*.umpan_balik_deskripsi' => 'required|string',
-
-            // 'feedback_hasil_kerja_tambahan' => 'required|array|min:1',
-            // 'feedback_hasil_kerja_tambahan.*.surat_tugas_id' => 'required|integer|exists:detail_surat_tugas,id',
             'feedback_hasil_kerja_tambahan.*.umpan_balik_predikat' => 'required|string',
             'feedback_hasil_kerja_tambahan.*.umpan_balik_deskripsi' => 'required|string',
-
-            // 'feedback_perilaku_kerja' => 'required|array|min:1',
-            // 'feedback_perilaku_kerja.*.perilaku_kerja_id' => 'required|integer|exists:rencana_perilaku,id',
             'feedback_perilaku_kerja.*.perilaku_umpan_balik_predikat' => 'required|string',
             'feedback_perilaku_kerja.*.perilaku_umpan_balik_deskripsi' => 'nullable|string',
         ]);
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        // return response()->json($request);
         DB::beginTransaction();
         try {
             foreach ($request->feedback as $item) {
@@ -149,13 +154,25 @@ class EvaluasiController extends Controller {
             }
 
             foreach ($request->feedback_hasil_kerja_tambahan as $item) {
-                $hasilKerjaTambahan = DetailSuratTugas::where('id', $item['surat_tugas_id'])->first();
 
-                if ($hasilKerjaTambahan) {
+                if (isset($item['surat_tugas_id'])) {
+                    $hasilKerjaTambahan = DetailSuratTugas::where('id', $item['surat_tugas_id'])->first();
                     PenilaianHasilKerja::updateOrCreate(
                         [
                             'target_id' => $hasilKerjaTambahan->id,
                             'target_type' => 'Modules\SuratTugas\Entities\DetailSuratTugas',
+                            'ketua_tim_id' => $pegawaiWhoLogin->id,
+                        ],
+                        [
+                            'umpan_balik_predikat' => $item['umpan_balik_predikat'],
+                            'umpan_balik_deskripsi' => $item['umpan_balik_deskripsi'],
+                        ]
+                    );
+                } else if($item['hasil_kerja_id']) {
+                    PenilaianHasilKerja::updateOrCreate(
+                        [
+                            'target_id' => $item['hasil_kerja_id'],
+                            'target_type' => 'Modules\Penilaian\Entities\HasilKerja',
                             'ketua_tim_id' => $pegawaiWhoLogin->id,
                         ],
                         [
@@ -222,7 +239,13 @@ class EvaluasiController extends Controller {
         }
     }
 
-    public function ubahUmpanBalik(){}
+    public function ubahUmpanBalik($id){
+        try {
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     private function hasilKerjaRecommendation($rencana, $ketuaId, $suratTugas = null){
         $arrSuratTugas = $suratTugas->map(function ($item) use ($ketuaId) {

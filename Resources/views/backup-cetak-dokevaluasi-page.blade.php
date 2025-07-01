@@ -18,11 +18,20 @@
 
         body {
             font-size: 12pt;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .width {
             width: 794px;
             margin: auto;
+        }
+
+        .print-input {
+            display: inline;
+        }
+
+        .print-value {
+            display: none;
         }
         @media print {
             @page {
@@ -38,6 +47,7 @@
 
             body {
                 font-size: 12pt;
+                font-family: "Times New Roman", Times, serif;
             }
             #table-penilaian th, #table-penilaian td {
                 vertical-align: top;
@@ -49,16 +59,25 @@
                 text-transform: uppercase;
                 margin-top: 20px;
             }
+
+            .print-input {
+                display: none;
+            }
+
+            .print-value {
+                display: inline;
+            }
         }
     </style>
 </head>
     <body>
         <div class="width">
             <div class="text-center my-4">
+                @include('penilaian::realisasi.components.garuda-image')
                 <p class="mb-0">DOKUMEN EVALUASI KINERJA PEGAWAI</p>
-                {{-- <p class="mb-0"><strong>PERIODE: {{
+                <p class="mb-0"><strong>PERIODE: {{
             \Carbon\Carbon::parse($rencana->periode->start_date)->translatedFormat('F')
-            }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p> --}}
+            }}-{{ \Carbon\Carbon::parse($rencana->periode->end_date)->translatedFormat('F') }} {{ $rencana->periode->tahun }}</strong></p>
             </div>
             <button onclick="window.print()" class="button-cetak btn btn-primary mb-2">Cetak</button>
             <table id="table-penilaian" cellspacing="0" cellpadding="5" width="100%">
@@ -110,19 +129,19 @@
                         <th colspan="3">ATASAN PEJABAT PENILAI KINERJA</th>
                     </tr>
                     <tr>
-                        <td>NAMA</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>NAMA</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nama : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>NIP</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>NIP</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->nip : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Pangkat/Gol</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Pangkat/Gol</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Jabatan</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Jabatan</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? '-' : '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Unit Kerja</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? 'ada' : '-' }}</td>
+                        <td>Unit Kerja</td><td>:</td><td>{{ $atasanpejabatpenilai != null ? $atasanpejabatpenilai->pegawai->timKerjaAnggota[0]->unit?->nama : '-' }}</td>
                     </tr>
                 </tbody>
                 <tbody>
@@ -131,7 +150,7 @@
                         <th colspan="3">EVALUASI KINERJA</th>
                     </tr>
                     <tr>
-                        <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja }}</td>
+                        <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja ?? null }}</td>
                     </tr>
                     <tr>
                         <td>PREDIKAT KINERJA PEGAWAI</td><td>:</td><td>{{ $pegawai->rencanaKerja[0]->predikat_akhir }}</td>
@@ -151,8 +170,14 @@
             <table class="mt-4" cellspacing="0" cellpadding="0" width="100%">
                 <tbody>
                     <tr>
-                        <td class="text-center" style="width: 50%;">{{ $ttd_pegawai_date ?? '-' }}</td>
-                        <td class="text-center" style="width: 50%;">{{ $ttd_pejabat_date ?? '-' }}</td>
+                        <td class="text-center" style="width: 50%;">
+                            <p class="print-value"></p>
+                            <input type="text" class="print-input" value="Banyuwangi , 26 Juni 2025">
+                        </td>
+                        <td class="text-center" style="width: 50%;">
+                            <p class="print-value"></p>
+                            <input type="text" class="print-input" value="Banyuwangi , 26 Juni 2025">
+                        </td>
                     </tr>
                     <tr>
                         <td class="text-center" style="width: 50%;">Pegawai yang Dinilai</td>
@@ -174,4 +199,14 @@
             </table>
         </div>
     </body>
+    <script>
+        window.addEventListener('beforeprint', function () {
+            const inputs = document.querySelectorAll('.print-input');
+            const p = document.querySelectorAll('.print-value');
+
+            inputs.forEach((input, index) => {
+                p[index].textContent = input.value;
+            });
+        });
+    </script>
 </html>

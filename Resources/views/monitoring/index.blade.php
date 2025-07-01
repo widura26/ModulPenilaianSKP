@@ -15,19 +15,40 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="table-monitoring" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nip</th>
-                                <th>Nama</th>
-                                <th>Status SKP</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="grid">
+                        <div class="">
+                            <div class="card m-0">
+                                <div class="card-body">
+                                <h5 class="card-title">Card 1</h5>
+                                <p class="card-text">Rencana SKP</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="card m-0">
+                                <div class="card-body">
+                                <h5 class="card-title">Card 1</h5>
+                                <p class="card-text">Matriks Peran Hasil</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="card m-0">
+                                <div class="card-body">
+                                <h5 class="card-title">Card 1</h5>
+                                <p class="card-text">Log Harian & Capaian</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="card m-0">
+                                <div class="card-body">
+                                <h5 class="card-title">Card 1</h5>
+                                <p class="card-text">Statistik Bulanan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,6 +56,14 @@
 @stop
 
 @section('css')
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            /* padding: 20px; */
+        }
+    </style>
 @stop
 
 @push('js')

@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cetakEvaluasiModal">Cetak Evaluasi</button>
 <div class="modal fade" id="cetakEvaluasiModal" tabindex="-1" role="dialog" aria-labelledby="cetakEvaluasiModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" method="GET" action="{{ url('/penilaian/cetak/evaluasi') }}">
+        <form class="modal-content" method="GET" action="{{ url('/skp/cetak/evaluasi') }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Pengaturan Halaman</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -12,31 +12,31 @@
                 <div class="d-flex align-items-center">
                     <div class="mr-1" style="width:30%">Tanggal Cetak</div>
                     <div class="flex-grow" style="width: 100%">
-                        <input type="text" class="form-control" name="print_date" id="inputPassword" placeholder="Contoh: Jakarta, 6 Mei 2025">
+                        <input type="text" class="form-control" name="print_date" id="inputPassword" placeholder="Contoh: Jakarta, 6 Mei 2025" value="">
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="mr-1" style="width:30%">Margin Atas</div>
                     <div class="flex-grow" style="width: 100%">
-                        <input type="number" class="form-control" id="inputPassword" placeholder="10" name="margin_top">
+                        <input type="number" class="form-control" id="inputPassword" placeholder="20" name="margin_top" value="20">
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="mr-1" style="width:30%">Margin Bawah</div>
                     <div class="flex-grow" style="width: 100%">
-                        <input type="number" class="form-control" id="inputPassword" placeholder="10" name="margin_bottom">
+                        <input type="number" class="form-control" id="inputPassword" placeholder="20" name="margin_bottom" value="20">
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="mr-1" style="width:30%">Margin Kanan</div>
                     <div class="flex-grow" style="width: 100%">
-                        <input type="number" class="form-control" id="inputPassword" placeholder="10" name="margin_right">
+                        <input type="number" class="form-control" id="inputPassword" placeholder="20" name="margin_right" value="20">
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="mr-1" style="width:30%">Margin Kiri</div>
                     <div class="flex-grow" style="width: 100%">
-                        <input type="number" class="form-control" id="inputPassword" placeholder="10" name="margin_left">
+                        <input type="number" class="form-control" id="inputPassword" placeholder="20" name="margin_left" value="20">
                     </div>
                 </div>
                 <div class="d-flex align-items-center">

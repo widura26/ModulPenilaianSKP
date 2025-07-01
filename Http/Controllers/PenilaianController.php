@@ -222,12 +222,8 @@ class PenilaianController extends Controller {
             $alpa = collect($presensi)->filter(fn($v) => $v === 'TM')->count();
 
             $hariKerja = $jumlahHari - $jumlahHariLibur - $cuti - $dinasLuar;
+            $kehadiran = $this->rerataKehadiran($alpa, $hariKerja, $jumlahHariKehadiran_sesuai_ketentuan, $jumlahHariKehadiran_tidak_sesuai_ketentuan);
 
-            $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
-            $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;
-            $rerataAlpa = $hariKerja != 0 ? ($alpa * 100) / $hariKerja : 0;
-            // - cuti, -tugasluar
-            // alpa = harikerja - kehadiran
             return [
                 'pegawai' => $pegawai->nama,
                 'jumlahHari_dalam_periode' => $jumlahHari,
@@ -238,14 +234,25 @@ class PenilaianController extends Controller {
                 'hari_kerja_dalam_periode' => $hariKerja,
                 'jumlahHariKehadiran_sesuai_ketentuan' => $jumlahHariKehadiran_sesuai_ketentuan,
                 'jumlahHariKehadiran_tidak_sesuai_ketentuan' => $jumlahHariKehadiran_tidak_sesuai_ketentuan,
-                'rerata_alpa' => $rerataAlpa,
-                'rerata_kehadiran_sesuai_ketentuan' => $rerataKehadiranSesuaiKetentuan,
-                'rerata_kehadiran_tidak_sesuai_ketentuan' => $rerataKehadiranTidakSesuaiKetentuan,
-                'total' => $rerataKehadiranSesuaiKetentuan + $rerataKehadiranTidakSesuaiKetentuan
+                'rerata_alpa' => $kehadiran['rerata_alpa'],
+                'rerata_kehadiran_sesuai_ketentuan' => $kehadiran['rerata_kehadiran_sesuai_ketentuan'],
+                'rerata_kehadiran_tidak_sesuai_ketentuan' => $kehadiran['rerata_kehadiran_tidak_sesuai_ketentuan'],
+                'total' => $kehadiran['rerata_kehadiran_sesuai_ketentuan'] + $kehadiran['rerata_kehadiran_tidak_sesuai_ketentuan']
             ];
         });
 
         return $data[0];
+    }
 
+    public function rerataKehadiran($alpa, $hariKerja, $jumlahHariKehadiran_sesuai_ketentuan, $jumlahHariKehadiran_tidak_sesuai_ketentuan){
+        $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
+        $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;
+        $rerataAlpa = $hariKerja != 0 ? ($alpa * 100) / $hariKerja : 0;
+
+        return [
+            'rerata_alpa' => $rerataAlpa,
+            'rerata_kehadiran_sesuai_ketentuan' => $rerataKehadiranSesuaiKetentuan,
+            'rerata_kehadiran_tidak_sesuai_ketentuan' => $rerataKehadiranTidakSesuaiKetentuan
+        ];
     }
 }
