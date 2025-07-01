@@ -15,10 +15,13 @@ class CreateDefinisiOperationalsTable extends Migration
     {
         Schema::create('definisi_operationals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('hasil_kerja_id')->nullable()->constrained('skp_hasil_kerja')->onDelete('cascade');
+            $table->foreignId('indikator_id')->nullable()->constrained('skp_indikators')->onDelete('cascade');
             $table->string('topik', 255);
             $table->string('sub_topik', 255);
             $table->text('deskripsi')->nullable();
             $table->timestamps();
+
         });
     }
 

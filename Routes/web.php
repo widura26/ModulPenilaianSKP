@@ -58,10 +58,16 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
         Route::prefix('rencana')->group(function () {
             Route::get('/', 'RencanaController@index');
             Route::post('/store', 'RencanaController@store');
+            Route::post('/salin-skp', 'RencanaController@salinSKP');
             Route::post('/store-hasil-kerja-utama/{id}', 'RencanaController@storeHasilKerjaUtama');
             Route::post('/store-hasil-kerja-tambahan/{id}', 'RencanaController@storeHasilKerjaTambahan');
+            Route::post('/store-manual-indikator-utama/{id}', 'RencanaController@storeManualIndikator');
             Route::get('/edit-hasil-kerja-utama/{id}', 'RencanaController@editHasilKerja');
             Route::put('/update-hasil-kerja-utama/{id}', 'RencanaController@updateHasilKerja');
+            Route::post('/store-lampiran', 'RencanaController@storeLampiran');
+            Route::put('/ajukan/{id}', 'RencanaController@ajukanSKP');
+            Route::put('/batalkan-pengajuan/{id}', 'RencanaController@batalkanPengajuan');
+            Route::delete('/reset/{id}', 'RencanaController@resetSKP');
         });
         Route::prefix('matriks-peran-hasil')->group(function () {
             Route::get('/', 'MatriksPeranHasilController@matriksperanhasil');
@@ -97,6 +103,7 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::post('/update/{id}', 'ArsipController@update');
             Route::post('/delete/{id}', 'ArsipController@delete');
         });
+
         Route::prefix('monitoring')->group(function () {
             Route::get('/', 'MonitoringController@index');
             Route::get('/data', 'MonitoringController@monitoring');
@@ -109,9 +116,24 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
         Route::prefix('unggah-skp')->group(function () {
             Route::get('/', 'UnggahController@unggahSkp');
         });
+
         Route::prefix('intervensi')->group(function () {
             Route::get('/', 'IntervensiController@index');
             Route::post('/store-intervensi/{id}', 'IntervensiController@storeDeskripsiHasilKerja');
         });
+
+        Route::prefix('definisi-operasional')->group(function () {
+            Route::get('/', 'DefinisiOperasionalController@index');
+            Route::post('/store', 'DefinisiOperasionalController@store');
+            Route::put('/update/{id}', 'DefinisiOperasionalController@update');
+            Route::delete('/delete/{id}', 'DefinisiOperasionalController@destroy');
+        });
+
+        // Route::prefix('lampirans')->group(function () {
+        //     Route::get('/', 'DefinisiOperasionalController@index');
+        //     Route::post('/store', 'DefinisiOperasionalController@store');
+        //     Route::put('/update/{id}', 'DefinisiOperasionalController@update');
+        //     Route::delete('/delete/{id}', 'DefinisiOperasionalController@destroy');
+        // });
     });
 });

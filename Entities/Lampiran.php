@@ -9,10 +9,10 @@ class Lampiran extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-    
-    protected static function newFactory()
-    {
-        return \Modules\Penilaian\Database\factories\LampiranFactory::new();
-    }
+    protected $fillable = [
+        'hasil_kerja_id',
+        'jenis_lampiran',
+        'deskripsi_lampiran'
+    ];
+    protected $guarded = ['id'];
 }

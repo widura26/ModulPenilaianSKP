@@ -66,7 +66,118 @@
                 @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
 
                 <div class="mt-3">
+                    <table class="table mb-0" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th colspan="5">Hasil Kerja</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" class="col-sm-7 border-right">A. Utama</th>
+                                <th colspan="1" class="col-sm-2">
+                                    @if (!is_null($rencana))
+                                    @include('penilaian::rencana.components.modal-create-hasil-kerja-utama')
+                                    @endif
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($hasilKerjaUtama->count())
+                            @foreach ($hasilKerjaUtama as $index => $item)
+                            <tr>
+                                <th class="border-right" style="width: 0%;" scope="row">{{ $index + 1 }}</th>
+                                <td class="col-sm-7 border-right">
+                                    <p>{{ $item['deskripsi'] }}</p>
+                                </td>
+                                <td class="col-sm-2">
+                                    @if (!is_null($rencana))
+                                    @include('penilaian::rencana.components.modal-edit-hasil-kerja-utama')
+                                    @endif
+                                    <!-- <button type="button" class="btn btn-success btn-sm">
+                <i class="fas fa-pen"></i>
+            </button> -->
+                                    <button type="button" class="btn btn-success btn-sm">
+                                        <i class="fas fa-star"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-right"></td>
+                                <td class="col-sm-7 border-right" scope="row">
+                                    <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            @foreach ($item->indikator as $indikator)
+                            <tr>
+                                <td class="border-right"></td>
+                                <td class="col-sm-7 border-right align-middle">
+                                    <li class="mb-0">{{ $indikator->deskripsi }}</li>
+                                </td>
+                                <td class="col-sm-4 border-right align-middle"></td>
+                                <td class="align-middle">
+                                    @include('penilaian::rencana.components.modal-create-manual-indikator-utama', ['indikator' => $indikator])
+                                </td>
+                            </tr>
 
+                            {{-- Tambahkan manual indikator di bawah indikator terkait --}}
+                            @if ($indikator->definisiOperasional->count())
+                            <tr>
+                                <td class="border-right"></td>
+                                <td colspan="3" class="border-right align-middle pl-4">
+                                    <strong>Indikator Manual:</strong>
+                                    <ul>
+                                        @foreach ($indikator->definisiOperasional as $manual)
+                                        <li>
+                                            <strong>Topik:</strong> {{ $manual->topik }} |
+                                            <strong>Sub Topik:</strong> {{ $manual->sub_topik }} |
+                                            <strong>Deskripsi:</strong> {{ $manual->deskripsi }}
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                            </tr>
+                            @endif
+                            @endforeach
+
+                            <!-- <tr>
+        <td class="border-right"></td>
+        <td class="col-sm-7 border-right" scope="row">
+            @foreach ($item->indikator as $indikator)
+            <li>{{ $indikator['deskripsi'] }}</li>
+            @endforeach
+        </td>
+        <td class="align-middle">
+            <button class="btn btn-success btn-sm me-1">
+                <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+
+        <td>
+            <button type="button" class="btn btn-success btn-sm">
+                <i class="fas fa-pen"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </tr> -->
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5">-</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
                     <table class="table  mb-0" style="width: 100%;">
                         <thead>
                             <tr>

@@ -61,27 +61,71 @@
                 </div>
                 @endif
 
-                @if (is_null($rencana))
-                <div class="w-100 d-flex justify-content-end align-items-center p-4">
-                    <form method="POST" action="{{ url('/skp/rencana/store') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">Buat SKP</button>
-                    </form>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    {{-- KIRI: STATUS --}}
+                    <div>
+                        <span class="badge badge-info p-2">
+                            <!-- Status Pengajuan: -->
+                            <strong>{{ $rencana->status_persetujuan ?? 'Belum diajukan' }}</strong>
+                        </span>
+                        <!-- <span class="badge badge-info">
+                            Status Persetujuan:
+                            <strong>{{ $rencana->status_realisasi ?? 'Belum disetujui' }}</strong>
+                        </span> -->
+                    </div>
+
+                    {{-- KANAN: TOMBOL --}}
+                    <div class="d-flex justify-content-end">
+                        @if (is_null($rencana))
+                        <form method="POST" action="{{ url('/skp/rencana/store') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">Buat SKP</button>
+                        </form>
+                        @else
+                        @if ($statusTombol === 'reset')
+                        <form method="POST" action="{{ url('/skp/rencana/reset/' . $rencana->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Reset SKP</button>
+                        </form>
+                        @elseif ($statusTombol === 'ajukan')
+                        <form method="POST" action="{{ url('/skp/rencana/ajukan/' . $rencana->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-success">Ajukan SKP</button>
+                        </form>
+                        @elseif ($statusTombol === 'batalkan')
+                        <form method="POST" action="{{ url('/skp/rencana/batalkan-pengajuan/' . $rencana->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-danger">Batalkan Pengajuan</button>
+                        </form>
+                        @endif
+                        @endif
+                    </div>
                 </div>
-                @endif
+
+
 
                 @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
                 <div class="bg-white mt-3">
-                    <table class="table mb-0" style="width: 100%;">
-                        
-
+                    <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th colspan="5">Hasil Kerja</th>
+                                <th colspan="3">Hasil Kerja</th>
+                                @if ($statusTombol === 'reset')
+                                <th>
+                                    <form method="POST" action="{{ url('/skp/rencana/salin-skp/') }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-info">Salin SKP</button>
+                                    </form>
+                                </th>
+                                @endif
+
                             </tr>
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right">A. Utama</th>
-                                <th colspan="1" class="col-sm-2">
+                                <th colspan="3" class="col-sm-10 border-right">A. Utama</th>
+                                <th class="col-sm-2">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-create-hasil-kerja-utama')
                                     @endif
@@ -91,99 +135,87 @@
                         <tbody>
                             @if ($hasilKerjaUtama->count())
                             @foreach ($hasilKerjaUtama as $index => $item)
-                            <tr>
-                                <th class="border-right" style="width: 0%;" scope="row">{{ $index + 1 }}</th>
-                                <td class="col-sm-7 border-right">
-                                    <p>{{ $item['deskripsi'] }}</p>
+                            {{-- Baris Hasil Kerja --}}
+                            <tr class="bg-light">
+                                <th class="border-right align-top" scope="row">{{ $index + 1 }}</th>
+                                <td class="border-right align-top" colspan="2">
+                                    {{ $item->deskripsi }}
                                 </td>
-                                <td class="col-sm-2">
+                                <td class="align-top">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-edit-hasil-kerja-utama')
                                     @endif
-                                    <!-- <button type="button" class="btn btn-success btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button> -->
-                                    <button type="button" class="btn btn-success btn-sm">
+                                    <button type="button" class="btn btn-success btn-sm" title="Tandai Penting">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
+                                    <!-- <button type="button" class="btn btn-danger btn-sm" title="Nonaktifkan">
                                         <i class="fas fa-ban"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
+                                    </button> -->
+                                    <button type="button" class="btn btn-danger btn-sm" title="Hapus Hasil Kerja">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
+
+                            {{-- Judul Indikator --}}
                             <tr>
                                 <td class="border-right"></td>
-                                <td class="col-sm-7 border-right" scope="row">
-                                    <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
+                                <td colspan="3">
+                                    <span>Ukuran keberhasilan / Indikator Kinerja Individu dan Target:</span>
                                 </td>
-                                <td></td>
                             </tr>
+
+                            {{-- Looping Indikator --}}
                             @foreach ($item->indikator as $indikator)
                             <tr>
                                 <td class="border-right"></td>
-                                <td class="col-sm-7 border-right align-middle">
-                                    <li class="mb-0">{{ $indikator['deskripsi'] }}</li>
+
+                                {{-- Indikator Utama --}}
+                                <td class="align-top border-right col-sm-7">
+                                    <li class="mb-0">{{ $indikator->deskripsi }}</li>
                                 </td>
-                                <td class="align-middle">
-                                    @if (!is_null($rencana))
-                                    @include('penilaian::rencana.components.modal-edit-indikator-hasil-kerja-utama')
+
+                                {{-- Indikator Manual --}}
+                                <td class="align-top border-right col-sm-3">
+                                    @if ($indikator->definisiOperasional->count())
+                                    <ul class="mb-0 ps-3">
+                                        @foreach ($indikator->definisiOperasional as $manual)
+                                        <li class="mb-1">
+                                            <p class="mb-0"><strong>Topik:</strong> {{ $manual->topik }}</p>
+                                            <p class="mb-0"><strong>Sub Topik:</strong> {{ $manual->sub_topik }}</p>
+                                            <p class="mb-0"><strong>Deskripsi:</strong> {{ $manual->deskripsi }}</p>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @else
+                                    <span class="text-muted">-</span>
                                     @endif
-                                    @if (!is_null($rencana))
-                                    @include('penilaian::rencana.components.modal-create-manual-indikator-utama', ['hasilKerja' => $item])
-                                    @endif
-                                    <!-- <button type="button" class="btn btn-success btn-sm" title="Edit Indikator">
-                                        <i class="fas fa-pen">
-                                        </i>
-                                    </button> -->
-                                    <!-- <button type="button" class="btn btn-success btn-sm" title="Indikator Manual">
-                                        <i class="fas fa-balance-scale"></i>
-                                    </button> -->
+                                </td>
+
+                                {{-- Aksi --}}
+                                <td class="align-top">
+                                    @include('penilaian::rencana.components.modal-edit-indikator-hasil-kerja-utama', ['indikator' => $indikator])
+                                    @include('penilaian::rencana.components.modal-create-manual-indikator-utama', ['indikator' => $indikator])
                                     <button type="button" class="btn btn-danger btn-sm" title="Hapus Indikator">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
                             @endforeach
-                            <!-- <tr>
-                                <td class="border-right"></td>
-                                <td class="col-sm-7 border-right" scope="row">
-                                    @foreach ($item->indikator as $indikator)
-                                    <li>{{ $indikator['deskripsi'] }}</li>
-                                    @endforeach
-                                </td>
-                                <td class="align-middle">
-                                    <button class="btn btn-success btn-sm me-1">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-
-                                <td>
-                                    <button type="button" class="btn btn-success btn-sm">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr> -->
                             @endforeach
                             @else
                             <tr>
-                                <td colspan="5">-</td>
+                                <td colspan="5" class=" text-muted">-</td>
                             </tr>
                             @endif
                         </tbody>
                     </table>
+
+
                     <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right">B. Tambahan</th>
+                                <th colspan="2" class="col-sm-10 border-right">B. Tambahan</th>
                                 <th colspan="1" class="col-sm-2">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-create-hasil-kerja-tambahan')
@@ -195,34 +227,34 @@
                             @if ($hasilKerjaTambahan->count())
                             @foreach ($hasilKerjaTambahan as $indexTambahan => $item)
                             <tr>
-                                <th style="width: 0%;" scope="row">{{ $indexTambahan + 1 }}</th>
-                                <td class="col-sm-7 border-right">
+                                <th class="border-right" style="width: 0%;" scope="row">{{ $indexTambahan + 1 }}</th>
+                                <td class="border-right">
                                     <p>{{ $item['deskripsi'] }}</p>
                                 </td>
-                                <td class="col-sm-2">
+                                <td>
                                     <button type="button" class="btn btn-success btn-sm">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <button type="button" class="btn btn-success btn-sm">
                                         <i class="fas fa-star"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm">
+                                    <!-- <button type="button" class="btn btn-danger btn-sm">
                                         <i class="fas fa-ban"></i>
-                                    </button>
+                                    </button> -->
                                     <button type="button" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td class="col-sm-7 border-right"><span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span></td>
+                                <td class=" border-right"></td>
+                                <td><span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span></td>
                                 <td></td>
                             </tr>
                             @foreach ($item->indikator as $indikator)
                             <tr>
                                 <td class="border-right"></td>
-                                <td class="col-sm-7 border-right align-middle">
+                                <td class=" border-right align-middle">
                                     <li class="mb-0">{{ $indikator['deskripsi'] }}</li>
                                 </td>
                                 <td class="align-middle">
@@ -247,47 +279,110 @@
                     <table class="table  mb-0">
                         <thead>
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right">C. Lampiran</th>
+                                <th colspan="2" class="col-sm-10">C. Lampiran</th>
                                 <th colspan="1" class="col-sm-2">
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right" scope="row">Dukungan Sumber Daya</th>
+                                <th colspan="2" class="col-sm-10 border-right" scope="row">Dukungan Sumber Daya</th>
                                 <th colspan="1" class="col-sm-2">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-create-dukungan-sumber-daya')
                                     @endif
                                 </th>
                             </tr>
+
+                            @if (!is_null($rencana))
+                            @php $nomor = 1; @endphp
+                            @foreach ($rencana->hasilKerja as $hasil)
+                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Dukungan Sumber Daya') as $lampiran)
                             <tr>
-                                <td colspan="5">-</td>
+                                <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
+                                <td class=" align-middle" colspan="2">
+                                    {{ $lampiran->deskripsi_lampiran }}
+                                </td>
                             </tr>
+                            @endforeach
+                            @endforeach
+
+                            @if ($nomor === 1)
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right" scope="row">Skema Pertanggung Jawaban</th>
+                                <td colspan="3">-</td>
+                            </tr>
+                            @endif
+                            @else
+                            <tr>
+                                <td colspan="3">-</td>
+                            </tr>
+                            @endif
+
+                            <tr>
+                                <th colspan="2" class="col-sm-10 border-right" scope="row">Skema Pertanggung Jawaban</th>
                                 <th colspan="1" class="col-sm-2">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-create-skema-pertanggung-jawaban')
                                     @endif
                                 </th>
+                            </tr>
+                            @if (!is_null($rencana))
+                            @php $nomor = 1; @endphp
+                            @foreach ($rencana->hasilKerja as $hasil)
+                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Skema Pertanggung Jawaban') as $lampiran)
+                            <tr>
+                                <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
+                                <td class=" align-middle" colspan="2">
+                                    {{ $lampiran->deskripsi_lampiran }}
+                                </td>
+                            </tr>
+                            @endforeach
+                            @endforeach
 
-                            </tr>
+                            @if ($nomor === 1)
                             <tr>
-                                <td colspan="5">-</td>
+                                <td colspan="3">-</td>
                             </tr>
+                            @endif
+                            @else
                             <tr>
-                                <th colspan="2" class="col-sm-7 border-right" scope="row">Konsekuensi</th>
+                                <td colspan="3">-</td>
+                            </tr>
+                            @endif
+
+                            <tr>
+                                <th colspan="2" class="col-sm-10 border-right" scope="row">Konsekuensi</th>
                                 <th colspan="1" class="col-sm-2">
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-create-konsekuensi')
                                     @endif
                                 </th>
                             </tr>
+                            @if (!is_null($rencana))
+                            @php $nomor = 1; @endphp
+                            @foreach ($rencana->hasilKerja as $hasil)
+                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Konsekuensi') as $lampiran)
                             <tr>
-                                <td colspan="5">-</td>
+                                <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
+                                <td class=" align-middle" colspan="2">
+                                    {{ $lampiran->deskripsi_lampiran }}
+                                </td>
                             </tr>
+                            @endforeach
+                            @endforeach
+
+                            @if ($nomor === 1)
+                            <tr>
+                                <td colspan="3">-</td>
+                            </tr>
+                            @endif
+                            @else
+                            <tr>
+                                <td colspan="3">-</td>
+                            </tr>
+                            @endif
                         </tbody>
+
 
                     </table>
 

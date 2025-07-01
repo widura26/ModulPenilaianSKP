@@ -102,14 +102,14 @@
               <td>{{ $rk->pegawai->jabatan->jabatan ?? '-' }}</td>
               <td>{{ $rk->status_persetujuan }}</td>
               <td>
-                <a href="{{ url('/skp/persetujuan/detail/'. $rk->pegawai_id) }}" class="btn btn-sm btn-info far fa-check-circle">Detail</a>
+                <a href="{{ url('/skp/persetujuan/detail/'. $rk->pegawai_id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i></a>
                 <form action="{{ url('/skp/persetujuan/setujui/. $rk->id') }}" method="POST" style="display:inline">
                   @csrf
-                  <button class="btn btn-sm btn-success fas fa-search">Setujui</button>
+                  <button class="btn btn-sm btn-success "><i class="far fa-check-circle"></i></button>
                 </form>
                 <form action="{{ url('/skp/persetujuan/tolak/. $rk->id') }}" method="POST" style="display:inline">
                   @csrf
-                  <button class="btn btn-sm btn-danger fas fa-ban">Tolak</button>
+                  <button class="btn btn-sm btn-danger "><i class="fas fa-ban"></i></button>
                 </form>
               </td>
             </tr>

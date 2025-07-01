@@ -20,8 +20,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="indikator">Indikator</label>
-                  <textarea class="form-control" id="indikator" rows="3" name="indikators"></textarea>
+                    <label for="indikator">Indikator</label>
+                    <textarea class="form-control" id="indikator" rows="3" name="indikators"></textarea>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        Tips: Untuk menambah lebih dari satu lampiran, gunakan tanda ; sebagai pemisah
+                    </small>
                 </div>
             </div>
             <div class="modal-footer">
