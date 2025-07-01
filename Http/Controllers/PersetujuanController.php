@@ -53,13 +53,14 @@ class PersetujuanController extends Controller
     {
         $pegawai = Pegawai::with([
             'rencanaKerja.hasilKerja.indikator',
-            'rencanaKerja.pegawai.timKerjaAnggota'
+            'rencanaKerja.pegawai.timKerjaAnggota',
+            'rencanaKerja.hasilKerja.lampirans',
         ])->findOrFail($pegawai_id);
 
         $rencana = $pegawai->rencanaKerja->first();
         $perilakuKerja = PerilakuKerja::all();
         $rencanaPerilaku = RencanaPerilaku::where('rencana_id', $rencana->id)
-        ->pluck('ekspektasi_pimpinan', 'perilaku_kerja_id');
+            ->pluck('ekspektasi_pimpinan', 'perilaku_kerja_id');
 
         return view('penilaian::persetujuan.details-persetujuan', compact('pegawai', 'rencana', 'perilakuKerja', 'rencanaPerilaku'));
     }
@@ -129,72 +130,51 @@ class PersetujuanController extends Controller
 
 
     // Setujui rencana kerja
-    public function setujui($pegawai_id)
+    public function setujui($id)
     {
-        RencanaKerja::where('pegawai_id', $pegawai_id)->update([
-            'status_persetujuan' => 'disetujui'
-        ]);
+        $rencana = RencanaKerja::where('pegawai_id', $id)->first();
 
-        return back()->with('success', 'Rencana kerja disetujui.');
+        if ($rencana) {
+            $rencana->status_persetujuan = 'Sudah Disetujui'; // ✅ enum match
+            $rencana->save();
+
+            return back()->with('success', 'Rencana kerja disetujui.');
+        } else {
+            return back()->with('error', 'Rencana kerja tidak ditemukan.');
+        }
     }
+
 
     // Tolak rencana kerja
-    public function tolak($pegawai_id)
+    public function tolak($id)
     {
-        RencanaKerja::where('pegawai_id', $pegawai_id)->update([
-            'status_persetujuan' => 'ditolak'
-        ]);
+        $rencana = RencanaKerja::where('pegawai_id', $id)->first();
 
-        return back()->with('error', 'Rencana kerja ditolak.');
-    }
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('penilaian::create');
+        if ($rencana) {
+            $rencana->status_persetujuan = 'Belum Disetujui'; // ✅ enum match
+            $rencana->save();
+
+            return back()->with('error', 'Rencana kerja ditolak.');
+        } else {
+            return back()->with('error', 'Rencana kerja tidak ditemukan.');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request) {}
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
+    public function setujuiTerpilih(Request $request)
     {
-        return view('penilaian::show');
+        $ids = $request->input('rencana_id', []);
+        RencanaKerja::whereIn('id', $ids)->update(['status_persetujuan' => 'Sudah Disetujui']); // ✅ enum match
+
+        return back()->with('success', 'Rencana kerja yang dipilih telah disetujui.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
+
+    public function tolakTerpilih(Request $request)
     {
-        return view('penilaian::edit');
+        $ids = $request->input('rencana_id', []);
+        RencanaKerja::whereIn('id', $ids)->update(['status_persetujuan' => 'Belum Disetujui']); // ✅ enum match
+
+        return back()->with('error', 'Rencana kerja yang dipilih telah ditolak.');
     }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id) {}
 }

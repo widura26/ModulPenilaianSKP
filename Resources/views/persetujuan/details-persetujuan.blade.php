@@ -38,13 +38,13 @@
         @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
         <div class="bg-white p-4 ">
           <!-- Table hasil kerja utama -->
-          <table class="table mb-0 table-bordered">
+          <table class="table mb-0 ">
             <thead>
               <tr>
                 <th colspan="5">Hasil Kerja</th>
               </tr>
               <tr>
-                <th colspan="2" class="col-sm-7 border-right">A. Utama</th>
+                <th colspan="2" class="col-sm-7">A. Utama</th>
 
               </tr>
             </thead>
@@ -53,19 +53,19 @@
               @foreach ($hasilKerjaUtama as $index => $item)
               <tr>
                 <th class="border-right" style="width: 0%;" scope="row">{{ $index + 1 }}</th>
-                <td class="col-sm-7 border-right">
+                <td class="col-sm-7 ">
                   <p>{{ $item['deskripsi'] }}</p>
                 </td>
               </tr>
               <tr>
                 <td class="border-right"></td>
-                <td class="col-sm-7 border-right" scope="row">
+                <td class="col-sm-7 " scope="row">
                   <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
                 </td>
               </tr>
               <tr>
                 <td class="border-right"></td>
-                <td class="col-sm-7 border-right" scope="row">
+                <td class="col-sm-7 " scope="row">
                   @foreach ($item->indikator as $indikator)
                   <li>{{ $indikator['deskripsi'] }}</li>
                   @endforeach
@@ -81,7 +81,7 @@
             </tbody>
           </table>
           <!-- Table hasil kerja tambahan -->
-          <table class="table mb-0 table-bordered">
+          <table class="table mb-0 ">
             <thead>
               <tr>
                 <th colspan="2" class="col-sm-7 border-right">B. Tambahan</th>
@@ -121,40 +121,54 @@
             </tbody>
           </table>
           <!-- Table lampiran -->
-          <table class="table  mb-0 table-bordered">
+          <table class="table ">
             <thead>
               <tr>
-                <th colspan="2" class="col-sm-7 border-right">C. Lampiran</th>
-                </th>
+                <th colspan="2">Lampiran</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th colspan="2" class="col-sm-7 border-right" scope="row">Dukungan Sumber Daya</th>
-                </th>
+              @php
+              $jenisList = [
+              'Dukungan Sumber Daya' => 'Dukungan Sumber Daya',
+              'Skema Pertanggung Jawaban' => 'Skema Pertanggung Jawaban',
+              'Konsekuensi' => 'Konsekuensi'
+              ];
+              @endphp
+
+              @foreach ($jenisList as $jenisKey => $jenisLabel)
+              <tr class="bg-light">
+                <th colspan="5">{{ $jenisLabel }}</th>
               </tr>
+
+              @php $nomor = 1; @endphp
+
+              @forelse ($rencana->hasilKerja as $hasil)
+              @foreach ($hasil->lampirans->where('jenis_lampiran', $jenisKey) as $lampiran)
               <tr>
-                <td colspan="5">-</td>
+                <td class="text-center" >{{ $nomor++ }}</td>
+                <td>
+                  <a href="{{ asset('storage/' . $lampiran->path) }}" target="_blank">{{ $lampiran->nama_file }}</a>
+                  <br>
+                  <small>{{ $lampiran->deskripsi_lampiran ?? '-' }}</small>
+                </td>
               </tr>
+              @endforeach
+              @empty
+              @endforelse
+
+              @if ($nomor === 1)
               <tr>
-                <th colspan="2" class="col-sm-7 border-right" scope="row">Skema Pertanggung Jawaban</th>
-                </th>
+                <td colspan="2">-</td>
               </tr>
-              <tr>
-                <td colspan="5">-</td>
-              </tr>
-              <tr>
-                <th colspan="2" class="col-sm-7 border-right" scope="row">Konsekuensi</th>
-                </th>
-              </tr>
-              <tr>
-                <td colspan="5">-</td>
-              </tr>
+              @endif
+              @endforeach
             </tbody>
           </table>
 
+
           <!-- Table perilaku kerja -->
-          <!-- <table class="table mb-0 mt-4 table-bordered">
+          <!-- <table class="table mb-0 mt-4 ">
             <thead>
               <tr>
                 <th colspan="5">Perilaku Kerja</th>
@@ -188,7 +202,7 @@
           </table> -->
           <form action="{{ url('/skp/persetujuan/ekspektasi/' . $rencana->id) }}" method="POST">
             @csrf
-            <table class="table table-bordered">
+            <table class="table ">
               <thead>
                 <tr>
                   <th colspan="3">Perilaku Kerja</th>

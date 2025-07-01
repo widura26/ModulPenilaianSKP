@@ -21,6 +21,8 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::post('/ekspektasi/{rencana_id}', 'PersetujuanController@simpanEkspektasiPerilaku');
             Route::post('/setujui/{id}', 'PersetujuanController@setujui');
             Route::post('/tolak/{id}', 'PersetujuanController@tolak');
+            Route::post('/setujui-terpilih', 'PersetujuanController@setujuiTerpilih');
+            Route::post('/tolak-terpilih', 'PersetujuanController@tolakTerpilih');
         });
         Route::prefix('periode')->group(function () {
             Route::get('/', 'PeriodeController@index');
