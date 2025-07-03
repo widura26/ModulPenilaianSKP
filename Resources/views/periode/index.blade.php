@@ -37,9 +37,7 @@
                                         <button class="btn btn-warning" title="update" onclick="window.location.href='{{ url('/skp/periode/' . $periode->id) }}'">
                                             <i class="nav-icon fas fa-pencil-alt "></i>
                                         </button>
-                                        <button class="btn btn-danger" title="delete">
-                                            <i class="nav-icon fas fa-trash "></i>
-                                        </button>
+                                        @include('penilaian::periode.components.modal-delete-periode')
                                     </td>
                                 </tr>
                             @endforeach

@@ -63,11 +63,11 @@
                 </div>
                 @include('penilaian::components.atasan-bawahan-section')
                 <div class="bg-white p-4">
-                    <form method="POST" action="{{ url('/skp/evaluasi/proses-umpan-balik/' . $pegawai->username) }}">
+                    <form method="POST" action="{{ url('/skp/evaluasi/proses-umpan-balik/' . $pegawai->id) }}">
                         @csrf
-                        @include('penilaian::evaluasi.components.table-hasilkerja-utama-evaluasi')
-                        @include('penilaian::evaluasi.components.table-hasilkerja-tambahan-evaluasi')
-                        @include('penilaian::evaluasi.components.table-perilakukerja-evaluasi')
+                        @include('penilaian::evaluasi.components.backup-table-hasilkerja-utama-evaluasi')
+                        @include('penilaian::evaluasi.components.backup-table-hasilkerja-tambahan-evaluasi')
+                        @include('penilaian::evaluasi.components.backup-table-perilakukerja-evaluasi')
 
                         @php
                             $loggedInKetuaId = $pegawaiWhoLogin->id;
@@ -76,15 +76,14 @@
                                 return $penilaian && !is_null($penilaian->umpan_balik_predikat);
                             });
                         @endphp
-
-                        @if (!$semuaSudahTerisi)
+                        @if (!$semuaSudahTerisi || $rencana->proses_umpan_balik == false)
                             <div class="w-100 mt-4 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Proses Umpan Balik</button>
                             </div>
                         @endif
                     </form>
 
-                    @if($semuaSudahTerisi && count($rencana->hasilKerja) !== 0)
+                    @if($semuaSudahTerisi && count($rencana->hasilKerja) !== 0 && $rencana->proses_umpan_balik == true)
                         <div>@include('penilaian::evaluasi.components.proses-umpan-balik')</div>
                     @endif
                 </div>

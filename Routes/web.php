@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::post('/update/{id}', 'PeriodeController@update');
             Route::post('/set', 'PeriodeController@setPeriode');
             Route::get('/{id}', 'PeriodeController@detail');
+            Route::post('/delete/{id}', 'PeriodeController@delete');
         });
         Route::prefix('preview')->group(function () {
             Route::get('/evaluasi', 'PreviewController@previewEvaluasi');
@@ -46,7 +47,7 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::get('/data-pegawai', 'EvaluasiController@index');
             Route::get('/{username}/detail', 'EvaluasiController@evaluasiDetail');
             Route::post('/batalkan-evaluasi/{username}', 'EvaluasiController@batalkanEvaluasi');
-            Route::post('proses-umpan-balik/{username}', 'EvaluasiController@prosesUmpanBalik');
+            Route::post('proses-umpan-balik/{id}', 'EvaluasiController@prosesUmpanBalik');
             Route::post('simpan-hasil-evaluasi/{id}', 'EvaluasiController@simpanHasilEvaluasi');
             Route::post('ubah-umpan-balik/{id}', 'EvaluasiController@ubahUmpanBalik');
         });

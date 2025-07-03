@@ -28,6 +28,7 @@ class CreateSkpRencanaKerjaTable extends Migration
             $table->unsignedBigInteger('periode_id')->nullable();
             $table->unsignedBigInteger('pegawai_id')->nullable();
             $table->unsignedBigInteger('lampiran_id')->nullable();
+            $table->boolean('proses_umpan_balik')->default(false);
             // $table->unsignedBigInteger('jabatan_id')->nullable();
             $table->timestamps();
 

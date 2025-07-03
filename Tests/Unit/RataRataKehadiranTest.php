@@ -21,9 +21,7 @@ class RataRataKehadiranTest extends TestCase
 
     public function test_rerata_kehadiran_dengan_hari_kerja_nol(){
         $penilaianController = new PenilaianController();
-
         $result = $penilaianController->rerataKehadiran(2, 0, 15, 3);
-
         $this->assertEquals([
             'rerata_alpa' => 0,
             'rerata_kehadiran_sesuai_ketentuan' => 0,
@@ -49,9 +47,7 @@ class RataRataKehadiranTest extends TestCase
 
     public function test_rerata_kehadiran_with_zero_hari_kerja_should_be_zero_all(){
         $penilaianController = new PenilaianController();
-
         $result = $penilaianController->rerataKehadiran(0, 0, 0, 0);
-
         $this->assertEquals(0, $result['rerata_alpa']);
         $this->assertEquals(0, $result['rerata_kehadiran_sesuai_ketentuan']);
         $this->assertEquals(0, $result['rerata_kehadiran_tidak_sesuai_ketentuan']);

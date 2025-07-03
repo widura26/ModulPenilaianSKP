@@ -125,8 +125,8 @@ class EvaluasiController extends Controller {
         }
     }
 
-    public function prosesUmpanBalik(Request $request){
-
+    public function prosesUmpanBalik(Request $request, $id){
+        $periodeId = $this->periodeController->periode_aktif();
         $request->validate([
             'feedback.*.umpan_balik_predikat' => 'required|string',
             'feedback.*.umpan_balik_deskripsi' => 'required|string',
@@ -193,6 +193,10 @@ class EvaluasiController extends Controller {
                         'umpan_balik_deskripsi' => $item['perilaku_umpan_balik_deskripsi'] ?? null,
                     ]);
             }
+
+            RencanaKerja::where('periode_id', $periodeId)->where('pegawai_id', $id)->update([
+                'proses_umpan_balik' => True
+            ]);
             DB::commit();
             return redirect()->back()->with('success', 'proses umpan balik berhasil');
         } catch (\Throwable $th) {
@@ -240,8 +244,13 @@ class EvaluasiController extends Controller {
     }
 
     public function ubahUmpanBalik($id){
+        $pegawai = Pegawai::where('id', $id)->first();
+        $periodeId = $this->periodeController->periode_aktif();
         try {
-
+            RencanaKerja::where('periode_id', $periodeId)->where('pegawai_id', $id)->update([
+                'proses_umpan_balik' => False
+            ]);
+            return response()->json(['success' => true, 'message' => 'Berhasil diubah']);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -281,7 +290,7 @@ class EvaluasiController extends Controller {
         return $this->predikatValue($average);
     }
 
-    private function predikatValue($input){
+    public function predikatValue($input){
         $map = [
             'Dibawah Ekspektasi' => 1,
             'Sesuai Ekspektasi' => 2,
