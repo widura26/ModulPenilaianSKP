@@ -53,9 +53,14 @@
 
                             <div class="d-flex flex-column col-md-6">
                                 <label for="status">File</label>
-                                <button class="btn btn-primary w-50" onclick="window.open({{ url('/penilaian/') }}, '_blank')">
-                                    <i class="fas fa-file-alt"></i> Dokumen
-                                </button>
+                                <div class="d-flex" style="gap: 4px;">
+                                    <button class="btn btn-warning w-50" onclick="window.open('{{ asset('storage/' . $arsipData->file) }}', '_blank')">
+                                        <i class="fas fa-eye"></i> Lihat Dokumen
+                                    </button>
+                                    {{-- <button class="btn btn-warning w-50" onclick="window.open('{{ asset('storage/' . $arsipData->file) }}', '_blank')">
+                                        <i class="fas fa-file-download"></i> Download
+                                    </button> --}}
+                                </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

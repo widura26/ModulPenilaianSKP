@@ -3,7 +3,7 @@
 </button>
 <div class="modal fade" id="periodeModal" tabindex="-1" role="dialog" aria-labelledby="hasilKerjaModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form method="POST" class="modal-content" action="{{ url('penilaian/periode/store') }}">
+        <form method="POST" class="modal-content" action="{{ url('skp/periode/store') }}">
             @csrf
             <div class="modal-header">Tambah Periode</div>
             <div class="modal-body">

@@ -228,10 +228,10 @@ class RencanaController extends Controller
             //     'tim_kerja_id' => session('tim_kerja_id'),
             //     'periode_id' => $periodeId,
             //     'status_persetujuan' => 'Belum Ajukan SKP',
-            //     ''
             //     'status_realisasi' =>  'Belum Ajukan Realisasi',
             //     'pegawai_id' => $pegawai->id
             // ];
+
             // dd($data);
             $rencana = RencanaKerja::create([
                 'tim_kerja_id' => session('tim_kerja_id'),
