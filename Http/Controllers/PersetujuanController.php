@@ -30,24 +30,26 @@ class PersetujuanController extends Controller
 
 
     // Menampilkan daftar pengajuan rencana kerja
-    public function index()
+    public function index(Request $request)
     {
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
-        $rencana = RencanaKerja::with('pegawai')->get();
-        // ->select('pegawai_id', DB::raw('MAX(status_persetujuan) as status'))
-        // ->groupBy('pegawai_id')
-        // ->get();
+
+        $query = RencanaKerja::with('pegawai')
+            ->where('periode_id', $periodeId); // ✅ filter berdasarkan periode aktif
+
+        if ($request->has('filter_status') && $request->filter_status !== '') {
+            $query->where('status_persetujuan', $request->filter_status);
+        }
+
+        $rencana = $query->get();
 
         return view('penilaian::persetujuan.persetujuan', compact('pegawai', 'rencana'));
     }
 
+
+
     // Menampilkan detail rencana kerja berdasarkan pegawai
-    // public function detail($pegawai_id)
-    // {
-    //     $pegawai = Pegawai::with(['rencanaKerja'])->findOrFail($pegawai_id);
-    //     return view('penilaian::persetujuan.details-persetujuan', compact('pegawai'));
-    // }
 
     public function detail($pegawai_id)
     {
