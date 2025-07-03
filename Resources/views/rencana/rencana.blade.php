@@ -59,6 +59,12 @@
                         {{ session('success') }}
                     </div>
                 </div>
+                @elseif(session('error'))
+                <div class="p-2" id="alert-passed">
+                    <div id="alert-passed" class="alert alert-failed">
+                        {{ session('error') }}
+                    </div>
+                </div>
                 @endif
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -66,12 +72,12 @@
                     <div>
                         <span class="badge badge-info p-2">
                             <!-- Status Pengajuan: -->
-                            <strong>{{ $rencana->status_persetujuan ?? 'Belum diajukan' }}</strong>
+                            <strong>{{ $rencana->status_persetujuan ?? 'Belum disetujui' }}</strong>
                         </span>
-                        <!-- <span class="badge badge-info">
-                            Status Persetujuan:
-                            <strong>{{ $rencana->status_realisasi ?? 'Belum disetujui' }}</strong>
-                        </span> -->
+                        <span class="badge badge-info p-2">
+                            <!-- Status Persetujuan: -->
+                            <strong>{{ $rencana->status_pengajuan ?? 'Belum diajukan' }}</strong>
+                        </span>
                     </div>
 
                     {{-- KANAN: TOMBOL --}}
@@ -104,8 +110,6 @@
                         @endif
                     </div>
                 </div>
-
-
 
                 @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
                 <div class="bg-white mt-3">

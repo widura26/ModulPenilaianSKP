@@ -37,134 +37,126 @@
       <div class="card-body">
         @include('penilaian::components.atasan-bawahan-section', ['pegawai' => $pegawai])
         <div class="bg-white p-4 ">
-          <!-- Table hasil kerja utama -->
-          <table class="table mb-0 ">
+          {{-- TABEL HASIL KERJA UTAMA --}}
+          <table class="table mb-0">
             <thead>
               <tr>
-                <th colspan="5">Hasil Kerja</th>
+                <th colspan="3">Hasil Kerja</th>
               </tr>
               <tr>
-                <th colspan="2" class="col-sm-7">A. Utama</th>
-
+                <th colspan="3" class="col-sm-10">A. Utama</th>
               </tr>
             </thead>
             <tbody>
               @if ($hasilKerjaUtama->count())
               @foreach ($hasilKerjaUtama as $index => $item)
-              <tr>
-                <th class="border-right" style="width: 0%;" scope="row">{{ $index + 1 }}</th>
-                <td class="col-sm-7 ">
-                  <p>{{ $item['deskripsi'] }}</p>
+              <tr class="bg-light">
+                <td class="border-right align-top" style="width: 5%;" scope="row">{{ $index + 1 }}</td>
+                <td class=" align-top" colspan="2">
+                  {{ $item->deskripsi }}
                 </td>
               </tr>
               <tr>
                 <td class="border-right"></td>
-                <td class="col-sm-7 " scope="row">
-                  <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
+                <td colspan="2">
+                  <span>Ukuran keberhasilan / Indikator Kinerja Individu dan Target:</span>
                 </td>
               </tr>
+              @foreach ($item->indikator as $indikator)
               <tr>
                 <td class="border-right"></td>
-                <td class="col-sm-7 " scope="row">
-                  @foreach ($item->indikator as $indikator)
-                  <li>{{ $indikator['deskripsi'] }}</li>
-                  @endforeach
+                <td colspan="2">
+                  <li class="mb-0">{{ $indikator->deskripsi }}</li>
                 </td>
-
               </tr>
+              @endforeach
               @endforeach
               @else
               <tr>
-                <td colspan="5">-</td>
+                <td colspan="3" class="text-muted">-</td>
               </tr>
               @endif
             </tbody>
           </table>
-          <!-- Table hasil kerja tambahan -->
-          <table class="table mb-0 ">
+
+          {{-- TABEL HASIL KERJA TAMBAHAN --}}
+          <table class="table mb-0">
             <thead>
               <tr>
-                <th colspan="2" class="col-sm-7 border-right">B. Tambahan</th>
-                </th>
+                <th colspan="3" class="col-sm-10 ">B. Tambahan</th>
               </tr>
             </thead>
             <tbody>
               @if ($hasilKerjaTambahan->count())
-              @foreach ($hasilKerjaTambahan as $indexTambahan => $item)
-              <tr>
-                <th style="width: 0%;" scope="row">{{ $indexTambahan + 1 }}</th>
-                <td class="col-sm-7 border-right">
-                  <p>{{ $item['deskripsi'] }}</p>
+              @foreach ($hasilKerjaTambahan as $index => $item)
+              <tr class="bg-light">
+                <td class="border-right align-top" scope="row">{{ $index + 1 }}</td>
+                <td class="border-right align-top" colspan="2">
+                  {{ $item->deskripsi }}
                 </td>
               </tr>
               <tr>
-                <td></td>
-                <td class="col-sm-7 border-right"><span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span></td>
+                <td class="border-right"></td>
+                <td colspan="2">
+                  <span>Ukuran keberhasilan / Indikator Kinerja Individu dan Target:</span>
+                </td>
               </tr>
+              @foreach ($item->indikator as $indikator)
               <tr>
-                <td></td>
-                <td class="col-sm-7 border-right">
-                  <ul>
-                    @foreach ($item->indikator as $indikator)
-                    <li>{{ $indikator['deskripsi'] }}</li>
-                    @endforeach
-                  </ul>
+                <td class="border-right"></td>
+                <td colspan="2">
+                  <li class="mb-0">{{ $indikator->deskripsi }}</li>
                 </td>
               </tr>
               @endforeach
-
+              @endforeach
               @else
               <tr>
-                <td colspan="5">-</td>
+                <td colspan="3" class="text-muted">-</td>
               </tr>
               @endif
             </tbody>
           </table>
+
           <!-- Table lampiran -->
-          <table class="table ">
+          <table class="table mb-0">
             <thead>
               <tr>
-                <th colspan="2">Lampiran</th>
+                <th colspan="3" class="col-sm-10">C. Lampiran</th>
               </tr>
             </thead>
             <tbody>
               @php
-              $jenisList = [
-              'Dukungan Sumber Daya' => 'Dukungan Sumber Daya',
-              'Skema Pertanggung Jawaban' => 'Skema Pertanggung Jawaban',
-              'Konsekuensi' => 'Konsekuensi'
-              ];
+              $jenisList = ['Dukungan Sumber Daya', 'Skema Pertanggung Jawaban', 'Konsekuensi'];
               @endphp
 
-              @foreach ($jenisList as $jenisKey => $jenisLabel)
-              <tr class="bg-light">
-                <th colspan="5">{{ $jenisLabel }}</th>
-              </tr>
-
-              @php $nomor = 1; @endphp
-
-              @forelse ($rencana->hasilKerja as $hasil)
-              @foreach ($hasil->lampirans->where('jenis_lampiran', $jenisKey) as $lampiran)
+              @foreach ($jenisList as $jenis)
               <tr>
-                <td class="text-center" >{{ $nomor++ }}</td>
-                <td>
-                  <a href="{{ asset('storage/' . $lampiran->path) }}" target="_blank">{{ $lampiran->nama_file }}</a>
-                  <br>
-                  <small>{{ $lampiran->deskripsi_lampiran ?? '-' }}</small>
+                <th colspan="3" class="bg-light">{{ $jenis }}</th>
+              </tr>
+              @php $nomor = 1; @endphp
+              @foreach ($rencana->hasilKerja as $hasil)
+              @foreach ($hasil->lampirans->where('jenis_lampiran', $jenis) as $lampiran)
+              <tr>
+                <td class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</td>
+                <td colspan="2">
+                  <!-- <a href="{{ asset('storage/' . $lampiran->path) }}" target="_blank">{{ $lampiran->nama_file }}</a> -->
+                  <!-- <br> -->
+                  <p class="mb-0">{{ $lampiran->deskripsi_lampiran ?? '-' }}</p>
                 </td>
               </tr>
               @endforeach
-              @empty
-              @endforelse
+              @endforeach
 
               @if ($nomor === 1)
               <tr>
-                <td colspan="2">-</td>
+                <td colspan="3" class="text-muted">-</td>
               </tr>
               @endif
               @endforeach
             </tbody>
           </table>
+
 
 
           <!-- Table perilaku kerja -->
@@ -211,7 +203,7 @@
               <tbody>
                 @foreach ($perilakuKerja as $index => $item)
                 <tr>
-                  <td>{{ $index + 1 }}</td>
+                  <td class="border-right" style="width: 5%;">{{ $index + 1 }}</td>
                   <td>
                     <p><strong>{{ $item->deskripsi }}</strong></p>
                     <ul>
