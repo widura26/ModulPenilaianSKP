@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Penilaian\Entities\RencanaKerja;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\Pengaturan\Entities\Anggota;
 use Illuminate\Support\Facades\DB;
 use Modules\Cuti\Services\AtasanService;
@@ -133,7 +134,7 @@ class RencanaController extends Controller
                 });
 
             // Ganti status tombol
-            if ($rencana->status_persetujuan === 'Sudah Diajukan') {
+            if ($rencana->status_pengajuan === 'Sudah Diajukan') {
                 $statusTombol = 'batalkan';
             } elseif ($dataLengkap && $jumlahLampiran > 0) {
                 $statusTombol = 'ajukan';
@@ -141,6 +142,8 @@ class RencanaController extends Controller
                 $statusTombol = 'reset';
             }
         }
+
+        // dd($statusTombol);
 
 
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja.pegawai.timKerjaAnggota')->where('pegawai_id', $pegawai->id)->get();
@@ -176,15 +179,17 @@ class RencanaController extends Controller
     public function ajukanSKP($id)
     {
         $rencana = RencanaKerja::findOrFail($id);
-        $rencana->update(['status_persetujuan' => 'Sudah Diajukan']);
+        $rencana->update(['status_pengajuan' => 'Sudah Diajukan']);
         return redirect()->back()->with('success', 'SKP berhasil diajukan.');
+        // throw $th;
+
     }
 
     public function batalkanPengajuan($id)
     {
         $rencana = RencanaKerja::findOrFail($id);
-        $rencana->update(['status_persetujuan' => 'Belum Ajukan SKP']);
-        return redirect()->back()->with('success', 'Pengajuan SKP dibatalkan.');
+        $rencana->update(['status_persetujuan' => 'Sudah Disetujui']);
+        return redirect()->back()->with('success', 'Pengajuan SKP disetujui.');
     }
 
     public function resetSKP($id)
@@ -210,6 +215,7 @@ class RencanaController extends Controller
 
     public function store()
     {
+        // dd('store masuk');
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
         $perilakuList = PerilakuKerja::all();
@@ -230,7 +236,8 @@ class RencanaController extends Controller
             $rencana = RencanaKerja::create([
                 'tim_kerja_id' => session('tim_kerja_id'),
                 'periode_id' => $periodeId,
-                'status_persetujuan' => 'Belum Ajukan SKP',
+                'status_persetujuan' => 'Belum Disetujui',
+                'status_pengajuan'  => 'Belum Diajukan',
                 'status_realisasi' =>  'Belum Ajukan Realisasi',
                 'pegawai_id' => $pegawai->id
             ]);
@@ -242,11 +249,13 @@ class RencanaController extends Controller
                 ]);
             }
 
+            // session()->flash('buat_skp', true);
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil Buat SKP');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -398,8 +407,9 @@ class RencanaController extends Controller
             $rencanaBaru = RencanaKerja::create([
                 'tim_kerja_id' => session('tim_kerja_id'),
                 'periode_id' => $periodeId,
-                'status_persetujuan' => 'Belum Ajukan SKP',
-                'status_realisasi' => 'Belum Ajukan Realisasi',
+                'status_persetujuan' => 'Belum Disetujui',
+                'status_pengajuan'  => 'Belum Diajukan',
+                'status_realisasi' =>  'Belum Ajukan Realisasi',
                 'pegawai_id' => $pegawai->id
             ]);
 
@@ -448,7 +458,8 @@ class RencanaController extends Controller
             return redirect()->back()->with('success', 'SKP berhasil disalin.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('failed', 'Gagal menyalin SKP: ' . $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('failed', 'Gagal menyalin SKP: ' . $th->getMessage());
         }
     }
 

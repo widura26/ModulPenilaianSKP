@@ -18,7 +18,8 @@ class CreateSkpRencanaKerjaTable extends Migration
         Schema::create('skp_rencana_kerja', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tim_kerja_id')->nullable();
-            $table->enum('status_persetujuan', ['Belum Buat SKP', 'Belum Ajukan SKP','Sudah Diajukan', 'Belum Disetujui', 'Sudah Disetujui'])->default('Belum Buat SKP');
+            $table->enum('status_persetujuan', ['Belum Buat SKP', 'Belum Disetujui', 'Sudah Disetujui', 'Tolak'])->default('Belum Buat SKP');
+            $table->enum('status_pengajuan', ['Belum Diajukan','Sudah Diajukan',])->default('Belum Diajukan');
             $table->enum('status_realisasi', ['Belum Ajukan Realisasi', 'Belum Dievaluasi', 'Sudah Dievaluasi'])->default('Belum Ajukan Realisasi');
             $table->string('rating_hasil_kerja')->nullable();
             $table->text('deskripsi_rating_hasil_kerja')->nullable();
