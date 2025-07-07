@@ -71,6 +71,8 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::put('/ajukan/{id}', 'RencanaController@ajukanSKP');
             Route::put('/batalkan-pengajuan/{id}', 'RencanaController@batalkanPengajuan');
             Route::delete('/reset/{id}', 'RencanaController@resetSKP');
+            Route::get('/backup-cetak/{id}', 'RencanaController@backupCetak');
+            Route::get('/cetak/{id}', 'RencanaController@cetak');
         });
         Route::prefix('matriks-peran-hasil')->group(function () {
             Route::get('/', 'MatriksPeranHasilController@matriksperanhasil');

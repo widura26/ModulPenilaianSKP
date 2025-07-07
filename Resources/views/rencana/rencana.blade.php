@@ -17,21 +17,6 @@
     <div class="col-12">
         <div class="card">
             @php
-            switch (true) {
-            case 'Belum Dievaluasi':
-            $badgeClass = 'badge-secondary';
-            break;
-            case 'Belum Ajukan Realisasi':
-            $badgeClass = 'badge-danger';
-            break;
-            case 'Sudah Dievaluasi':
-            $badgeClass = 'badge-success';
-            break;
-            default:
-            $badgeClass = 'badge-secondary';
-            break;
-            }
-
             $hasilKerjaUtama = collect();
             $hasilKerjaTambahan = collect();
 
@@ -55,32 +40,49 @@
                 </div>
                 @elseif(session('success'))
                 <div class="p-2" id="alert-passed">
-                    <div id="alert-passed" class="alert alert-success">
+                    <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
                 </div>
                 @elseif(session('error'))
-                <div class="p-2" id="alert-passed">
-                    <div id="alert-passed" class="alert alert-failed">
+                <div class="p-2" id="alert-error">
+                    <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                 </div>
                 @endif
 
+                <!-- <div class="alert alert-info">
+                    Status Tombol: {{ $statusTombol }} |
+                    Hasil Kerja: {{ $rencana?->hasilKerja?->count() ?? 0 }}
+                </div> -->
+
+
+
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    {{-- KIRI: STATUS --}}
-                    <div>
+                    <!-- <div>
                         <span class="badge badge-info p-2">
-                            <!-- Status Pengajuan: -->
                             <strong>{{ $rencana->status_persetujuan ?? 'Belum disetujui' }}</strong>
                         </span>
                         <span class="badge badge-info p-2">
-                            <!-- Status Persetujuan: -->
+                            <strong>{{ $rencana->status_pengajuan ?? 'Belum diajukan' }}</strong>
+                        </span>
+                    </div> -->
+                    <div>
+                        {{-- Status Persetujuan --}}
+                        <span class="badge p-2 
+                    {{ ($rencana->status_persetujuan ?? 'Belum disetujui') === 'Sudah Disetujui' ? 'badge-success' : 'badge-danger' }}">
+                            <strong>{{ $rencana->status_persetujuan ?? 'Belum disetujui' }}</strong>
+                        </span>
+
+                        {{-- Status Pengajuan --}}
+                        <span class="badge p-2 
+                            {{ ($rencana->status_pengajuan ?? 'Belum diajukan') === 'Sudah Diajukan' ? 'badge-success' : 'badge-danger' }}">
                             <strong>{{ $rencana->status_pengajuan ?? 'Belum diajukan' }}</strong>
                         </span>
                     </div>
 
-                    {{-- KANAN: TOMBOL --}}
+
                     <div class="d-flex justify-content-end">
                         @if (is_null($rencana))
                         <form method="POST" action="{{ url('/skp/rencana/store') }}">
@@ -88,11 +90,32 @@
                             <button type="submit" class="btn btn-primary">Buat SKP</button>
                         </form>
                         @else
-                        @if ($statusTombol === 'reset')
+                        @if ($statusTombol === 'salin')
+                        <form method="POST" action="{{ url('/skp/rencana/salin-skp/') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-info ml-2">Salin SKP</button>
+                        </form>
+
+                        <form method="POST" action="{{ url('/skp/rencana/ajukan/' . $rencana->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-success">Ajukan SKP</button>
+                        </form>
+
+                        @elseif ($statusTombol === 'reset')
                         <form method="POST" action="{{ url('/skp/rencana/reset/' . $rencana->id) }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Reset SKP</button>
+                            <button type="submit" class="btn btn-danger mr-2">Reset SKP</button>
+                        </form>
+                        <form method="POST" action="{{ url('/skp/rencana/salin-skp/') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-info mr-2">Salin SKP</button>
+                        </form>
+                        <form method="POST" action="{{ url('/skp/rencana/ajukan/' . $rencana->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-success">Ajukan SKP</button>
                         </form>
                         @elseif ($statusTombol === 'ajukan')
                         <form method="POST" action="{{ url('/skp/rencana/ajukan/' . $rencana->id) }}">
@@ -106,6 +129,15 @@
                             @method('PUT')
                             <button type="submit" class="btn btn-danger">Batalkan Pengajuan</button>
                         </form>
+                        @elseif ($statusTombol === 'cetak')
+                        <a href="{{ url('/skp/rencana/cetak/' . $rencana->id) }}" target="_blank" class="btn btn-primary">Cetak Rencana</a>
+                        @elseif ($statusTombol === 'ditolak')
+                        <a href="{{ url('/skp/rencana/catatan/' . $rencana->id) }}" class="btn btn-warning mr-2">Catatan</a>
+                        <form method="POST" action="{{ url('/skp/rencana/ajukan/' . $rencana->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-success">Ajukan SKP</button>
+                        </form>
                         @endif
                         @endif
                     </div>
@@ -117,14 +149,7 @@
                         <thead>
                             <tr>
                                 <th colspan="3">Hasil Kerja</th>
-                                @if ($statusTombol === 'reset')
-                                <th>
-                                    <form method="POST" action="{{ url('/skp/rencana/salin-skp/') }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-info">Salin SKP</button>
-                                    </form>
-                                </th>
-                                @endif
+                                <th></th>
 
                             </tr>
                             <tr>
@@ -137,7 +162,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($hasilKerjaUtama->count())
+                            @if ($rencana && $rencana->hasilKerja->count() > 0)
                             @foreach ($hasilKerjaUtama as $index => $item)
                             {{-- Baris Hasil Kerja --}}
                             <tr class="bg-light">

@@ -20,6 +20,7 @@ use Modules\Penilaian\Entities\Lampiran;
 use Modules\Penilaian\Entities\PerilakuKerja;
 use Modules\Penilaian\Entities\PeriodeAktif;
 use Modules\Penilaian\Entities\RencanaPerilaku;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RencanaController extends Controller
 {
@@ -112,34 +113,45 @@ class RencanaController extends Controller
         }
     }
 
+
+
+
+
     public function index(Request $request)
     {
 
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
+        // $data = $this->getDataSkpLengkap($pegawai, $periodeId);
+
 
         $rencana = RencanaKerja::with('hasilKerja.lampirans')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
         $dataLengkap = false;
-        $statusTombol = 'buat'; // default
+
+        $statusTombol = 'buat';
 
         if ($rencana) {
-            $jumlahHasil = $rencana->hasilKerja->count();
+            $jumlahHasilUtama = $rencana->hasilKerja->where('jenis', 'utama')->count();
             $jumlahLampiran = $rencana->hasilKerja->flatMap->lampirans->count();
 
-            // Cek kelengkapan indikator & definisi operasional
-            $dataLengkap = $rencana->hasilKerja->filter(fn($hasil) => $hasil->jenis === 'utama')
-                ->every(function ($hasil) {
-                    return $hasil->indikator->count() > 0 &&
-                        $hasil->indikator->every(fn($indikator) => $indikator->definisiOperasional->count() > 0);
-                });
+            $dataLengkap = $rencana->hasilKerja->where('jenis', 'utama')->every(function ($hasil) {
+                return $hasil->indikator->count() > 0;
+            });
 
-            // Ganti status tombol
             if ($rencana->status_pengajuan === 'Sudah Diajukan') {
-                $statusTombol = 'batalkan';
-            } elseif ($dataLengkap && $jumlahLampiran > 0) {
-                $statusTombol = 'ajukan';
+                if ($rencana->status_persetujuan === 'Sudah Disetujui') {
+                    $statusTombol = 'cetak';
+                } elseif ($rencana->status_persetujuan === 'Tolak') {
+                    $statusTombol = 'ditolak';
+                } else {
+                    $statusTombol = 'batalkan';
+                }
             } else {
-                $statusTombol = 'reset';
+                if ($jumlahHasilUtama > 0) {
+                    $statusTombol = 'ajukan';
+                } else {
+                    $statusTombol = 'reset';
+                }
             }
         }
 
@@ -171,6 +183,21 @@ class RencanaController extends Controller
                 'parent_hasil_kerja' => $parentHasilKerja
             ]);
         } else {
+            // Log::info('Rencana ditemukan:', ['rencana_id' => optional($rencana)->id]);
+            // Log::info('STATUS TOMBOL:', [$data['statusTombol']]);
+            // Log::info('HASIL KERJA COUNT:', [$data['rencana']?->hasilKerja->count()]);
+
+            // return view('penilaian::rencana.rencana', [
+            //     'rencana' => $data['rencana'],
+            //     'statusTombol' => $data['statusTombol'],
+            //     'dataLengkap' => $data['dataLengkap'],
+            //     'pegawai' => $pegawai,
+            //     'parentHasilKerja' => $parentHasilKerja,
+            //     'definisiOperasional' => $definisiOperasional,
+            //     'dataUnik' => $dataUnik,
+            //     'subTopikUnik' => $subTopikUnik
+            // ]);
+
             return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja', 'definisiOperasional', 'dataUnik', 'subTopikUnik', 'dataLengkap', 'statusTombol'));
             // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }
@@ -178,38 +205,83 @@ class RencanaController extends Controller
 
     public function ajukanSKP($id)
     {
-        $rencana = RencanaKerja::findOrFail($id);
-        $rencana->update(['status_pengajuan' => 'Sudah Diajukan']);
-        return redirect()->back()->with('success', 'SKP berhasil diajukan.');
+        // $rencana = RencanaKerja::findOrFail($id);
+        // $rencana->update(['status_pengajuan' => 'Sudah Diajukan']);
+        // return redirect()->back()->with('success', 'SKP berhasil diajukan.');
         // throw $th;
 
+        try {
+            $rencana = RencanaKerja::findOrFail($id);
+            $rencana->update(['status_pengajuan' => 'Sudah Diajukan']);
+            return redirect()->back()->with('success', 'SKP berhasil diajukan.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal mengajukan SKP: ' . $th->getMessage());
+        }
     }
 
     public function batalkanPengajuan($id)
     {
-        $rencana = RencanaKerja::findOrFail($id);
-        $rencana->update(['status_persetujuan' => 'Sudah Disetujui']);
-        return redirect()->back()->with('success', 'Pengajuan SKP disetujui.');
+
+        // return redirect()->back()->with('success', 'Pengajuan SKP disetujui.');
+        // try {
+        //     $rencana = RencanaKerja::findOrFail($id);
+        //     $rencana->update(['status_persetujuan' => 'Sudah Disetujui']);
+        //     return redirect()->back()->with('success', 'SKP berhasil dibatalkan.');
+        // } catch (\Throwable $th) {
+        //     return redirect()->back()->with('error', 'Gagal batalkan SKP: ' . $th->getMessage());
+        // }
+        try {
+            $rencana = RencanaKerja::findOrFail($id);
+            $rencana->update([
+                'status_pengajuan' => 'Belum Diajukan',
+                'status_persetujuan' => 'Belum Disetujui'
+            ]);
+            return redirect()->back()->with('success', 'Pengajuan SKP berhasil dibatalkan.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal membatalkan pengajuan SKP: ' . $th->getMessage());
+        }
     }
 
     public function resetSKP($id)
     {
-        DB::transaction(function () use ($id) {
-            $rencana = RencanaKerja::findOrFail($id);
-            foreach ($rencana->hasilKerja as $hasil) {
-                foreach ($hasil->indikator as $indikator) {
-                    $indikator->definisiOperasional()->delete();
-                    $indikator->delete();
+        // DB::transaction(function () use ($id) {
+        //     $rencana = RencanaKerja::findOrFail($id);
+        //     foreach ($rencana->hasilKerja as $hasil) {
+        //         foreach ($hasil->indikator as $indikator) {
+        //             $indikator->definisiOperasional()->delete();
+        //             $indikator->delete();
+        //         }
+        //         $hasil->lampirans()->delete();
+        //         $hasil->delete();
+        //     }
+
+        //     $rencana->perilakuKerja()->delete();
+        //     $rencana->delete();
+        // });
+
+        // return redirect()->back()->with('success', 'SKP berhasil direset.');
+
+        try {
+            DB::transaction(function () use ($id) {
+                $rencana = RencanaKerja::findOrFail($id);
+
+                foreach ($rencana->hasilKerja as $hasil) {
+                    foreach ($hasil->indikator as $indikator) {
+                        $indikator->definisiOperasional()->delete();
+                        $indikator->delete();
+                    }
+                    $hasil->lampirans()->delete();
+                    $hasil->delete();
                 }
-                $hasil->lampirans()->delete();
-                $hasil->delete();
-            }
 
-            $rencana->perilakuKerja()->delete();
-            $rencana->delete();
-        });
+                $rencana->perilakuKerja()->delete();
+                $rencana->delete();
+            });
 
-        return redirect()->back()->with('success', 'SKP berhasil direset.');
+            return redirect()->back()->with('success', 'SKP berhasil direset.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal mereset SKP: ' . $th->getMessage());
+        }
     }
 
 
@@ -218,6 +290,11 @@ class RencanaController extends Controller
         // dd('store masuk');
         $pegawai = $this->penilaianController->getPegawaiWhoLogin();
         $periodeId = $this->periodeController->periode_aktif();
+        // $timKerjaId = session('tim_kerja_id');
+        // if (is_null($timKerjaId)) {
+        //     return redirect()->back()->with('error', 'Tim kerja tidak ditemukan. Silakan login ulang atau hubungi admin.');
+        // }
+
         $perilakuList = PerilakuKerja::all();
         if (is_null($periodeId)) {
             return redirect()->back()->with('failed', 'Periode belum diset');
@@ -455,7 +532,12 @@ class RencanaController extends Controller
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'SKP berhasil disalin.');
+            return redirect()->back()->with('success', 'Berhasil menyalin data SKP.');
+
+            // return redirect('/skp/rencana')->with('success', 'Berhasil menyalin SKP');
+
+            // return redirect()->route('skp.rencana')->with('success', 'SKP berhasil disalin.');
+            // return redirect()->back()->with('success', 'SKP berhasil disalin.');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -474,5 +556,36 @@ class RencanaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui indikator: ' . $e->getMessage());
         }
+    }
+
+    public function backupCetak($id)
+    {
+        try {
+            $rencana = RencanaKerja::with([
+                'hasilKerja.indikator.definisiOperasional',
+                'hasilKerja.lampirans',
+                'perilakuKerja.rencanaPerilaku.perilakuKerja'
+            ])->findOrFail($id);
+
+            $pdf = Pdf::loadView('penilaian::rencana.backup-cetak-rencana-page', compact('rencana'));
+
+            return $pdf->stream('backup-cetak-rencana.pdf');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal mencetak backup: ' . $th->getMessage());
+        }
+    }
+
+    public function cetak($id)
+    {
+        $rencana = RencanaKerja::with([
+            'pegawai.timKerjaAnggota.unit',
+            'pegawai.timKerjaAnggota.parentUnit.ketua.pegawai',
+            'hasilKerja.indikator.definisiOperasional',
+            'hasilKerja.lampirans',
+            'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja'
+        ])->findOrFail($id);
+
+        $pegawai = $rencana->pegawai;
+        return view('penilaian::rencana.backup-cetak-rencana-page', compact('rencana', 'pegawai'));
     }
 }
