@@ -61,7 +61,9 @@
         </table>
         @if ($rencana->predikat_akhir == null)
             <div class="w-100 mt-4 d-flex justify-content-end">
-                <button type="button" class="btn btn-primary mr-1" onclick="window.location.href='{{ url('/skp/evaluasi/ubah-umpan-balik/' . $pegawai->id) }}'">Ubah Umpan Balik</button>
+                <button type="button" class="btn btn-primary mr-1" id="ubah-umpan-balik" data-pegawai-id={{ $pegawai->id }}>
+                    Ubah Umpan Balik
+                </button>
                 <button type="submit" id="proses-umpan-balik-button" class="btn btn-primary ml-1">Simpan Hasil Evaluasi</button>
             </div>
         @endif

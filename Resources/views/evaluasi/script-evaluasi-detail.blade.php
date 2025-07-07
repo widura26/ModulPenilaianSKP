@@ -101,4 +101,22 @@
         });
     });
 
+     $('#ubah-umpan-balik').click(function (e) {
+        var pegawaiId = $(this).data('pegawai-id');
+        e.preventDefault();
+        $.ajax({
+            url: `/skp/evaluasi/ubah-umpan-balik/${pegawaiId}`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log("Gagal mengubah umpan balik: " + xhr.responseText);
+            }
+        });
+    });
+
 </script>

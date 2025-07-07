@@ -80,4 +80,14 @@ class PeriodeController extends Controller {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $th->getMessage());
         }
     }
+
+    public function delete($id){
+        try {
+            $periode = Periode::find($id);
+            $periode->delete();
+            return redirect()->back()->with('success', 'Berhasil menghapus periode');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $th->getMessage());
+        }
+    }
 }

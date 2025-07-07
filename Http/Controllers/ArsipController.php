@@ -177,4 +177,12 @@ class ArsipController extends Controller
         return response()->file($path);
     }
 
+    public function download($filename){
+        $filePath = 'public/' . $filename;
+        if (Storage::exists($filePath)) {
+            return Storage::download($filePath);
+        }
+        abort(404, 'File not found');
+    }
+
 }
