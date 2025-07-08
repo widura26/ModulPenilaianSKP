@@ -55,8 +55,8 @@
                                         'selected' => $penilaian->umpan_balik_predikat ?? null
                                     ])
                                 @else
-                                    <option value="{{ $penilaian->umpan_balik_predikat }}" selected>
-                                        {{ $penilaian->umpan_balik_predikat }}
+                                    <option value="{{ $penilaian->umpan_balik_predikat ?? null }}" selected>
+                                        {{ $penilaian->umpan_balik_predikat ?? null }}
                                     </option>
                                 @endif
                             </select>
@@ -76,7 +76,7 @@
                             name="feedback_perilaku_kerja[{{ $index }}][perilaku_umpan_balik_deskripsi]"
                             required
                             placeholder="{{ ($penilaian && $penilaian->umpan_balik_predikat !== null && $penilaian->umpan_balik_deskripsi !== null) ? $penilaian->umpan_balik_deskripsi : '' }}"
-                            style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;">{{ $penilaian->umpan_balik_deskripsi }}</textarea>
+                            style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;">{{ $penilaian->umpan_balik_deskripsi ?? '' }}</textarea>
 
                         @error('feedback_perilaku_kerja.' . $index . '.perilaku_umpan_balik_deskripsi')
                             <small class="text-danger">Deskripsi wajib diisi</small>
