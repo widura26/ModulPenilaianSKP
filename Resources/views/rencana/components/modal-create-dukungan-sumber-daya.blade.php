@@ -1,4 +1,4 @@
-@foreach ($rencana->hasilKerja as $hasilKerja)
+{{-- @foreach ($rencana->hasilKerja as $hasilKerja) --}}
 <!-- Tombol trigger -->
 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalTambahDukunganSumberDaya">
   <i class="fas fa-plus"></i>
@@ -10,7 +10,7 @@
     <form class="modal-content" action="{{ url('/skp/rencana/store-lampiran/') }}" method="POST">
       @csrf
       <div class="modal-header">Tambah Lampiran</div>
-      <input type="hidden" name="hasil_kerja_id" value="{{ $hasilKerja->id }}">
+      <input type="hidden" name="hasil_kerja_id" value="{{ $rencana->id != null ? $rencana->id : null }}">
       <input type="hidden" name="jenis_lampiran" value="Dukungan Sumber Daya">
       <div class="modal-body">
         <div class="form-group">
@@ -28,4 +28,4 @@
     </form>
   </div>
 </div>
-@endforeach
+{{-- @endforeach --}}

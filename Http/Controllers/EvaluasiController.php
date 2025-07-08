@@ -290,7 +290,7 @@ class EvaluasiController extends Controller {
         return $this->predikatValue($average);
     }
 
-    public function predikatValue($input){
+    public function predikatValue($input) {
         $map = [
             'Dibawah Ekspektasi' => 1,
             'Sesuai Ekspektasi' => 2,
