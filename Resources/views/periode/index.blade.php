@@ -10,6 +10,20 @@
         <div class="col-12">
             <div class="card">
                 <div class="bg-white p-4">
+                    <ul class="nav nav-tabs mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request('periode') != 'khusus' ? 'active' : '' }}"
+                            href="{{ url('/skp/periode/') }}">
+                            Reguler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request('periode') == 'khusus' ? 'active' : '' }}"
+                            href="{{ url('/skp/periode') }}?periode=khusus">
+                                Khusus
+                            </a>
+                        </li>
+                    </ul>
                     <div class="d-flex justify-content-end">
                         @include('penilaian::periode.components.modal-create-periode')
                     </div>

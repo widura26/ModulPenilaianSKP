@@ -4,7 +4,7 @@
 
 <div class="modal fade" id="realisasi-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content needs-validation" novalidate action="{{ url('skp/realisasi/update-realisasi/' . $item['id']) }}" method="POST">
+        <form class="modal-content needs-validation" novalidate action="{{ url('skp/realisasi/' . $periode->id . '/update-realisasi/' . $item['id']) }}" method="POST">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Isi Realisasi</h5>

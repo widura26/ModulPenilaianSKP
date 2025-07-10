@@ -37,4 +37,12 @@ class RencanaKerja extends Model
     {
         return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
     }
+
+    public function pengajuanRealisasiPeriodik(){
+        return $this->hasOne(PengajuanRealisasiPeriodik::class, 'rencana_id');
+    }
+
+    public function evaluasiPeriodik(){
+        return $this->hasMany(EvaluasiPeriodik::class, 'rencana_kerja_id');
+    }
 }

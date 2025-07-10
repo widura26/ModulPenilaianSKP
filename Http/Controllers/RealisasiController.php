@@ -9,7 +9,10 @@ use Modules\Penilaian\Entities\HasilKerja;
 use Illuminate\Support\Facades\Auth;
 use Modules\Penilaian\Entities\Cascading;
 use Modules\Pengaturan\Entities\Anggota;
-
+use Modules\Penilaian\Entities\PengajuanRealisasiPeriodik;
+use Modules\Penilaian\Entities\Periode;
+use Modules\Penilaian\Entities\RealisasiPeriodik;
+use Modules\Penilaian\Entities\RealisasiTriwulan;
 
 class RealisasiController extends Controller {
 
@@ -20,13 +23,14 @@ class RealisasiController extends Controller {
         $this->penilaianController = $penilaianController;
     }
 
-    public function realisasi(Request $request){
+    public function realisasi(Request $request, $triwulan){
         $authUser = Auth::user();
         $periodeController = new PeriodeController();
         $pegawai = $authUser->pegawai;
         $pegawaiUsername = $pegawai->username;
         $pegawaiId = $pegawai->id;
         $periodeId = $periodeController->periode_aktif();
+        $periode = Periode::where('jenis_periode', str_replace('-', ' ', $triwulan))->first();
 
         $pegawai = Pegawai::with([
             'timKerjaAnggota',
@@ -59,10 +63,14 @@ class RealisasiController extends Controller {
         })
         ->get();
 
-        $rencana = RencanaKerja::with('hasilKerja')->where('pegawai_id', '=', $pegawaiId)->where('periode_id', $periodeId)->first();
+        $rencana = RencanaKerja::with([
+            'hasilKerja',
+            'pengajuanRealisasiPeriodik' => function ($query) use ($periode) {
+                $query->where('periode_id', $periode->id);
+            }])->where('pegawai_id', '=', $pegawaiId)->where('periode_id', $periodeId)->first();
         $indikatorIntervensi = Cascading::with('indikator.hasilKerja.rencanakerja')->where('pegawai_id', $pegawaiId)->get();
         if($request->query('params') == 'json') return response()->json($rencana);
-        return view('penilaian::realisasi.realisasi', compact('rencana', 'pegawai', 'indikatorIntervensi'));
+        return view('penilaian::realisasi.realisasi', compact('rencana', 'pegawai', 'indikatorIntervensi', 'periode'));
     }
 
     public function ajukanRealisasi($id){
@@ -82,6 +90,18 @@ class RealisasiController extends Controller {
         }
     }
 
+    public function ajukanRealisasi2($periodeId, $rencanaId){
+        try {
+            PengajuanRealisasiPeriodik::updateOrCreate(
+                ['rencana_id' => $rencanaId, 'periode_id' => $periodeId],
+                ['status' => 'Belum Dievaluasi']
+            );
+            return redirect()->back()->with('success', 'Realiasi berhasil diajukan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('failed', $th->getMessage());
+        }
+    }
+
     public function updateRealisasi(Request $request, $id) {
         try {
             HasilKerja::findOrFail($id)->update([
@@ -91,6 +111,26 @@ class RealisasiController extends Controller {
             return redirect()->back()->with('success', 'Realisasi berhasil diperbarui.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function updateRealisasi2(Request $request, $periodeId, $id) {
+        try {
+            $data = [
+                'hasil_kerja_id' => $id,
+                'periode_id' => $periodeId,
+                'realisasi' => $request->realisasi,
+                'bukti_dukung' => $request->bukti_dukung
+            ];
+            RealisasiPeriodik::create([
+                'hasil_kerja_id' => $id,
+                'periode_id' => $periodeId,
+                'realisasi' => $request->realisasi,
+                'bukti_dukung' => $request->bukti_dukung
+            ]);
+            return redirect()->back()->with('success', 'Realisasi berhasil diperbarui.');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

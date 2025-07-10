@@ -17,6 +17,7 @@ class CreatePenilaianPerilakuKerjaTable extends Migration
             $table->id();
             $table->unsignedBigInteger('rencana_perilaku_id');
             $table->unsignedBigInteger('ketua_tim_id')->nullable();
+            $table->foreignId('periode_id')->nullable();
             $table->text('ekspektasi_pimpinan')->nullable();
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();

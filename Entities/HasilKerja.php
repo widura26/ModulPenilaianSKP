@@ -49,4 +49,8 @@ class HasilKerja extends Model
     {
         return $this->hasMany(Lampiran::class, 'hasil_kerja_id');
     }
+
+    public function realisasiPeriodik(){
+        return $this->hasOne(RealisasiPeriodik::class, 'hasil_kerja_id');
+    }
 }
