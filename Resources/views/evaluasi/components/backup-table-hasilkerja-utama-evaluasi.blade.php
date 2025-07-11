@@ -23,8 +23,8 @@
                     </td>
                     <td style="width: 25%;">
                         <span>Realisasi :</span>
-                        <p>{{ $item->realisasi }}</p>
-                        @if ($item->bukti_dukung !== null)
+                        <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
+                        @if ($item->realisasiPeriodik?->bukti_dukung !== null)
                             <button onclick="window.open('{{ $item->bukti_dukung }}', '_blank')" class="btn btn-primary">
                                 <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
                         @endif

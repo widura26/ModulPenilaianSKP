@@ -1,5 +1,4 @@
 <script>
-
     const colorStatus = (status) => {
         switch (status) {
             case 'Belum Verifikasi':
@@ -20,8 +19,6 @@
             alertpassed.style.display = 'none';
         }
     }, 3000);
-
-
 
     const templateDatatable = (name, tableName, url, urlDetail) => {
         $(tableName).DataTable({

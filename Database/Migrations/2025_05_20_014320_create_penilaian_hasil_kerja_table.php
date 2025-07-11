@@ -19,6 +19,7 @@ class CreatePenilaianHasilKerjaTable extends Migration
             $table->unsignedBigInteger('target_id');
             $table->string('target_type');
             $table->unsignedBigInteger('ketua_tim_id')->nullable();
+            $table->foreignId('periode_id')->nullable();
             $table->string('umpan_balik_predikat')->nullable();
             $table->text('umpan_balik_deskripsi')->nullable();
             $table->timestamps();

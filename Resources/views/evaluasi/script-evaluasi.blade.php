@@ -115,4 +115,8 @@
             tablePegawai.draw();
         });
     });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        const target = $(e.target).attr("href");
+    });
 </script>

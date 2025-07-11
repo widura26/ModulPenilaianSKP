@@ -22,7 +22,7 @@
                     </div>
                 @else
                     @php
-                        switch ($rencana?->pengajuanRealisasiPeriodik?->status) {
+                        switch ($rencana?->status_realisasi) {
                             case 'Belum Dievaluasi':
                                 $badgeClass = 'badge-primary';
                                 $label = 'Sudah Diajukan';
@@ -34,10 +34,6 @@
                             case 'Sudah Dievaluasi':
                                 $badgeClass = 'badge-success';
                                 $label = 'Sudah Dievaluasi';
-                                break;
-                            case null :
-                                $badgeClass = 'badge-danger';
-                                $label = 'Belum Diajukan';
                                 break;
                         }
 
@@ -58,15 +54,8 @@
                                 return $item->jenis === 'tambahan';
                             })->values();
                         }
-
-                        $adaRealisasiUtama = $hasilKerjaUtama->contains(function ($item) {
-                            return !is_null($item->realisasiPeriodik?->realisasi) && $item->realisasiPeriodik?->realisasi !== '';
-                        });
-
-                        $adaRealisasiTambahan = $hasilKerjaTambahan->contains(function ($item) {
-                            return !is_null($item->realisasiPeriodik?->realisasi) && $item->realisasiPeriodik?->realisasi !== '';
-                        });
                     @endphp
+
                     @if (session('failed'))
                         <div id="alert-failed" class="p-2">
                             <div class="alert alert-danger">
@@ -83,13 +72,13 @@
 
                     <div class="w-100 d-flex justify-content-between align-items-center p-2">
                         <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $label }}</span>
-                        @if ($rencana?->pengajuanRealisasiPeriodik?->status == null)
-                            <form method="POST" action="{{ url('/skp/realisasi/'. $periode->id . '/ajukan-realisasi/' . $rencana->id) }}">
+                        @if ($rencana?->status_realisasi == 'Belum Ajukan Realisasi')
+                            <form method="POST" action="{{ url('/skp/realisasi/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ (!$adaRealisasiUtama && !$adaRealisasiTambahan) ? 'disabled' : '' }}>Ajukan Realisasi</button>
+                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ !$semuaRealisasiSudahDiisi || ($hasilKerjaUtama->isEmpty() && $hasilKerjaTambahan->isEmpty()) ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
-                        @elseif($rencana?->pengajuanRealisasiPeriodik?->status == 'Belum Dievaluasi')
-                            <form method="POST" action="{{ url('/skp/realisasi' . $periode->id . '/batalkan-realisasi/' . $rencana->id) }}">
+                        @elseif($rencana?->status_realisasi == 'Belum Dievaluasi')
+                            <form method="POST" action="{{ url('/skp/realisasi/batalkan-realisasi/' . $rencana->id) }}">
                                 @csrf
                                 <button id="proses-umpan-balik-button" class="btn btn-danger">Batalkan Pengajuan</button>
                             </form>
@@ -124,7 +113,7 @@
                                         <tr>
                                             <th class="border-right" scope="row">{{ $index + 1 }}.</th>
                                             <td style="width: 50%;" class="border-right">
-                                                <p>{{ $item['deskripsi'] }} {{ $item['id'] }}</p>
+                                                <p>{{ $item['deskripsi'] }}</p>
                                                 <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
                                                 <ul>
                                                     @foreach ($item->indikator as $indikator)
@@ -134,9 +123,9 @@
                                             </td>
                                             <td style="width: 20%;" class="border-right">
                                                 <span>Realisasi :</span>
-                                                <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
-                                                @if ($item->realisasiPeriodik?->bukti_dukung !== null)
-                                                    <button onclick="window.open('{{ $item->realisasiPeriodik?->bukti_dukung }}', '_blank')" class="btn btn-primary">
+                                                <p>{{ $item['realisasi'] }}</p>
+                                                @if ($item->bukti_dukung !== null)
+                                                    <button onclick="window.open('{{ $item->bukti_dukung }}', '_blank')" class="btn btn-primary">
                                                         <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
                                                 @endif
                                             </td>

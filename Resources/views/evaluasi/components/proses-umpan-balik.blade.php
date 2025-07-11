@@ -1,6 +1,7 @@
 <div class="mt-4">
-    <form class="needs-validation" novalidate method="POST" action="{{ url('/skp/evaluasi/simpan-hasil-evaluasi/' . $pegawai->id) }}">
+    <form class="needs-validation" novalidate method="POST" action="{{ url('/skp/evaluasi/'. $periodeId . '/simpan-hasil-evaluasi/' . $pegawai->id) }}">
         @csrf
+        <input type="hidden" value="{{ $rencana->id }}" name="rencana_kerja_id">
         <table class="table mb-0" style="table-layout: fixed; width: 100%;">
             <thead>
               <tr>
@@ -45,7 +46,7 @@
                     </select>
                     <textarea
                     name="deskripsi_rating_perilaku" required
-                    class="form-control d-none mt-2 border border-2" id="textarea-rating-perilaku" style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
+                    class="form-control d-none mt-2 border-2" id="textarea-rating-perilaku" style="height: 150px; width: 100%; padding: 10px; overflow-y: auto; resize: vertical;"></textarea>
                     <div class="invalid-feedback">Deskripsi tidak boleh kosong</div>
                 </td>
               </tr>
@@ -55,7 +56,7 @@
             <tbody>
               <tr>
                 <td>Predikat Kinerja Pegawai</td>
-                <td>{{ $rencana->predikat_akhir }}</td>
+                <td>{{ $rencana->evaluasiPeriodik->first()?->predikat ?? '-' }}</td>
               </tr>
             </tbody>
         </table>
