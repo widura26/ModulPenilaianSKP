@@ -18,7 +18,17 @@ class PeriodeController extends Controller {
         return $periodeId;
     }
 
-    public function index(){
+    public function periode_aktif_tahun(){
+        $penilaianController = new PenilaianController();
+        $pegawai = $penilaianController->getPegawaiWhoLogin();
+        $periodeAktif = PeriodeAktif::with('periode')->where('pegawai_id', $pegawai->id)->first();
+        $tahun = $periodeAktif?->periode->tahun;
+
+        return $tahun;
+    }
+
+    public function index(Request $request){
+        $periode = $request->query('periode');
         $periodes = Periode::all();
         return view('penilaian::periode.index', compact('periodes'));
     }

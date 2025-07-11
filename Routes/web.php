@@ -44,17 +44,18 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
         });
         Route::prefix('evaluasi')->group(function () {
             Route::get('/', 'EvaluasiController@evaluasi');
+            Route::get('/periode/{id}', 'EvaluasiController@daftarBawahan');
+            Route::get('/{periodeId}/{username}', 'EvaluasiController@evaluasiDetail2');
+            Route::post('{periodeId}/proses-umpan-balik/{id}', 'EvaluasiController@prosesUmpanBalik2');
+            Route::post('{periodeId}/simpan-hasil-evaluasi/{id}', 'EvaluasiController@simpanHasilEvaluasi2');
             Route::get('/data-pegawai', 'EvaluasiController@index');
-            Route::get('/{username}/detail', 'EvaluasiController@evaluasiDetail');
             Route::post('/batalkan-evaluasi/{username}', 'EvaluasiController@batalkanEvaluasi');
-            Route::post('proses-umpan-balik/{id}', 'EvaluasiController@prosesUmpanBalik');
-            Route::post('simpan-hasil-evaluasi/{id}', 'EvaluasiController@simpanHasilEvaluasi');
             Route::post('ubah-umpan-balik/{id}', 'EvaluasiController@ubahUmpanBalik');
         });
         Route::prefix('realisasi')->group(function () {
-            Route::get('/', 'RealisasiController@realisasi');
-            Route::post('/update-realisasi/{id}', 'RealisasiController@updateRealisasi');
-            Route::post('/ajukan-realisasi/{id}', 'RealisasiController@ajukanRealisasi');
+            Route::get('/{triwulan}', 'RealisasiController@realisasi');
+            Route::post('/{periodeId}/update-realisasi/{id}', 'RealisasiController@updateRealisasi2');
+            Route::post('/{periodeId}/ajukan-realisasi/{rencanaId}', 'RealisasiController@ajukanRealisasi2');
             Route::post('/delete/{id}', 'RealisasiController@deleteRealisasi');
             Route::post('/batalkan-realisasi/{id}', 'RealisasiController@batalkanPengajuanRealisasi');
         });

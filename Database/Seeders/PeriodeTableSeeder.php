@@ -45,6 +45,24 @@ class PeriodeTableSeeder extends Seeder
                 'created_at' => Carbon::parse('2025-05-26 10:55:29'),
                 'updated_at' => Carbon::parse('2025-05-26 10:55:29'),
             ],
+            [
+                'id' => 4,
+                'start_date' => '2025-10-01',
+                'end_date' => '2025-12-31',
+                'tahun' => 2025,
+                'jenis_periode' => 'Triwulan 4',
+                'created_at' => Carbon::parse('2025-05-26 10:55:29'),
+                'updated_at' => Carbon::parse('2025-05-26 10:55:29'),
+            ],
+            [
+                'id' => 5,
+                'start_date' => '2025-01-01',
+                'end_date' => '2025-12-31',
+                'tahun' => 2025,
+                'jenis_periode' => 'Tahunan',
+                'created_at' => Carbon::parse('2025-05-26 10:55:29'),
+                'updated_at' => Carbon::parse('2025-05-26 10:55:29'),
+            ],
         ]);
     }
 }
