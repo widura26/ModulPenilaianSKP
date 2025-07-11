@@ -10,7 +10,7 @@
     <form class="modal-content" action="{{ url('/skp/rencana/store-lampiran/') }}" method="POST">
       @csrf
       <div class="modal-header">Tambah Lampiran</div>
-      <input type="hidden" name="hasil_kerja_id" value="{{ $rencana->id }}">
+      <input type="hidden" name="rencana_id" value="{{ $rencana->id != null ? $rencana->id : null }}">
       <input type="hidden" name="jenis_lampiran" value="Konsekuensi">
       <div class="modal-body">
 

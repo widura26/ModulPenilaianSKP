@@ -174,9 +174,9 @@
                                     @if (!is_null($rencana))
                                     @include('penilaian::rencana.components.modal-edit-hasil-kerja-utama')
                                     @endif
-                                    <button type="button" class="btn btn-success btn-sm" title="Tandai Penting">
+                                    <!-- <button type="button" class="btn btn-success btn-sm" title="Tandai Penting">
                                         <i class="fas fa-star"></i>
-                                    </button>
+                                    </button> -->
                                     <!-- <button type="button" class="btn btn-danger btn-sm" title="Nonaktifkan">
                                         <i class="fas fa-ban"></i>
                                     </button> -->
@@ -264,9 +264,9 @@
                                     <button type="button" class="btn btn-success btn-sm">
                                         <i class="fas fa-pen"></i>
                                     </button>
-                                    <button type="button" class="btn btn-success btn-sm">
+                                    <!-- <button type="button" class="btn btn-success btn-sm">
                                         <i class="fas fa-star"></i>
-                                    </button>
+                                    </button> -->
                                     <!-- <button type="button" class="btn btn-danger btn-sm">
                                         <i class="fas fa-ban"></i>
                                     </button> -->
@@ -305,115 +305,94 @@
                             @endif
                         </tbody>
                     </table>
-                    <table class="table  mb-0">
+                    <table class="table mb-0">
                         <thead>
                             <tr>
                                 <th colspan="2" class="col-sm-10">C. Lampiran</th>
-                                <th colspan="1" class="col-sm-2">
-                                </th>
+                                <th colspan="1" class="col-sm-2"></th>
                             </tr>
                         </thead>
                         <tbody>
+                            {{-- DUKUNGAN SUMBER DAYA --}}
                             <tr>
                                 <th colspan="2" class="col-sm-10 border-right" scope="row">Dukungan Sumber Daya</th>
                                 <th colspan="1" class="col-sm-2">
-                                    @if (!is_null($rencana))
+                                    @if ($rencana)
                                     @include('penilaian::rencana.components.modal-create-dukungan-sumber-daya')
                                     @endif
                                 </th>
                             </tr>
-
-                            @if (!is_null($rencana))
-                            @php $nomor = 1; @endphp
-                            @foreach ($rencana->hasilKerja as $hasil)
-                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Dukungan Sumber Daya') as $lampiran)
+                            @php
+                            $nomor = 1;
+                            $lampiranDukungan = $rencana && $rencana->lampirans
+                            ? $rencana->lampirans->where('jenis_lampiran', 'Dukungan Sumber Daya')
+                            : collect();
+                            @endphp
+                            @forelse ($lampiranDukungan as $lampiran)
                             <tr>
                                 <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
-                                <td class=" align-middle" colspan="2">
-                                    {{ $lampiran->deskripsi_lampiran }}
-                                </td>
+                                <td class="align-middle" colspan="2">{{ $lampiran->deskripsi_lampiran }}</td>
                             </tr>
-                            @endforeach
-                            @endforeach
-
-                            @if ($nomor === 1)
+                            @empty
                             <tr>
                                 <td colspan="3">-</td>
                             </tr>
-                            @endif
-                            @else
-                            <tr>
-                                <td colspan="3">-</td>
-                            </tr>
-                            @endif
+                            @endforelse
 
+                            {{-- SKEMA PERTANGGUNG JAWABAN --}}
                             <tr>
                                 <th colspan="2" class="col-sm-10 border-right" scope="row">Skema Pertanggung Jawaban</th>
                                 <th colspan="1" class="col-sm-2">
-                                    @if (!is_null($rencana))
+                                    @if ($rencana)
                                     @include('penilaian::rencana.components.modal-create-skema-pertanggung-jawaban')
                                     @endif
                                 </th>
                             </tr>
-                            @if (!is_null($rencana))
-                            @php $nomor = 1; @endphp
-                            @foreach ($rencana->hasilKerja as $hasil)
-                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Skema Pertanggung Jawaban') as $lampiran)
+                            @php
+                            $nomor = 1;
+                            $lampiranSkema = $rencana && $rencana->lampirans
+                            ? $rencana->lampirans->where('jenis_lampiran', 'Skema Pertanggung Jawaban')
+                            : collect();
+                            @endphp
+                            @forelse ($lampiranSkema as $lampiran)
                             <tr>
                                 <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
-                                <td class=" align-middle" colspan="2">
-                                    {{ $lampiran->deskripsi_lampiran }}
-                                </td>
+                                <td class="align-middle" colspan="2">{{ $lampiran->deskripsi_lampiran }}</td>
                             </tr>
-                            @endforeach
-                            @endforeach
-
-                            @if ($nomor === 1)
+                            @empty
                             <tr>
                                 <td colspan="3">-</td>
                             </tr>
-                            @endif
-                            @else
-                            <tr>
-                                <td colspan="3">-</td>
-                            </tr>
-                            @endif
+                            @endforelse
 
+                            {{-- KONSEKUENSI --}}
                             <tr>
                                 <th colspan="2" class="col-sm-10 border-right" scope="row">Konsekuensi</th>
                                 <th colspan="1" class="col-sm-2">
-                                    @if (!is_null($rencana))
+                                    @if ($rencana)
                                     @include('penilaian::rencana.components.modal-create-konsekuensi')
                                     @endif
                                 </th>
                             </tr>
-                            @if (!is_null($rencana))
-                            @php $nomor = 1; @endphp
-                            @foreach ($rencana->hasilKerja as $hasil)
-                            @foreach ($hasil->lampirans->where('jenis_lampiran', 'Konsekuensi') as $lampiran)
+                            @php
+                            $nomor = 1;
+                            $lampiranKonsekuensi = $rencana && $rencana->lampirans
+                            ? $rencana->lampirans->where('jenis_lampiran', 'Konsekuensi')
+                            : collect();
+                            @endphp
+                            @forelse ($lampiranKonsekuensi as $lampiran)
                             <tr>
                                 <th class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</th>
-                                <td class=" align-middle" colspan="2">
-                                    {{ $lampiran->deskripsi_lampiran }}
-                                </td>
+                                <td class="align-middle" colspan="2">{{ $lampiran->deskripsi_lampiran }}</td>
                             </tr>
-                            @endforeach
-                            @endforeach
-
-                            @if ($nomor === 1)
+                            @empty
                             <tr>
                                 <td colspan="3">-</td>
                             </tr>
-                            @endif
-                            @else
-                            <tr>
-                                <td colspan="3">-</td>
-                            </tr>
-                            @endif
+                            @endforelse
                         </tbody>
-
-
                     </table>
+
 
                 </div>
             </div>

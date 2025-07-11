@@ -125,14 +125,14 @@ class RencanaController extends Controller
         // $data = $this->getDataSkpLengkap($pegawai, $periodeId);
 
 
-        $rencana = RencanaKerja::with('hasilKerja.lampirans')->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
+        $rencana = RencanaKerja::with(['lampirans', 'hasilKerja'])->where('periode_id', $periodeId)->where('pegawai_id', '=', $pegawai->id)->first();
         $dataLengkap = false;
 
         $statusTombol = 'buat';
 
         if ($rencana) {
             $jumlahHasilUtama = $rencana->hasilKerja->where('jenis', 'utama')->count();
-            $jumlahLampiran = $rencana->hasilKerja->flatMap->lampirans->count();
+            $jumlahLampiran = $rencana->lampirans->count();
 
             $dataLengkap = $rencana->hasilKerja->where('jenis', 'utama')->every(function ($hasil) {
                 return $hasil->indikator->count() > 0;
@@ -446,19 +446,20 @@ class RencanaController extends Controller
 
     public function storeLampiran(Request $request)
     {
+
         $request->validate([
             'jenis_lampiran' => 'required|in:Dukungan Sumber Daya,Skema Pertanggung Jawaban,Konsekuensi',
             'deskripsi_lampiran' => 'required',
-            'hasil_kerja_id' => 'required|exists:skp_hasil_kerja,id'
+            'rencana_id' => 'required|exists:skp_rencana_kerja,id'
         ]);
 
-        $deskripsiArray = array_map('trim', explode(';', $request->deskripsi_lampiran));
+        $deskripsiArray = array_filter(array_map('trim', explode(';', $request->deskripsi_lampiran)));
 
         foreach ($deskripsiArray as $deskripsi) {
             Lampiran::create([
                 'jenis_lampiran' => $request->jenis_lampiran,
                 'deskripsi_lampiran' => $deskripsi,
-                'hasil_kerja_id' => $request->hasil_kerja_id,
+                'rencana_id' => $request->rencana_id,
             ]);
         }
 

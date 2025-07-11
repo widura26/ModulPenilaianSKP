@@ -10,7 +10,7 @@ class Lampiran extends Model
     use HasFactory;
 
     protected $fillable = [
-        'hasil_kerja_id',
+        'rencana_id',
         'jenis_lampiran',
         'deskripsi_lampiran'
     ];
