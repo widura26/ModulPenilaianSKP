@@ -37,4 +37,9 @@ class RencanaKerja extends Model
     {
         return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
     }
+
+    public function lampirans()
+    {
+        return $this->hasMany(Lampiran::class, 'rencana_id');
+    }
 }

@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-success btn-sm btn-edit-utama" data-id="{{ $item->id }}" data-toggle="modal" data-target="#editModalUtama">
+<button type="button" class="btn btn-warning btn-sm btn-edit-utama" data-id="{{ $item->id }}" data-toggle="modal" data-target="#editModalUtama">
     <i class="fas fa-pen"></i>
 </button>
 <div class="modal fade" id="editModalUtama" tabindex="-1" role="dialog">

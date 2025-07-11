@@ -135,17 +135,14 @@
                 <th colspan="3" class="bg-light">{{ $jenis }}</th>
               </tr>
               @php $nomor = 1; @endphp
-              @foreach ($rencana->hasilKerja as $hasil)
-              @foreach ($hasil->lampirans->where('jenis_lampiran', $jenis) as $lampiran)
+
+              @foreach ($rencana->lampirans->where('jenis_lampiran', $jenis) as $lampiran)
               <tr>
                 <td class="border-right text-center" style="width: 5%;">{{ $nomor++ }}</td>
                 <td colspan="2">
-                  <!-- <a href="{{ asset('storage/' . $lampiran->path) }}" target="_blank">{{ $lampiran->nama_file }}</a> -->
-                  <!-- <br> -->
                   <p class="mb-0">{{ $lampiran->deskripsi_lampiran ?? '-' }}</p>
                 </td>
               </tr>
-              @endforeach
               @endforeach
 
               @if ($nomor === 1)
@@ -156,6 +153,7 @@
               @endforeach
             </tbody>
           </table>
+
 
 
 
@@ -247,11 +245,7 @@
 @stop
 
 @section('css')
-<link rel="stylesheet" href="/assets/css/admin_custom.css">
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css"> -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.bootstrap5.css">
+
 @stop
 
 @push('js')
@@ -263,12 +257,6 @@
     });
   });
 
-  // const tdStatus = document.querySelector('#td-status')
-  // console.log(tdStatus.innerText)
 </script>
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.3.1/js/dataTables.bootstrap5.js"></script>
+
 @endpush

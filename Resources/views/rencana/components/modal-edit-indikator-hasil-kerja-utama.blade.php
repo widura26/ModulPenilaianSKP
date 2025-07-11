@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#editIndikatorhasilKerjaModalUtama{{ $item->id }}">
+<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editIndikatorhasilKerjaModalUtama{{ $item->id }}">
     <i class="nav-icon fas fa-pen "></i>
 </button>
 <div class="modal fade" id="editIndikatorhasilKerjaModalUtama{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="editIndikatorhasilKerjaModalUtamaTitle" aria-hidden="true">

@@ -56,7 +56,7 @@ class PersetujuanController extends Controller
         $pegawai = Pegawai::with([
             'rencanaKerja.hasilKerja.indikator',
             'rencanaKerja.pegawai.timKerjaAnggota',
-            'rencanaKerja.hasilKerja.lampirans',
+            'rencanaKerja.lampirans',
         ])->findOrFail($pegawai_id);
 
         $rencana = $pegawai->rencanaKerja->first();
