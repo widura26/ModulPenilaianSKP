@@ -4,8 +4,10 @@ namespace Modules\Penilaian\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Pengaturan\Entities\Jabatan;
-use Modules\Pengaturan\Entities\Pegawai;
+// use Modules\Pengaturan\Entities\Jabatan;
+// use Modules\Pengaturan\Entities\Pegawai;
+use Modules\Kepegawaian\Entities\Pegawai;
+use Modules\Jabatan\Entities\Jabatan;
 
 class RencanaKerja extends Model
 {
