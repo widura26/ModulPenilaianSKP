@@ -68,12 +68,15 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::post('/store-manual-indikator-utama/{id}', 'RencanaController@storeManualIndikator');
             Route::get('/edit-hasil-kerja-utama/{id}', 'RencanaController@editHasilKerja');
             Route::put('/update-hasil-kerja-utama/{id}', 'RencanaController@updateHasilKerja');
+            Route::put('/edit-indikator-utama/{id}', 'RencanaController@updateIndikator');
             Route::post('/store-lampiran', 'RencanaController@storeLampiran');
             Route::put('/ajukan/{id}', 'RencanaController@ajukanSKP');
             Route::put('/batalkan-pengajuan/{id}', 'RencanaController@batalkanPengajuan');
             Route::delete('/reset/{id}', 'RencanaController@resetSKP');
             Route::get('/backup-cetak/{id}', 'RencanaController@backupCetak');
             Route::get('/cetak/{id}', 'RencanaController@cetak');
+            Route::delete('/hasil-kerja/{id}', 'RencanaController@destroyHasilKerja');
+            Route::delete('/indikator/{id}', 'RencanaController@destroyIndikator');
         });
         Route::prefix('matriks-peran-hasil')->group(function () {
             Route::get('/', 'MatriksPeranHasilController@matriksperanhasil');

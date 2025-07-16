@@ -24,14 +24,7 @@
                         <label>Deskripsi Baru</label>
                         <input type="text" class="form-control" name="deskripsi" id="edit-utama-deskripsi-baru">
                     </div>
-                    <!-- <div class="form-group">
-                        <label>Deskripsi</label>
-                        <input type="text" class="form-control" name="deskripsi" id="edit-utama-deskripsi">
-                    </div> -->
-                    <!-- <div class="form-group">
-                        <label>Indikator (pisahkan dengan `;`)</label>
-                        <textarea class="form-control" name="indikators" id="edit-utama-indikators" rows="3"></textarea>
-                    </div> -->
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Simpan</button>

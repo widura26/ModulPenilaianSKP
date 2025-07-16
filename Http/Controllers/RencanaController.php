@@ -215,7 +215,8 @@ class RencanaController extends Controller
             $rencana->update(['status_pengajuan' => 'Sudah Diajukan']);
             return redirect()->back()->with('success', 'SKP berhasil diajukan.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal mengajukan SKP: ' . $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal mengajukan SKP: ' . $th->getMessage());
         }
     }
 
@@ -238,7 +239,8 @@ class RencanaController extends Controller
             ]);
             return redirect()->back()->with('success', 'Pengajuan SKP berhasil dibatalkan.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal membatalkan pengajuan SKP: ' . $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal membatalkan pengajuan SKP: ' . $th->getMessage());
         }
     }
 
@@ -274,13 +276,15 @@ class RencanaController extends Controller
                     $hasil->delete();
                 }
 
-                $rencana->perilakuKerja()->delete();
+                // $rencana->perilakuKerja()->delete();
+                $rencana->perilakuKerja()->detach();
                 $rencana->delete();
             });
 
             return redirect()->back()->with('success', 'SKP berhasil direset.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal mereset SKP: ' . $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal mereset SKP: ' . $th->getMessage());
         }
     }
 
@@ -361,7 +365,8 @@ class RencanaController extends Controller
 
             return redirect()->back()->with('success', 'Berhasil menambahkan hasil kerja');
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            throw $th;
+            // return response()->json($th->getMessage());
         }
     }
 
@@ -392,7 +397,8 @@ class RencanaController extends Controller
 
             return redirect()->back()->with('success', 'Berhasil menambahkan hasil kerja');
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            throw $th;
+            // return response()->json($th->getMessage());
         }
     }
 
@@ -415,7 +421,8 @@ class RencanaController extends Controller
 
             return redirect()->back()->with('success', 'Berhasil mengubah deskripsi hasil kerja');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -440,7 +447,8 @@ class RencanaController extends Controller
 
             return redirect()->back()->with('success', 'Indikator berhasil ditambahkan');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -515,13 +523,20 @@ class RencanaController extends Controller
                     }
                 }
 
-                foreach ($hasil->lampirans as $lampiran) {
-                    Lampiran::create([
-                        'hasil_kerja_id' => $hasilBaru->id,
-                        'jenis_lampiran' => $lampiran->jenis_lampiran,
-                        'deskripsi_lampiran' => $lampiran->deskripsi_lampiran
-                    ]);
-                }
+                // foreach ($rencanaLama->lampirans as $lampiran) {
+                //     Lampiran::create([
+                //         'rencana_id' => $rencanaBaru->id,
+                //         'jenis_lampiran' => $lampiran->jenis_lampiran,
+                //         'deskripsi_lampiran' => $lampiran->deskripsi_lampiran
+                //     ]);
+                // }
+            }
+            foreach ($rencanaLama->lampirans as $lampiran) {
+                Lampiran::create([
+                    'rencana_id' => $rencanaBaru->id,
+                    'jenis_lampiran' => $lampiran->jenis_lampiran,
+                    'deskripsi_lampiran' => $lampiran->deskripsi_lampiran
+                ]);
             }
 
             $perilakuList = PerilakuKerja::all();
@@ -554,8 +569,9 @@ class RencanaController extends Controller
             $indikator->save();
 
             return redirect()->back()->with('success', 'Indikator berhasil diperbarui.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui indikator: ' . $e->getMessage());
+        } catch (\Throwable $th) {
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal memperbarui indikator: ' . $th->getMessage());
         }
     }
 
@@ -564,7 +580,7 @@ class RencanaController extends Controller
         try {
             $rencana = RencanaKerja::with([
                 'hasilKerja.indikator.definisiOperasional',
-                'hasilKerja.lampirans',
+                'lampirans',
                 'perilakuKerja.rencanaPerilaku.perilakuKerja'
             ])->findOrFail($id);
 
@@ -572,7 +588,8 @@ class RencanaController extends Controller
 
             return $pdf->stream('backup-cetak-rencana.pdf');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal mencetak backup: ' . $th->getMessage());
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal mencetak backup: ' . $th->getMessage());
         }
     }
 
@@ -582,11 +599,52 @@ class RencanaController extends Controller
             'pegawai.timKerjaAnggota.unit',
             'pegawai.timKerjaAnggota.parentUnit.ketua.pegawai',
             'hasilKerja.indikator.definisiOperasional',
-            'hasilKerja.lampirans',
+            'lampirans',
             'perilakuKerja.rencanaPerilaku.penilaianPerilakuKerja'
         ])->findOrFail($id);
 
         $pegawai = $rencana->pegawai;
         return view('penilaian::rencana.backup-cetak-rencana-page', compact('rencana', 'pegawai'));
+    }
+
+    public function destroyIndikator($id)
+    {
+        try {
+            $indikator = Indikator::findOrFail($id);
+
+            // Hapus manual indikator yang terkait
+            $indikator->definisiOperasional()->delete();
+
+            // Hapus indikator
+            $indikator->delete();
+
+            return redirect()->back()->with('success', 'Indikator dan data manual berhasil dihapus.');
+        } catch (\Throwable $th) {
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal menghapus indikator: ' . $e->getMessage());
+        }
+    }
+
+    public function destroyHasilKerja($id)
+    {
+        try {
+            $hasilKerja = HasilKerja::findOrFail($id);
+
+            foreach ($hasilKerja->indikator as $indikator) {
+                // Hapus semua manual indikator dulu
+                $indikator->definisiOperasional()->delete();
+
+                // Hapus indikator
+                $indikator->delete();
+            }
+
+            // Hapus hasil kerja utama
+            $hasilKerja->delete();
+
+            return redirect()->back()->with('success', 'Hasil kerja utama dan seluruh indikator berhasil dihapus.');
+        } catch (\Throwable $th) {
+            throw $th;
+            // return redirect()->back()->with('error', 'Gagal menghapus hasil kerja utama: ' . $e->getMessage());
+        }
     }
 }

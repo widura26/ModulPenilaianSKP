@@ -180,9 +180,12 @@
                                     <!-- <button type="button" class="btn btn-danger btn-sm" title="Nonaktifkan">
                                         <i class="fas fa-ban"></i>
                                     </button> -->
-                                    <button type="button" class="btn btn-danger btn-sm" title="Hapus Hasil Kerja">
+                                    <!-- <button type="button" class="btn btn-danger btn-sm" title="Hapus Hasil Kerja">
                                         <i class="fas fa-trash"></i>
-                                    </button>
+                                    </button> -->
+                                    @if (!is_null($rencana))
+                                    @include('penilaian::rencana.components.modal-delete-hasil-kerja-utama')
+                                    @endif
                                 </td>
                             </tr>
 
@@ -225,9 +228,12 @@
                                 <td class="align-top">
                                     @include('penilaian::rencana.components.modal-edit-indikator-hasil-kerja-utama', ['indikator' => $indikator])
                                     @include('penilaian::rencana.components.modal-create-manual-indikator-utama', ['indikator' => $indikator])
-                                    <button type="button" class="btn btn-danger btn-sm" title="Hapus Indikator">
+                                    <!-- <button type="button" class="btn btn-danger btn-sm" title="Hapus Indikator">
                                         <i class="fas fa-trash"></i>
-                                    </button>
+                                    </button> -->
+                                    
+                                    @include('penilaian::rencana.components.modal-delete-indikator-hasil-kerja-utama')
+                                    
                                 </td>
                             </tr>
                             @endforeach
@@ -261,7 +267,7 @@
                                     <p>{{ $item['deskripsi'] }}</p>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success btn-sm">
+                                    <button type="button" class="btn btn-warning btn-sm">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <!-- <button type="button" class="btn btn-success btn-sm">
@@ -287,7 +293,7 @@
                                     <li class="mb-0">{{ $indikator['deskripsi'] }}</li>
                                 </td>
                                 <td class="align-middle">
-                                    <button type="button" class="btn btn-success btn-sm" title="Edit Indikator">
+                                    <button type="button" class="btn btn-warning btn-sm" title="Edit Indikator">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger btn-sm" title="Hapus Indikator">
