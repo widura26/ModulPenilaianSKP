@@ -65,6 +65,12 @@ class RealisasiController extends Controller {
 
         $rencana = RencanaKerja::with([
             'hasilKerja',
+            // 'hasilKerja.realisasiPeriodik' => function($query) use ($periode){
+            //     $query->where('periode_id', $periode->id);
+            // },
+            'evaluasiPeriodik' => function ($query) use ($periode) {
+                $query->where('periode_id', $periode->id);
+            },
             'pengajuanRealisasiPeriodik' => function ($query) use ($periode) {
                 $query->where('periode_id', $periode->id);
             }])->where('pegawai_id', '=', $pegawaiId)->where('periode_id', $periodeId)->first();
@@ -115,18 +121,19 @@ class RealisasiController extends Controller {
     }
 
     public function updateRealisasi2(Request $request, $periodeId, $id) {
+        $validated = $request->validate([
+            'realisasi' => 'string',
+            'bukti_dukung' => 'string'
+        ]);
+        $existing = RealisasiPeriodik::where('periode_id', $periodeId)->where('hasil_kerja_id', $id)->first();
+        if ($existing) return redirect()->back()->with('failed', 'Realisasi untuk hasil kerja dan periode ini sudah ada.');
+
         try {
-            $data = [
-                'hasil_kerja_id' => $id,
-                'periode_id' => $periodeId,
-                'realisasi' => $request->realisasi,
-                'bukti_dukung' => $request->bukti_dukung
-            ];
             RealisasiPeriodik::create([
                 'hasil_kerja_id' => $id,
                 'periode_id' => $periodeId,
-                'realisasi' => $request->realisasi,
-                'bukti_dukung' => $request->bukti_dukung
+                'realisasi' => $validated['realisasi'],
+                'bukti_dukung' => $validated['bukti_dukung']
             ]);
             return redirect()->back()->with('success', 'Realisasi berhasil diperbarui.');
         } catch (\Throwable $th) {
@@ -142,7 +149,7 @@ class RealisasiController extends Controller {
             $rencana->hasilKerja()->where('id', $id)->update(['realisasi' => null]);
             return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
+            throw $th;
         }
     }
 

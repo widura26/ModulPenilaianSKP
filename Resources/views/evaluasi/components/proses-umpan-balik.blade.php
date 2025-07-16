@@ -60,7 +60,7 @@
               </tr>
             </tbody>
         </table>
-        @if ($rencana->predikat_akhir == null)
+        @if ($rencana->evaluasiPeriodik->first()?->predikat == null)
             <div class="w-100 mt-4 d-flex justify-content-end">
                 <button type="button" class="btn btn-primary mr-1" id="ubah-umpan-balik" data-pegawai-id={{ $pegawai->id }}>
                     Ubah Umpan Balik

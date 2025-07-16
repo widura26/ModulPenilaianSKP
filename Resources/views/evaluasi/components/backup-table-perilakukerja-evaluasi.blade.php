@@ -1,15 +1,15 @@
 <table class="table mb-0" style="table-layout: auto; width: 100%;">
     <thead>
         <tr>
-        <th colspan="4">PERILAKU KERJA</th>
+            <th colspan="4" class="border-left border-right">PERILAKU KERJA</th>
         </tr>
     </thead>
     <tbody>
         @if ($rencana && $rencana->perilakuKerja)
             @foreach ($rencana->perilakuKerja as $index => $item)
-                <tr>
-                    <th scope="row">{{ $index + 1 }}</th>
-                    <td style="width: 50%;">
+                <tr class="border-bottom">
+                    <th scope="row" class="border-right border-left">{{ $index + 1 }}</th>
+                    <td style="width: 50%;" class="border-right">
                         <p class="mb-0">
                             {{ $item->deskripsi }}
                         </p>
@@ -34,11 +34,11 @@
                             </p>
                         @endif
                     </td>
-                    <td style="width: 25%;">
+                    <td style="width: 25%;" class="border-right">
                         <span>Ekspektasi Khusus Pimpinan:</span>
                         <p>{{ $item->ekspektasi_pimpinan }}</p>
                     </td>
-                    <td style="width: 25%;">
+                    <td style="width: 25%;" class="border-right">
                         <span>Umpan Balik :</span>
                         <div class="input-group">
                             <input type="hidden" name="feedback_perilaku_kerja[{{ $index }}][perilaku_kerja_id]" value="{{ $item->rencanaPerilaku->id }}">

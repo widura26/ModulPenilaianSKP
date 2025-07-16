@@ -67,7 +67,7 @@
                                             {{ $item->pegawai->rencanakerja[0]->pengajuanRealisasiPeriodik?->status }}
                                         </span>
                                     </td>
-                                    <td>{{ $item->pegawai->rencanakerja[0]->predikat_akhir != null ? $item->pegawai->rencanakerja[0]->predikat_akhir : '-' }}</td>
+                                    <td>{{ $item->pegawai->rencanakerja[0]->evaluasiPeriodik->first()?->predikat != null ? $item->pegawai->rencanakerja[0]->evaluasiPeriodik->first()?->predikat : '-' }}</td>
                                     <td>
                                         <button onclick="window.location.href='{{ url('/skp/evaluasi/' . $periode->id . '/' . $item->pegawai->username) }}'" type="button" class="btn btn-primary"><i class="nav-icon fas fa-pencil-alt "></i></button>
                                     </td>

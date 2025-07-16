@@ -153,7 +153,7 @@
                         <td>CAPAIAN KINERJA ORGANISASI</td><td>:</td><td>{{ $capaianKinerjaOrganisasi->capaian_kinerja ?? null }}</td>
                     </tr>
                     <tr>
-                        <td>PREDIKAT KINERJA PEGAWAI</td><td>:</td><td>{{ $pegawai->rencanaKerja[0]->predikat_akhir }}</td>
+                        <td>PREDIKAT KINERJA PEGAWAI</td><td>:</td><td>{{ $pegawai->rencanaKerja[0]->evaluasiPeriodik[0]?->predikat }}</td>
                     </tr>
                 </tbody>
                 <tbody>

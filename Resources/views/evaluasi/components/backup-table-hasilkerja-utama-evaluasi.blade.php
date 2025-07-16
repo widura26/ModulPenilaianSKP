@@ -1,18 +1,18 @@
 <table class="table mb-0" style="table-layout: auto; width: 100%;">
     <thead>
         <tr>
-        <th colspan="4">HASIL KERJA</th>
+            <th colspan="4" class="border-right border-left">HASIL KERJA</th>
         </tr>
         <tr>
-        <th colspan="4">A. Utama</th>
+            <th colspan="4" class="border-right border-left">A. Utama</th>
         </tr>
     </thead>
     <tbody>
         @if ($rencana && $rencana->hasilKerja)
             @foreach ($hasilKerjaUtama as $index => $item)
                 <tr>
-                    <th scope="row">{{ $index + 1 }}</th>
-                    <td style="width: 50%;">
+                    <th scope="row" class="border-right border-left">{{ $index + 1 }}</th>
+                    <td style="width: 50%;" class="border-right">
                         <p>{{ $item->deskripsi }}</p>
                         <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
                         <ul>
@@ -21,7 +21,7 @@
                             @endforeach
                         </ul>
                     </td>
-                    <td style="width: 25%;">
+                    <td style="width: 25%;" class="border-right">
                         <span>Realisasi :</span>
                         <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
                         @if ($item->realisasiPeriodik?->bukti_dukung !== null)
@@ -29,7 +29,7 @@
                                 <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
                         @endif
                     </td>
-                    <td style="width: 25%;">
+                    <td style="width: 25%;" class="border-right">
                         <span>Umpan Balik :</span>
                         <div class="input-group">
                             <input type="hidden" name="feedback[{{ $index }}][hasil_kerja_id]" value="{{ $item->id }}">
