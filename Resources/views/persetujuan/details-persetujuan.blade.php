@@ -213,7 +213,7 @@
                       <label>Ekspektasi Khusus Pimpinan:</label>
                       <textarea
                         name="ekspektasi_pimpinan[{{ $item->id }}]"
-                        class="form-control autosize"
+                        class="form-control"
                         rows="5"
                         oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
                         style="overflow:hidden; resize:none;"
@@ -225,7 +225,7 @@
                 @endforeach
               </tbody>
             </table>
-            <div class="d-flex justify-content-end gap-2">
+            <div class="d-flex justify-content-end" style="gap: 4px;">
               <a href="{{ url('/skp/persetujuan') }}" class="btn btn-secondary">
                 Batal
               </a>
@@ -249,14 +249,13 @@
 @stop
 
 @push('js')
-<script>
+<!-- <script>
   $(document).ready(function() {
     $('#example').DataTable({
       responsive: true,
       autoWidth: false
     });
   });
-
-</script>
+</script> -->
 
 @endpush

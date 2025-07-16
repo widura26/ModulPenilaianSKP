@@ -2,9 +2,10 @@
 
 namespace Modules\Penilaian\Tests\Unit;
 
+use App\Models\Core\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
 use Modules\Penilaian\Entities\RencanaKerja;
@@ -17,19 +18,27 @@ use Modules\Penilaian\Entities\Lampiran;
 
 class RencanaTest extends TestCase
 {
-    // use RefreshDatabase;
 
-    // public function test_ajukan_skp()
-    // {
-    //     $rencana = RencanaKerja::factory()->create([
-    //         'status_pengajuan' => 'Belum Diajukan'
-    //     ]);
+    
+    public function test_ajukan_skp_data_valid()
+    {
+        $this->actingAs(User::first());
+        $rencana = RencanaKerja::where('status_pengajuan', 'Belum Diajukan')->first();
 
-    //     $response = $this->get('/skp/rencana/ajukan/' . $rencana->id);
+        $this->assertNotNull($rencana, 'Tidak ada data RencanaKerja dengan status Belum Diajukan.');
 
-    //     $response->assertRedirect();
-    //     $this->assertEquals('Sudah Diajukan', $rencana->fresh()->status_pengajuan);
-    // }
+        $id = $rencana->id;
+
+        $response = $this->put('/skp/rencana/ajukan/' . $id);
+
+        $response->assertRedirect();
+
+        $this->assertEquals('Sudah Diajukan', $rencana->fresh()->status_pengajuan);
+
+        $rencana->update(['status_pengajuan' => 'Belum Diajukan']);
+    }
+
+
 
     // public function test_batalkan_pengajuan_skp()
     // {
@@ -123,5 +132,65 @@ class RencanaTest extends TestCase
     //         'jenis' => 'tambahan'
     //     ]);
     //     $this->assertDatabaseCount('skp_indikator', 2);
+    // }
+
+    // public function test_store_hasil_kerja_utama()
+    // {
+    //     $this->actingAs(User::first());
+
+    //     $rencana = RencanaKerja::first();
+    //     $this->assertNotNull($rencana);
+
+    //     $data = [
+    //         'deskripsi' => 'Hasil Kerja Utama Real',
+    //         'indikators' => 'Indikator Real 1;Indikator Real 2'
+    //     ];
+
+    //     $response = $this->post('/skp/rencana/store-hasil-kerja-utama/' . $rencana->id, $data);
+    //     $response->assertRedirect();
+
+    //     $this->assertDatabaseHas('skp_hasil_kerja', [
+    //         'rencana_id' => $rencana->id,
+    //         'deskripsi' => 'Hasil Kerja Utama Real'
+    //     ]);
+    // }
+
+    // public function test_store_hasil_kerja_utama_data_valid()
+    // {
+    //     $this->actingAs(User::first());
+
+    //     $rencana = RencanaKerja::first();
+    //     $this->assertNotNull($rencana, 'Data rencana tidak ditemukan di database');
+
+    //     $data = [
+    //         'deskripsi' => 'Hasil Kerja Utama Real',
+    //         'indikators' => 'Indikator Real 1;Indikator Real 2'
+    //     ];
+
+    //     $response = $this->post('/skp/rencana/store-hasil-kerja-utama/' . $rencana->id, $data);
+    //     $response->assertRedirect();
+
+    //     $hasil = HasilKerja::where('rencana_id', $rencana->id)
+    //         ->where('deskripsi', 'Hasil Kerja Utama Real')
+    //         ->first();
+
+    //     $this->assertNotNull($hasil, 'Hasil kerja utama tidak ditemukan setelah request');
+
+    //     $this->assertDatabaseHas('skp_hasil_kerja', [
+    //         'rencana_id' => $rencana->id,
+    //         'deskripsi' => 'Hasil Kerja Utama Real'
+    //     ]);
+
+    //     $this->assertDatabaseHas('skp_indikators', [
+    //         'hasil_kerja_id' => $hasil->id,
+    //         'deskripsi' => 'Indikator Real 1'
+    //     ]);
+    //     $this->assertDatabaseHas('skp_indikators', [
+    //         'hasil_kerja_id' => $hasil->id,
+    //         'deskripsi' => 'Indikator Real 2'
+    //     ]);
+
+    //     Indikator::where('hasil_kerja_id', $hasil->id)->delete();
+    //     $hasil->delete();
     // }
 }
