@@ -26,6 +26,19 @@
         <div class="col-12">
             <div class="card">
                 <div class="bg-white p-4">
+                    @if (session('failed'))
+                        <div id="alert-failed" class="p-2">
+                            <div class="alert alert-danger">
+                                {{ session('failed') }}
+                            </div>
+                        </div>
+                    @elseif(session('success'))
+                        <div class="p-2" id="alert-passed">
+                            <div id="alert-passed" class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        </div>
+                    @endif
                     <form method="POST" action="{{ url($url . 'verifikasi/' . $arsipData->id) }}">
                         @csrf
                         <div class="form-row">
@@ -73,5 +86,5 @@
 @section('css')
 @stop
 @push('js')
-
+@include('penilaian::evaluasi.script-periode')
 @endpush

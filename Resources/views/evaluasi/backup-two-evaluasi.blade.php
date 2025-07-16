@@ -6,6 +6,9 @@
     <h1 class="m-0 text-dark">Evaluasi SKP</h1>
 @stop
 @section('content')
+    @php
+        $role = Auth::user()->role_aktif;
+    @endphp
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -62,8 +65,11 @@
                                     <td style="width: 65%;">Evaluasi {{ $item->jenis_periode }}</td>
                                     <td>
                                         <div class="d-flex" style="gap: 4px;">
-                                            <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/realisasi/' . str_replace(' ', '-', $item->jenis_periode)) }}'">Isi Realisasi</button>
-                                            <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/evaluasi/periode/' . $item->id) }}'">Evaluasi Pegawai</button>
+                                            @if ($role == in_array($role, ['pegawai', 'terdaftar']))
+                                                <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/realisasi/' . str_replace(' ', '-', $item->jenis_periode)) }}'">Isi Realisasi</button>
+                                            @elseif($role == in_array($role, ['wadir1', 'wadir2', 'direktur']))
+                                                <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/evaluasi/periode/' . $item->id) }}'">Evaluasi Pegawai</button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

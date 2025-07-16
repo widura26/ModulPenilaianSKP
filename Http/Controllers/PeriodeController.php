@@ -40,6 +40,13 @@ class PeriodeController extends Controller {
 
     public function store(Request $request){
         try {
+            $existing = Periode::where('start_date', $request->periode_awal)
+            ->where('end_date', $request->periode_akhir)->first();
+
+            if ($existing) {
+                return redirect()->back()->with('failed', 'Periode sudah ada');
+            }
+
             Periode::create([
                 'start_date' => $request->periode_awal,
                 'end_date' => $request->periode_akhir,
@@ -54,19 +61,21 @@ class PeriodeController extends Controller {
     }
 
     public function update(Request $request, $id){
-        $periode = Periode::find($id);
-
-        $request->validate([
-            'capaian_kinerja' => 'required|string',
-            'kurva' => 'required|file|mimes:jpg,png|max:10240'
-        ]);
-        $path = $request->file('kurva')->store('kurva', 'public');
-
-        $periode->update([
-            'capaian_kinerja' => $request->capaian_kinerja,
-            'kurva' => $path
-        ]);
-        return redirect()->back()->with('success', 'berhasil');
+        try {
+            $periode = Periode::find($id);
+            $request->validate([
+                'capaian_kinerja' => 'required|string',
+                'kurva' => 'required|file|mimes:jpg,png|max:10240'
+            ]);
+            $path = $request->file('kurva')->store('kurva', 'public');
+            $periode->update([
+                'capaian_kinerja' => $request->capaian_kinerja,
+                'kurva' => $path
+            ]);
+            return redirect()->back()->with('success', 'berhasil');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function setPeriode(Request $request){

@@ -89,7 +89,7 @@ class MenuPenilaianTableSeeder extends Seeder
             'label' => 'Evaluasi',
             'url' => 'skp/evaluasi',
             // 'can' => serialize(['pimpinan', 'pejabat', 'sekretaris', 'kepegawaian', 'dosen']),
-            'can' => serialize(['terdaftar', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'direktur', 'pegawai']),
+            'can' => serialize(['direktur','terdaftar', 'kajur', 'wadir1', 'wadir2', 'wadir3', 'pegawai']),
             'icon' => 'far fa-circle',
             'urut' => 1,
             'parent_id' => $menu->id,

@@ -66,7 +66,14 @@
                         $adaRealisasiTambahan = $hasilKerjaTambahan->contains(function ($item) {
                             return !is_null($item->realisasiPeriodik?->realisasi) && $item->realisasiPeriodik?->realisasi !== '';
                         });
+
+                        $realisasiPeriodik = $rencana->hasilKerja->contains(function ($item) use ($periode) {
+                            return $item->realisasiPeriodik?->periode_id;
+                        });
+
+                        $evaluasi = $rencana->evaluasiPeriodik->first();
                     @endphp
+
                     @if (session('failed'))
                         <div id="alert-failed" class="p-2">
                             <div class="alert alert-danger">
@@ -82,11 +89,12 @@
                     @endif
 
                     <div class="w-100 d-flex justify-content-between align-items-center p-2">
+                        {{-- <p>{{ $realisasiPeriodik }}</p> --}}
                         <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $label }}</span>
                         @if ($rencana?->pengajuanRealisasiPeriodik?->status == null)
                             <form method="POST" action="{{ url('/skp/realisasi/'. $periode->id . '/ajukan-realisasi/' . $rencana->id) }}">
                                 @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ (!$adaRealisasiUtama && !$adaRealisasiTambahan) ? 'disabled' : '' }}>Ajukan Realisasi</button>
+                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ (!$adaRealisasiUtama && !$adaRealisasiTambahan && !$realisasiPeriodik) ? 'disabled' : '' }}>Ajukan Realisasi</button>
                             </form>
                         @elseif($rencana?->pengajuanRealisasiPeriodik?->status == 'Belum Dievaluasi')
                             <form method="POST" action="{{ url('/skp/realisasi' . $periode->id . '/batalkan-realisasi/' . $rencana->id) }}">
@@ -95,12 +103,12 @@
                             </form>
                         @endif
 
-                        @if ($rencana?->predikat_akhir !== null)
+                        @if ($evaluasi?->predikat !== null)
                             <div class="d-flex">
                                 {{-- @include('penilaian::components.modal-cetak-evaluasi')
                                 @include('penilaian::components.modal-cetak-dokevaluasi') --}}
                                 <button class="btn btn-primary" onclick="window.location.href='{{ url('/skp/preview/backup-evaluasi') }}'">Cetak Evaluasi</button>
-                                <button class="btn btn-primary ml-2" onclick="window.location.href='{{ url('/skp/preview/backup-dok-evaluasi') }}'">Cetak Dok. Evaluasi</button>
+                                <button class="btn btn-primary ml-2" onclick="window.location.href='{{ url('/skp/preview/backup-dok-evaluasi?periode=' . $periode->id) }}'">Cetak Dok. Evaluasi</button>
                             </div>
                         @endif
                     </div>
@@ -112,17 +120,17 @@
                         <table class="table mb-0" style="width: 100%;">
                             <thead>
                             <tr>
-                                <th colspan="5">HASIL KERJA</th>
+                                <th colspan="5" class="border-left border-right">HASIL KERJA</th>
                             </tr>
                             <tr>
-                                <th colspan="5">A. Utama</th>
+                                <th colspan="5" class="border-left border-right">A. Utama</th>
                             </tr>
                             </thead>
                             <tbody>
                                 @if ($hasilKerjaUtama->count())
                                     @foreach ($hasilKerjaUtama as $index => $item)
                                         <tr>
-                                            <th class="border-right" scope="row">{{ $index + 1 }}.</th>
+                                            <th  class="border-left border-right" scope="row">{{ $index + 1 }}.</th>
                                             <td style="width: 50%;" class="border-right">
                                                 <p>{{ $item['deskripsi'] }} {{ $item['id'] }}</p>
                                                 <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
@@ -142,58 +150,10 @@
                                             </td>
                                             <td style="width: 20%;" class="border-right">
                                                 <span>Umpan Balik :</span>
-                                                <p>{{ $item['umpan_balik_predikat'] }}</p>
+                                                <p>{{ $item->penilaian->first()?->umpan_balik_predikat }}</p>
                                             </td>
-                                            <td style="width: 10%;">
-                                                <div class="d-flex" style="gap: 5px;">
-                                                    @include('penilaian::realisasi.components.modals-create-realisasi')
-                                                    <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
-                                                        @csrf
-                                                        <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
-                                                            <i class="nav-icon fas fa-ban "></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
-                        <table class="table mb-0" style="width: 100%;">
-                            <thead>
-                            <tr>
-                                <th colspan="5">B. Tambahan</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tbody>
-                                    @if ($hasilKerjaTambahan->count())
-                                        @foreach ($hasilKerjaTambahan as $indexTambahan => $item)
-                                            <tr>
-                                                <th scope="row">{{ $indexTambahan + 1 }}.</th>
-                                                <td style="width: 50%;">
-                                                    <p>{{ $item['deskripsi'] }}</p>
-                                                    <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
-                                                    <ul>
-                                                        @foreach ($item->indikator as $indikator)
-                                                            <li>{{ $indikator['deskripsi'] }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </td>
-                                                <td style="width: 20%;">
-                                                    <span>Realisasi :</span>
-                                                    <p>{{ $item['realisasi'] }}</p>
-                                                    @if ($item->bukti_dukung !== null)
-                                                        <button onclick="window.open('{{ $item->bukti_dukung }}', '_blank')" class="btn btn-primary">
-                                                            <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
-                                                    @endif
-                                                </td>
-                                                <td style="width: 20%;">
-                                                    <span>Umpan Balik :</span>
-                                                    <p>{{ $item['umpan_balik_predikat'] }}</p>
-                                                </td>
-                                                <td style="width: 10%;">
+                                            <td style="width: 10%;" class="border-right">
+                                                @if (($item->penilaian->first() == null) && ($evaluasi?->predikat == null))
                                                     <div class="d-flex" style="gap: 5px;">
                                                         @include('penilaian::realisasi.components.modals-create-realisasi')
                                                         <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
@@ -203,6 +163,58 @@
                                                             </button>
                                                         </form>
                                                     </div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                        <table class="table mb-0" style="width: 100%;">
+                            <thead>
+                            <tr>
+                                <th colspan="5" class="border-left border-right">B. Tambahan</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tbody>
+                                    @if ($hasilKerjaTambahan->count())
+                                        @foreach ($hasilKerjaTambahan as $indexTambahan => $item)
+                                            <tr>
+                                                <th scope="row" class="border">{{ $indexTambahan + 1 }}.</th>
+                                                <td style="width: 50%;" class="border-right border-bottom">
+                                                    <p>{{ $item['deskripsi'] }}</p>
+                                                    <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
+                                                    <ul>
+                                                        @foreach ($item->indikator as $indikator)
+                                                            <li>{{ $indikator['deskripsi'] }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </td>
+                                                <td style="width: 20%;" class="border-right border-bottom">
+                                                    <span>Realisasi :</span>
+                                                    <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
+                                                    @if ( $item->realisasiPeriodik?->bukti_dukung !== null)
+                                                        <button onclick="window.open('{{ $item->realisasiPeriodik?->bukti_dukung }}', '_blank')" class="btn btn-primary">
+                                                            <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
+                                                    @endif
+                                                </td>
+                                                <td style="width: 20%;" class="border-right border-bottom">
+                                                    <span>Umpan Balik :</span>
+                                                    <p>{{ $item->penilaian->first()?->umpan_balik_predikat }}</p>
+                                                </td>
+                                                <td style="width: 10%;" class="border-right border-bottom">
+                                                    @if (($item->penilaian->first() == null) && ($evaluasi?->predikat == null))
+                                                        <div class="d-flex" style="gap: 5px;">
+                                                            @include('penilaian::realisasi.components.modals-create-realisasi')
+                                                            <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
+                                                                @csrf
+                                                                <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
+                                                                    <i class="nav-icon fas fa-ban "></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

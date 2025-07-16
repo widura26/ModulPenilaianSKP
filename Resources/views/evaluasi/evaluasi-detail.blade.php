@@ -8,7 +8,7 @@
 
 @section('content')
     @php
-        switch ($rencana->predikat_akhir) {
+        switch ($rencana->evaluasiPeriodik->isNotEmpty() && $rencana->evaluasiPeriodik[0]?->predikat) {
             case 'Sangat Baik':
             case 'Baik':
                 $badgeClass = 'badge-success';
@@ -32,6 +32,8 @@
                 return $item->jenis === 'tambahan';
             })->values()->merge($suratTugas);
         }
+
+        $evaluasi = $rencana->evaluasiPeriodik->first();
     @endphp
 
     <div class="row">
@@ -57,8 +59,9 @@
                         </div>
                     </div>
                 @endif
-                <div class="w-100 justify-content-between align-items-center p-4 {{ $rencana->predikat_akhir == null ? 'd-none' : 'd-flex' }}">
-                    <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $rencana->predikat_akhir }}</span>
+                <div class="w-100 justify-content-between align-items-center p-4
+                    {{ $evaluasi && $evaluasi->predikat ? 'd-flex' : 'd-none' }}">
+                    <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $evaluasi?->predikat }}</span>
                     @include('penilaian::evaluasi.components.modal-batalkan-evaluasi')
                 </div>
                 @include('penilaian::components.atasan-bawahan-section')

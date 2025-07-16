@@ -48,8 +48,8 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::get('/{periodeId}/{username}', 'EvaluasiController@evaluasiDetail2');
             Route::post('{periodeId}/proses-umpan-balik/{id}', 'EvaluasiController@prosesUmpanBalik2');
             Route::post('{periodeId}/simpan-hasil-evaluasi/{id}', 'EvaluasiController@simpanHasilEvaluasi2');
+            Route::post('{periodeId}/batalkan-evaluasi/{username}', 'EvaluasiController@batalkanEvaluasi');
             Route::get('/data-pegawai', 'EvaluasiController@index');
-            Route::post('/batalkan-evaluasi/{username}', 'EvaluasiController@batalkanEvaluasi');
             Route::post('ubah-umpan-balik/{id}', 'EvaluasiController@ubahUmpanBalik');
         });
         Route::prefix('realisasi')->group(function () {

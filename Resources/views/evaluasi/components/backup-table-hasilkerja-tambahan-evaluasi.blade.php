@@ -1,20 +1,20 @@
 <table class="table mb-0" style="table-layout: auto; width: 100%;">
     <thead>
         <tr>
-        <th colspan="4">B. Tambahan</th>
+            <th colspan="4" class="border-right border-left">B. Tambahan</th>
         </tr>
     </thead>
     <tbody>
-        @if (count($suratTugas) == null)
+        @if (count($suratTugas) == null && count($hasilKerjaTambahan) == null)
             <tr>
-                <td colspan="4">No data</td>
+                <td colspan="4" class="border-right border-left">No data</td>
             </tr>
         @else
             @foreach ($hasilKerjaTambahan as $index => $item)
                 @if (isset($item->rencana_id))
                     <tr>
-                        <th scope="row">{{ $index + 1 }}</th>
-                        <td style="width: 50%;">
+                        <th scope="row" class="border-right border-left">{{ $index + 1 }}</th>
+                        <td style="width: 50%;" class="border-right">
                             <p>{{ $item->deskripsi }}</p>
                             <span>Ukuran keberhasilan / Indikator Kinerja Individu, dan Target :</span>
                             <ul>
@@ -23,7 +23,7 @@
                                 @endforeach
                             </ul>
                         </td>
-                        <td style="width: 25%;">
+                        <td style="width: 25%;" class="border-right">
                             <span>Realisasi :</span>
                             <p>{{ $item->realisasi }}</p>
                             @if ($item->bukti_dukung !== null)
@@ -31,7 +31,7 @@
                                     <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
                             @endif
                         </td>
-                        <td style="width: 25%;">
+                        <td style="width: 25%;" class="border-right">
                             <span>Umpan Balik :</span>
                             <div class="input-group">
                                 <input type="hidden" name="feedback_hasil_kerja_tambahan[{{ $index }}][hasil_kerja_id]" value="{{ $item->id }}">
@@ -74,13 +74,13 @@
                     </tr>
                 @elseif (isset($item->nomor_surat))
                     <tr>
-                        <th scope="row">{{ $index + 1 }}</th>
+                        <th scope="row" class="border-right">{{ $index + 1 }}</th>
                         <td style="width: 50%;">
                             {{ $item->detail->kegiatan_maksud }}
                         </td>
-                        <td style="width: 25%;">
+                        <td style="width: 25%;" class="border-right">
                         </td>
-                        <td style="width: 25%;">
+                        <td style="width: 25%;" class="border-right">
                             <span>Umpan Balik :</span>
                             <div class="input-group">
                                 <input type="hidden" name="feedback_hasil_kerja_tambahan[{{ $index }}][surat_tugas_id]" value="{{ $item->id }}">

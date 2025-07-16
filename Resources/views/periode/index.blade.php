@@ -17,13 +17,26 @@
                             Reguler
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link {{ request('periode') == 'khusus' ? 'active' : '' }}"
                             href="{{ url('/skp/periode') }}?periode=khusus">
                                 Khusus
                             </a>
-                        </li> -->
+                        </li> --}}
                     </ul>
+                    @if (session('failed'))
+                        <div id="alert-failed" class="p-2">
+                            <div class="alert alert-danger">
+                                {{ session('failed') }}
+                            </div>
+                        </div>
+                    @elseif(session('success'))
+                        <div class="p-2" id="alert-passed">
+                            <div id="alert-passed" class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        </div>
+                    @endif
                     <div class="d-flex justify-content-end">
                         @include('penilaian::periode.components.modal-create-periode')
                     </div>

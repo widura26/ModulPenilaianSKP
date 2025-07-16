@@ -117,9 +117,10 @@ class PreviewController extends Controller {
     }
 
     public function backupPreviewDokEvaluasi(Request $request){
+        $periodeRequest = $request->query('periode');
         $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
         $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
-
+        $periodeId = $this->periodeController->periode_aktif();
         $authUser = Auth::user();
         $authPegawai = $authUser->pegawai;
         $pegawaiUsername = $authPegawai->username;
@@ -129,7 +130,15 @@ class PreviewController extends Controller {
         $pegawai = Pegawai::with([
             'pejabat.jabatan',
             'timKerjaAnggota',
-            'rencanaKerja.hasilKerja',
+            'rencanaKerja' => function ($query) use ($periodeId, $periodeRequest) {
+                $query->where('periode_id', $periodeId)
+                ->whereHas('evaluasiPeriodik', function ($q) use ($periodeRequest) {
+                    $q->where('periode_id', $periodeRequest);
+                })
+                ->with(['evaluasiPeriodik' => function ($q) use ($periodeRequest) {
+                    $q->where('periode_id', $periodeRequest);
+                }]);
+            },
             'timKerjaAnggota.unit',
             'timKerjaAnggota.subUnits.unit',
             'timKerjaAnggota.parentUnit.unit',
@@ -139,7 +148,7 @@ class PreviewController extends Controller {
         $atasanpejabatpenilai = $atasanService->getAtasanPegawai($pegawai->timKerjaAnggota[0]->parentUnit?->ketua?->pegawai->id);
 
         if($request->query('params') == 'json'){
-            return response()->json($atasanpejabatpenilai);
+            return response()->json($pegawai->rencanaKerja);
         }else {
             return view('penilaian::backup-cetak-dokevaluasi-page', compact('pegawai', 'rencana', 'capaianKinerjaOrganisasi', 'atasanpejabatpenilai'));
         }
