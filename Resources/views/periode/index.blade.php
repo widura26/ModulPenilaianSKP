@@ -17,12 +17,12 @@
                             Reguler
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link {{ request('periode') == 'khusus' ? 'active' : '' }}"
                             href="{{ url('/skp/periode') }}?periode=khusus">
                                 Khusus
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                     <div class="d-flex justify-content-end">
                         @include('penilaian::periode.components.modal-create-periode')

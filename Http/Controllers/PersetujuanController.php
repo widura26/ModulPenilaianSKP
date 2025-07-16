@@ -36,7 +36,7 @@ class PersetujuanController extends Controller
         $periodeId = $this->periodeController->periode_aktif();
 
         $query = RencanaKerja::with('pegawai')
-            ->where('periode_id', $periodeId); // ✅ filter berdasarkan periode aktif
+            ->where('periode_id', $periodeId); 
 
         if ($request->has('filter_status') && $request->filter_status !== '') {
             $query->where('status_persetujuan', $request->filter_status);
@@ -47,7 +47,39 @@ class PersetujuanController extends Controller
         return view('penilaian::persetujuan.persetujuan', compact('pegawai', 'rencana'));
     }
 
+    // public function index(Request $request)
+    // {
+    //     $pegawai = $this->penilaianController->getPegawaiWhoLogin(); 
+    //     $periodeId = $this->periodeController->periode_aktif();
 
+    //     Step 1: Cari semua tim kerja yang dipimpin user login
+    //     $timDipimpinIds = DB::table('tim_kerja_anggota')
+    //         ->where('pegawai_id', $pegawai->id)
+    //         ->where('peran', 'Ketua')
+    //         ->pluck('tim_kerja_id');
+
+    //     Step 2: Ambil semua pegawai dari tim-tim tersebut, termasuk ketua
+    //     $pegawaiTimIds = DB::table('tim_kerja_anggota')
+    //         ->whereIn('tim_kerja_id', $timDipimpinIds)
+    //         ->pluck('pegawai_id')
+    //         ->unique();
+
+    //     Step 3: Ambil data rencana kerja dari pegawai-pegawai tersebut
+    //     $query = RencanaKerja::with('pegawai')
+    //         ->where('periode_id', $periodeId)
+    //         ->whereIn('pegawai_id', $pegawaiTimIds);
+
+    //     if ($request->has('filter_status') && $request->filter_status !== '') {
+    //         $query->where('status_persetujuan', $request->filter_status);
+    //     }
+
+    //     $rencana = $query->get();
+
+    //     Step 4: Filter di collection saja jika ingin menyembunyikan diri sendiri
+    //     $rencana = $rencana->filter(fn($item) => $item->pegawai_id != $pegawai->id)->values();
+
+    //     return view('penilaian::persetujuan.persetujuan', compact('pegawai', 'rencana'));
+    // }
 
     // Menampilkan detail rencana kerja berdasarkan pegawai
 

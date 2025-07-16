@@ -75,6 +75,7 @@
     });
 </script> -->
 
+<!-- Edit Hasil Kerja Utama -->
 <script>
     $('.btn-edit-utama').on('click', function() {
         const id = $(this).data('id');
@@ -95,6 +96,7 @@
     });
 </script>
 
+<!-- Tambah data indikator manual utama -->
 <script>
     const definisiList = window.definisiList || [];
     document.addEventListener('DOMContentLoaded', function() {
@@ -118,5 +120,38 @@
                 });
             });
         });
+    });
+</script>
+
+<!-- Edit Indikator Hasil Kerja Utama -->
+<script>
+    $('.btn-edit-indikator-utama').on('click', function() {
+        const id = $(this).data('id');
+        const deskripsi = $(this).data('deskripsi');
+
+        $('#edit-indikator-id').val(id);
+        $('#indikator-lama').val(deskripsi);
+
+        // Set form action dengan ID indikator
+        // const action = `/skp/rencana/edit-indikator-utama/${id}`;
+        // $('#formEditIndikatorUtama').attr('action', action);
+
+        $('#formEditIndikatorUtama').attr('action', `/skp/rencana/edit-indikator-utama/${id}`);
+
+        // Tampilkan modal setelah data siap
+        $('#editIndikatorhasilKerjaModalUtama').modal('show');
+    });
+</script>
+
+<!-- Delete Hasil Kerja Utama dan Indikator Hasil Kerja Utama -->
+<script>
+    $('.btn-hapus-hasil-kerja').on('click', function () {
+        const id = $(this).data('id');
+        $('#formHapusHasilKerja').attr('action', `/skp/rencana/hasil-kerja/${id}`);
+    });
+
+    $('.btn-hapus-indikator').on('click', function () {
+        const id = $(this).data('id');
+        $('#formHapusIndikator').attr('action', `/skp/rencana/indikator/${id}`);
     });
 </script>
