@@ -231,9 +231,9 @@
                                     <!-- <button type="button" class="btn btn-danger btn-sm" title="Hapus Indikator">
                                         <i class="fas fa-trash"></i>
                                     </button> -->
-
+                                    
                                     @include('penilaian::rencana.components.modal-delete-indikator-hasil-kerja-utama')
-
+                                    
                                 </td>
                             </tr>
                             @endforeach

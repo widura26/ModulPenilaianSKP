@@ -8,10 +8,11 @@ use Illuminate\Routing\Controller;
 use Modules\Penilaian\Entities\RencanaKerja;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Modules\Pengaturan\Entities\Anggota;
+// use Modules\Pengaturan\Entities\Anggota;
 use Illuminate\Support\Facades\DB;
 use Modules\Cuti\Services\AtasanService;
-use Modules\Pengaturan\Entities\Pegawai;
+// use Modules\Pengaturan\Entities\Pegawai;
+use Modules\Kepegawaian\Entities\Pegawai;
 use Modules\Penilaian\Entities\Cascading;
 use Modules\Penilaian\Entities\DefinisiOperasional;
 use Modules\Penilaian\Entities\HasilKerja;
@@ -21,6 +22,7 @@ use Modules\Penilaian\Entities\PerilakuKerja;
 use Modules\Penilaian\Entities\PeriodeAktif;
 use Modules\Penilaian\Entities\RencanaPerilaku;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\Cuti\Entities\Anggota;
 
 class RencanaController extends Controller
 {
@@ -112,9 +114,6 @@ class RencanaController extends Controller
             return response()->json($th->getMessage());
         }
     }
-
-
-
 
 
     public function index(Request $request)
