@@ -120,21 +120,24 @@ class RealisasiController extends Controller {
         }
     }
 
-    public function updateRealisasi2(Request $request, $periodeId, $id) {
+    public function createOrUpdateRealisasi2(Request $request, $periodeId, $hasilKerjaId) {
         $validated = $request->validate([
             'realisasi' => 'string',
             'bukti_dukung' => 'string'
         ]);
-        $existing = RealisasiPeriodik::where('periode_id', $periodeId)->where('hasil_kerja_id', $id)->first();
-        if ($existing) return redirect()->back()->with('failed', 'Realisasi untuk hasil kerja dan periode ini sudah ada.');
-
+        // $existing = RealisasiPeriodik::where('periode_id', $periodeId)->where('hasil_kerja_id', $hasilKerjaId)->first();
+        // if ($existing) return redirect()->back()->with('failed', 'Realisasi untuk hasil kerja dan periode ini sudah ada.');
         try {
-            RealisasiPeriodik::create([
-                'hasil_kerja_id' => $id,
-                'periode_id' => $periodeId,
-                'realisasi' => $validated['realisasi'],
-                'bukti_dukung' => $validated['bukti_dukung']
-            ]);
+            RealisasiPeriodik::updateOrCreate(
+                [
+                    'hasil_kerja_id' => $hasilKerjaId,
+                    'periode_id' => $periodeId
+                ],
+                [
+                    'realisasi' => $validated['realisasi'],
+                    'bukti_dukung' => $validated['bukti_dukung']
+                ]
+            );
             return redirect()->back()->with('success', 'Realisasi berhasil diperbarui.');
         } catch (\Throwable $th) {
             throw $th;
@@ -153,10 +156,33 @@ class RealisasiController extends Controller {
         }
     }
 
+    public function deleteRealisasi2($periodeId, $hasilKerjaId){
+        $realisasiPeriodik = RealisasiPeriodik::where('hasil_kerja_id', $hasilKerjaId)->where('periode_id', $periodeId)->first();
+        if(!$realisasiPeriodik) return redirect()->back()->with('failed', 'realiasi yang dimaksud tidak tersedia');
+
+        try {
+            $realisasiPeriodik->delete();
+            return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function batalkanPengajuanRealisasi($id){
         try {
             $rencana = RencanaKerja::find($id);
             $rencana->update([ 'status_realisasi' => 'Belum Ajukan Realisasi' ]);
+            return redirect()->back()->with('success', 'Pengajuan Realiasi berhasil dibatalkan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('failed', $th->getMessage());
+        }
+    }
+
+    public function batalkanPengajuanRealisasi2($periodeId, $rencanaId){
+
+        try {
+            $pengajuanRealisasi = PengajuanRealisasiPeriodik::where('rencana_id', $rencanaId)->where('periode_id', $periodeId)->first();
+            if($pengajuanRealisasi) $pengajuanRealisasi->delete();
             return redirect()->back()->with('success', 'Pengajuan Realiasi berhasil dibatalkan');
         } catch (\Throwable $th) {
             return redirect()->back()->with('failed', $th->getMessage());

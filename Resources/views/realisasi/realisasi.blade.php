@@ -89,18 +89,11 @@
                     @endif
 
                     <div class="w-100 d-flex justify-content-between align-items-center p-2">
-                        {{-- <p>{{ $realisasiPeriodik }}</p> --}}
                         <span class="badge m-2 {{ $badgeClass }}" style="width: fit-content">{{ $label }}</span>
                         @if ($rencana?->pengajuanRealisasiPeriodik?->status == null)
-                            <form method="POST" action="{{ url('/skp/realisasi/'. $periode->id . '/ajukan-realisasi/' . $rencana->id) }}">
-                                @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-primary" {{ (!$adaRealisasiUtama && !$adaRealisasiTambahan && !$realisasiPeriodik) ? 'disabled' : '' }}>Ajukan Realisasi</button>
-                            </form>
+                            @include('penilaian::realisasi.components.modals-pengajuan-realisasi')
                         @elseif($rencana?->pengajuanRealisasiPeriodik?->status == 'Belum Dievaluasi')
-                            <form method="POST" action="{{ url('/skp/realisasi' . $periode->id . '/batalkan-realisasi/' . $rencana->id) }}">
-                                @csrf
-                                <button id="proses-umpan-balik-button" class="btn btn-danger">Batalkan Pengajuan</button>
-                            </form>
+                            @include('penilaian::realisasi.components.modals-batalkan-realisasi')
                         @endif
 
                         @if ($evaluasi?->predikat !== null)
@@ -116,7 +109,6 @@
                     @include('penilaian::components.atasan-bawahan-section')
 
                     <div class="bg-white p-4">
-                        {{-- Hasil kerja --}}
                         <table class="table mb-0" style="width: 100%;">
                             <thead>
                             <tr>
@@ -144,8 +136,9 @@
                                                 <span>Realisasi :</span>
                                                 <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
                                                 @if ($item->realisasiPeriodik?->bukti_dukung !== null)
-                                                    <button onclick="window.open('{{ $item->realisasiPeriodik?->bukti_dukung }}', '_blank')" class="btn btn-primary">
-                                                        <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
+                                                    <a href="{{ $item->realisasiPeriodik?->bukti_dukung }}" target="_blank" class="btn btn-primary">
+                                                        <i class="bi bi-file-arrow-up"></i>Bukti Dukung
+                                                    </a>
                                                 @endif
                                             </td>
                                             <td style="width: 20%;" class="border-right">
@@ -153,15 +146,10 @@
                                                 <p>{{ $item->penilaian->first()?->umpan_balik_predikat }}</p>
                                             </td>
                                             <td style="width: 10%;" class="border-right">
-                                                @if (($item->penilaian->first() == null) && ($evaluasi?->predikat == null))
+                                                @if ((($item->penilaian->first() == null) && ($evaluasi?->predikat == null)) && $rencana?->pengajuanRealisasiPeriodik?->status !== 'Belum Dievaluasi' )
                                                     <div class="d-flex" style="gap: 5px;">
                                                         @include('penilaian::realisasi.components.modals-create-realisasi')
-                                                        <form action="{{ url('/skp/realisasi/delete/' . $item->id) }}" method="POST">
-                                                            @csrf
-                                                            <button {{ in_array($item->rencanakerja->status_realisasi, ['Sudah Dievaluasi', 'Belum Dievaluasi']) ? 'disabled' : '' }} type="submit" class="btn btn-danger" data-toggle="modal" data-target="#realisasi">
-                                                                <i class="nav-icon fas fa-ban "></i>
-                                                            </button>
-                                                        </form>
+                                                        @include('penilaian::realisasi.components.modals-delete-realisasi')
                                                     </div>
                                                 @endif
                                             </td>
@@ -195,8 +183,9 @@
                                                     <span>Realisasi :</span>
                                                     <p>{{ $item->realisasiPeriodik?->realisasi }}</p>
                                                     @if ( $item->realisasiPeriodik?->bukti_dukung !== null)
-                                                        <button onclick="window.open('{{ $item->realisasiPeriodik?->bukti_dukung }}', '_blank')" class="btn btn-primary">
-                                                            <i class="bi bi-file-arrow-up"></i>Bukti Dukung</button>
+                                                        <a href="{{ $item->realisasiPeriodik?->bukti_dukung }}" target="_blank" class="btn btn-primary">
+                                                            <i class="bi bi-file-arrow-up"></i>Bukti Dukung
+                                                        </a>
                                                     @endif
                                                 </td>
                                                 <td style="width: 20%;" class="border-right border-bottom">

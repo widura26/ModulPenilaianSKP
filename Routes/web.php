@@ -54,10 +54,10 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
         });
         Route::prefix('realisasi')->group(function () {
             Route::get('/{triwulan}', 'RealisasiController@realisasi');
-            Route::post('/{periodeId}/update-realisasi/{id}', 'RealisasiController@updateRealisasi2');
+            Route::post('/{periodeId}/update-realisasi/{hasilKerjaId}', 'RealisasiController@createOrUpdateRealisasi2');
             Route::post('/{periodeId}/ajukan-realisasi/{rencanaId}', 'RealisasiController@ajukanRealisasi2');
-            Route::post('/delete/{id}', 'RealisasiController@deleteRealisasi');
-            Route::post('/batalkan-realisasi/{id}', 'RealisasiController@batalkanPengajuanRealisasi');
+            Route::post('{periodeId}/delete/{hasilKerjaId}', 'RealisasiController@deleteRealisasi2');
+            Route::post('{periodeId}/batalkan-realisasi/{rencanaId}', 'RealisasiController@batalkanPengajuanRealisasi2');
         });
         Route::prefix('rencana')->group(function () {
             Route::get('/', 'RencanaController@index');

@@ -9,8 +9,8 @@
 
 
 @php
-$selectedId = request('hasil_kerja_id');
-$selected = optional($rencana?->hasilKerja->where('jenis', 'utama'))->firstWhere('id', $selectedId);
+    $selectedId = request('hasil_kerja_id');
+    $selected = optional($rencana?->hasilKerja->where('jenis', 'utama'))->firstWhere('id', $selectedId);
 @endphp
 
 
