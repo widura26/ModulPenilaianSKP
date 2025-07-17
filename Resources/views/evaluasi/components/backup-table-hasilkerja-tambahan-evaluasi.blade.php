@@ -74,8 +74,8 @@
                     </tr>
                 @elseif (isset($item->nomor_surat))
                     <tr>
-                        <th scope="row" class="border-right">{{ $index + 1 }}</th>
-                        <td style="width: 50%;">
+                        <th scope="row" class="border-right border-left">{{ $index + 1 }}</th>
+                        <td style="width: 50%;" class="border-right">
                             {{ $item->detail->kegiatan_maksud }}
                         </td>
                         <td style="width: 25%;" class="border-right">
