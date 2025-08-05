@@ -96,18 +96,6 @@ class RealisasiController extends Controller {
         }
     }
 
-    public function ajukanRealisasi2($periodeId, $rencanaId){
-        try {
-            PengajuanRealisasiPeriodik::updateOrCreate(
-                ['rencana_id' => $rencanaId, 'periode_id' => $periodeId],
-                ['status' => 'Belum Dievaluasi']
-            );
-            return redirect()->back()->with('success', 'Realiasi berhasil diajukan');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('failed', $th->getMessage());
-        }
-    }
-
     public function updateRealisasi(Request $request, $id) {
         try {
             HasilKerja::findOrFail($id)->update([
@@ -120,13 +108,46 @@ class RealisasiController extends Controller {
         }
     }
 
+    public function deleteRealisasi($id){
+        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
+        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
+
+        try {
+            $rencana->hasilKerja()->where('id', $id)->update(['realisasi' => null]);
+            return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function batalkanPengajuanRealisasi($id){
+        try {
+            $rencana = RencanaKerja::find($id);
+            $rencana->update([ 'status_realisasi' => 'Belum Ajukan Realisasi' ]);
+            return redirect()->back()->with('success', 'Pengajuan Realiasi berhasil dibatalkan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('failed', $th->getMessage());
+        }
+    }
+
+    public function ajukanRealisasi2($periodeId, $rencanaId){
+        try {
+            PengajuanRealisasiPeriodik::updateOrCreate(
+                ['rencana_id' => $rencanaId, 'periode_id' => $periodeId],
+                ['status' => 'Belum Dievaluasi']
+            );
+            return redirect()->back()->with('success', 'Realiasi berhasil diajukan');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('failed', $th->getMessage());
+        }
+    }
+
     public function createOrUpdateRealisasi2(Request $request, $periodeId, $hasilKerjaId) {
         $validated = $request->validate([
             'realisasi' => 'string',
             'bukti_dukung' => 'string'
         ]);
-        // $existing = RealisasiPeriodik::where('periode_id', $periodeId)->where('hasil_kerja_id', $hasilKerjaId)->first();
-        // if ($existing) return redirect()->back()->with('failed', 'Realisasi untuk hasil kerja dan periode ini sudah ada.');
+
         try {
             RealisasiPeriodik::updateOrCreate(
                 [
@@ -144,18 +165,6 @@ class RealisasiController extends Controller {
         }
     }
 
-    public function deleteRealisasi($id){
-        $pegawaiWhoLogin = $this->penilaianController->getPegawaiWhoLogin();
-        $rencana = $this->rencanaController->getRencana($pegawaiWhoLogin->username);
-
-        try {
-            $rencana->hasilKerja()->where('id', $id)->update(['realisasi' => null]);
-            return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
     public function deleteRealisasi2($periodeId, $hasilKerjaId){
         $realisasiPeriodik = RealisasiPeriodik::where('hasil_kerja_id', $hasilKerjaId)->where('periode_id', $periodeId)->first();
         if(!$realisasiPeriodik) return redirect()->back()->with('failed', 'realiasi yang dimaksud tidak tersedia');
@@ -165,16 +174,6 @@ class RealisasiController extends Controller {
             return redirect()->back()->with('success', 'realisasi berhasil dikosongkan');
         } catch (\Throwable $th) {
             throw $th;
-        }
-    }
-
-    public function batalkanPengajuanRealisasi($id){
-        try {
-            $rencana = RencanaKerja::find($id);
-            $rencana->update([ 'status_realisasi' => 'Belum Ajukan Realisasi' ]);
-            return redirect()->back()->with('success', 'Pengajuan Realiasi berhasil dibatalkan');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('failed', $th->getMessage());
         }
     }
 

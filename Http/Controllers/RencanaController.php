@@ -178,9 +178,9 @@ class RencanaController extends Controller
             ->get();
 
         if ($request->query('params') == 'json') {
-            return response()->json([
-                'parent_hasil_kerja' => $parentHasilKerja
-            ]);
+            $ketuaPenilai = $this->penilaianController->getKetuaPenilai($pegawai);
+
+            return response()->json($ketuaPenilai);
         } else {
             // Log::info('Rencana ditemukan:', ['rencana_id' => optional($rencana)->id]);
             // Log::info('STATUS TOMBOL:', [$data['statusTombol']]);
@@ -196,7 +196,6 @@ class RencanaController extends Controller
             //     'dataUnik' => $dataUnik,
             //     'subTopikUnik' => $subTopikUnik
             // ]);
-
             return view('penilaian::rencana.rencana', compact('rencana', 'pegawai', 'parentHasilKerja', 'definisiOperasional', 'dataUnik', 'subTopikUnik', 'dataLengkap', 'statusTombol'));
             // return view('penilaian::rencana.rencana-skp', compact('pegawai', 'rencana', 'parentHasilKerja'));
         }

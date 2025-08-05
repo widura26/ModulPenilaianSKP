@@ -112,7 +112,6 @@ Route::group(['middleware' => ['auth', 'permission']], function () {
             Route::post('/update/{id}', 'ArsipController@update');
             Route::post('/delete/{id}', 'ArsipController@delete');
         });
-
         Route::prefix('monitoring')->group(function () {
             Route::get('/', 'MonitoringController@index');
             Route::get('/data', 'MonitoringController@monitoring');

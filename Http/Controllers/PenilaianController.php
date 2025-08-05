@@ -28,9 +28,27 @@ class PenilaianController extends Controller {
             'timKerjaAnggota.ketua',
             'rencanaKerja.hasilKerja', 'timKerjaAnggota.unit',
             'timKerjaAnggota.subUnits.unit','timKerjaAnggota.parentUnit.unit',
+            'timKerjaAnggota.parentUnit.ketua',
         ])->where('username', $username)->first();
 
         return $pegawai;
+    }
+
+    public function getKetuaPenilai($pegawai){
+        $anggota = $pegawai->timKerjaAnggota[0] ?? null;
+        if (!$anggota) return null;
+
+        $peran = $anggota->pivot->peran ?? null;
+
+        if ($peran === 'Anggota') {
+            return $anggota->ketua->pegawai ?? null;
+        }
+
+        if ($peran === 'Ketua') {
+            return $anggota->parentUnit->ketua->pegawai ?? null;
+        }
+
+        return null;
     }
 
     public function getBawahan(){
@@ -271,15 +289,15 @@ class PenilaianController extends Controller {
         return $data[0];
     }
 
-    public function rerataKehadiran($alpa, $hariKerja, $jumlahHariKehadiran_sesuai_ketentuan, $jumlahHariKehadiran_tidak_sesuai_ketentuan){
-        $rerataKehadiranSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_sesuai_ketentuan * 100) / $hariKerja : 0;
-        $rerataKehadiranTidakSesuaiKetentuan = $hariKerja != 0 ? ($jumlahHariKehadiran_tidak_sesuai_ketentuan * 100) / $hariKerja : 0;
-        $rerataAlpa = $hariKerja != 0 ? ($alpa * 100) / $hariKerja : 0;
+    public function rerataKehadiran($alpa, $hrKerja, $hdrSesuai, $hdrTdkSesuai) {
+        $rHadir = $hrKerja != 0 ? ($hdrSesuai * 100) / $hrKerja : 0;
+        $rTdkHadir = $hrKerja != 0 ? ($hdrTdkSesuai * 100) / $hrKerja : 0;
+        $rAlpa = $hrKerja != 0 ? ($alpa * 100) / $hrKerja : 0;
 
         return [
-            'rerata_alpa' => $rerataAlpa,
-            'rerata_kehadiran_sesuai_ketentuan' => $rerataKehadiranSesuaiKetentuan,
-            'rerata_kehadiran_tidak_sesuai_ketentuan' => $rerataKehadiranTidakSesuaiKetentuan
+            'rerata_alpa' => $rAlpa,
+            'rerata_hadir_sesuai' => $rHadir,
+            'rerata_hadir_tdk_sesuai' => $rTdkHadir
         ];
     }
 
@@ -287,21 +305,16 @@ class PenilaianController extends Controller {
         $pegawai = Pegawai::with(['timKerjaAnggota','rencanaKerja.hasilKerja',
         'timKerjaAnggota.unit', 'timKerjaAnggota.subUnits.unit','timKerjaAnggota.parentUnit.unit',
         ])->where('username', '=', $username)->first();
-
         $roles = $pegawai->user->getRoleNames()->toArray();
 
-
         $periode = Periode::where('id', $periodeId)->first();
-
-        $startDate = Carbon::parse($periode->start_date)->startOfDay();
-        $endDate = Carbon::parse($periode->end_date)->endOfDay();
+        $startDate = Carbon::parse($periode->start_date);
+        $endDate = Carbon::parse($periode->end_date);
         $jumlahHari = $startDate->diffInDays($endDate) + 1;
-
         $pegawaiQuery = Pegawai::query();
+
         if (!in_array('admin', $roles) && !in_array('super', $roles)) {
-            if (in_array('mahasiswa', $roles) && !now()->between($startDate, $endDate)) {
-                $pegawaiQuery->whereNull('id');
-            } elseif (in_array('pegawai', $roles) || in_array('dosen', $roles)) {
+            if (in_array('pegawai', $roles) || in_array('dosen', $roles)) {
                 $pegawaiQuery->where('username', $pegawai->user->username);
             }
         }
@@ -333,8 +346,7 @@ class PenilaianController extends Controller {
             ->where(function ($query) use ($startDate, $endDate) {
                 $query->whereDate('tanggal_mulai', '<=', $endDate)
                     ->whereDate('tanggal_selesai', '>=', $startDate);
-            })
-            ->get();
+            })->get();
 
         // Mapping cuti per pegawai dan tanggal
         $cutiByPegawai = [];
@@ -386,31 +398,30 @@ class PenilaianController extends Controller {
                     $total['TM']++;
                 }
             }
-
-            $jumlahHariLibur = collect($presensi)->filter(fn($v) => $v === 'L')->count();
-            $jumlahHariKehadiran_sesuai_ketentuan = collect($presensi)->filter(fn($v) => $v === 'D')->count();
-            $jumlahHariKehadiran_tidak_sesuai_ketentuan = collect($presensi)->filter(fn($v) => $v === 'T')->count();
-            $dinasLuar = collect($presensi)->filter(fn($v) => $v === 'DL')->count();
-            $cuti = collect($presensi)->filter(fn($v) => $v === 'C')->count();
-            $alpa = collect($presensi)->filter(fn($v) => $v === 'TM')->count();
+            $presCollect = collect($presensi);
+            $jumlahHariLibur = $presCollect->filter(fn($v) => $v === 'L')->count();
+            $kehadiran_sesuai_ketentuan = $presCollect->filter(fn($v) => $v === 'D')->count();
+            $kehadiran_tidak_sesuai_ketentuan = $presCollect->filter(fn($v) => $v === 'T')->count();
+            $dinasLuar = $presCollect->filter(fn($v) => $v === 'DL')->count();
+            $cuti = $presCollect->filter(fn($v) => $v === 'C')->count();
+            $alpa = $presCollect->filter(fn($v) => $v === 'TM')->count();
 
             $hariKerja = $jumlahHari - $jumlahHariLibur - $cuti - $dinasLuar;
-            $kehadiran = $this->rerataKehadiran($alpa, $hariKerja, $jumlahHariKehadiran_sesuai_ketentuan, $jumlahHariKehadiran_tidak_sesuai_ketentuan);
+            $kehadiran = $this->rerataKehadiran($alpa, $hariKerja, $kehadiran_sesuai_ketentuan, $kehadiran_tidak_sesuai_ketentuan);
 
             return [
-                'pegawai' => $pegawai->nama,
                 'jumlahHari_dalam_periode' => $jumlahHari,
                 'hari_libur_dalam_periode' => $jumlahHariLibur,
-                'dinas_luar' => $dinasLuar,
                 'cuti' => $cuti,
-                'alpa' => $hariKerja - $jumlahHariKehadiran_sesuai_ketentuan - $jumlahHariKehadiran_tidak_sesuai_ketentuan,
-                'hari_kerja_dalam_periode' => $hariKerja,
-                'jumlahHariKehadiran_sesuai_ketentuan' => $jumlahHariKehadiran_sesuai_ketentuan,
-                'jumlahHariKehadiran_tidak_sesuai_ketentuan' => $jumlahHariKehadiran_tidak_sesuai_ketentuan,
+                'dinas_luar' => $dinasLuar,
+                'jumlah_hari_kerja' => $hariKerja,
+                'alpa' => $alpa,
+                'kehadiran_sesuai_ketentuan' => $kehadiran_sesuai_ketentuan,
+                'kehadiran_tidak_sesuai_ketentuan' => $kehadiran_tidak_sesuai_ketentuan,
                 'rerata_alpa' => $kehadiran['rerata_alpa'],
-                'rerata_kehadiran_sesuai_ketentuan' => $kehadiran['rerata_kehadiran_sesuai_ketentuan'],
-                'rerata_kehadiran_tidak_sesuai_ketentuan' => $kehadiran['rerata_kehadiran_tidak_sesuai_ketentuan'],
-                'total' => $kehadiran['rerata_kehadiran_sesuai_ketentuan'] + $kehadiran['rerata_kehadiran_tidak_sesuai_ketentuan']
+                'rerata_kehadiran_sesuai_ketentuan' => $kehadiran['rerata_hadir_sesuai'],
+                'rerata_kehadiran_tidak_sesuai_ketentuan' => $kehadiran['rerata_hadir_tdk_sesuai'],
+                'total' => $kehadiran['rerata_hadir_sesuai'] + $kehadiran['rerata_hadir_tdk_sesuai'] + $kehadiran['rerata_alpa']
             ];
         });
 

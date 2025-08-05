@@ -14,38 +14,24 @@ use Modules\Penilaian\Entities\RencanaKerja;
 
 class RealisasiTest extends TestCase
 {
-    // public function test_a_basic_request(){
-    //     $response = $this->get('/');
-    //     $response->assertStatus(200);
-    // }
 
-    // public function test_store_realisasi_data_valid() {
-    //     $user = User::where('username', 'devit')->first();
-    //     $this->assertNotNull($user, 'User tidak ditemukan');
-    //     $this->actingAs($user);
-    //     $hasilKerja = HasilKerja::where('id', 11)->first();
-    //     $periode = Periode::where('id', 4)->first();
-
-    //     $this->assertNotNull($hasilKerja, 'Hasil kerja tidak ditemukan');
-    //     $this->assertNotNull($periode, 'Periode tidak ditemukan');
-
-    //     $payload = [
-    //         'realisasi' => 'Unit Test Realisasi',
-    //         'bukti_dukung' => 'https://chatgpt.com/c/6872148d-596c-8006-9ac7-c7e30a875de4'
-    //     ];
-
-    //     $response = $this->post('/skp/realisasi/' . $periode->id . '/update-realisasi/' . $hasilKerja->id, $payload);
-
-    //     $response->assertRedirect();
-    //     $response->assertSessionHas('success', 'Realisasi berhasil diperbarui.');
-
-    //     $this->assertDatabaseHas('skp_realisasi_periodik', [
-    //         'hasil_kerja_id' => $hasilKerja->id,
-    //         'periode_id' => $periode->id,
-    //         'realisasi' => $payload['realisasi'],
-    //         'bukti_dukung' => $payload['bukti_dukung']
-    //     ]);
-    // }
+    public function test_store_realisasi_data_valid(){
+        $user = User::where('username', 'devit')->firstOrFail();
+        $this->actingAs($user);
+        $hasilKerja = HasilKerja::findOrFail(5);
+        $periode = Periode::findOrFail(1);
+        $payload = [
+            'realisasi' => 'Unit Test Realisasi',
+            'bukti_dukung' => 'https://drive.google.com/drive/folders/1RSiIW8jY6q46TGlcYP4Ee14kNteghjPH',
+        ];
+        $this->post("/skp/realisasi/{$periode->id}/update-realisasi/{$hasilKerja->id}", $payload)
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Realisasi berhasil diperbarui.');
+        $this->assertDatabaseHas('skp_realisasi_periodik', array_merge([
+            'periode_id' => $periode->id,
+            'hasil_kerja_id' => $hasilKerja->id,
+        ], $payload));
+    }
 
     // public function test_tambah_realisasi_data_duplikat(){
     //     $user = User::where('username', 'devit')->first();
@@ -61,7 +47,6 @@ class RealisasiTest extends TestCase
     //     ], [
     //         'realisasi' => 'Data Sebelumnya',
     //         'bukti_dukung' => 'https://example.com/old.pdf',
-    //         'created_by' => $user->id,
     //     ]);
 
     //     $this->assertDatabaseHas('skp_realisasi_periodik', [
@@ -85,22 +70,18 @@ class RealisasiTest extends TestCase
     //     ])->count());
     // }
 
-    public function test_store_realisasi_data_nonvalid() {
-        $user = User::where('username', 'devit')->first();
-        $this->assertNotNull($user, 'User tidak ditemukan');
+    public function test_store_realisasi_data_non_valid(){
+        $user = User::where('username', 'devit')->firstOrFail();
         $this->actingAs($user);
-        $hasilKerja = HasilKerja::where('id', 11)->first();
-        $periode = Periode::where('id', 4)->first();
 
-        $this->assertNotNull($hasilKerja, 'Hasil kerja tidak ditemukan');
-        $this->assertNotNull($periode, 'Periode tidak ditemukan');
+        $hasilKerja = HasilKerja::findOrFail(5);
+        $periode = Periode::findOrFail(1);
 
-        $payload = [
+        $response = $this->post("/skp/realisasi/{$periode->id}/update-realisasi/{$hasilKerja->id}", [
             'realisasi' => 1,
-            'bukti_dukung' => 2
-        ];
-
-        $response = $this->post('/skp/realisasi/' . $periode->id . '/update-realisasi/' . $hasilKerja->id, $payload);
+            'bukti_dukung' => 2,
+        ]);
         $response->assertSessionHasErrors(['realisasi', 'bukti_dukung']);
     }
+
 }

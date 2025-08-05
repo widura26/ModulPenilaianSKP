@@ -121,7 +121,7 @@ class EvaluasiController extends Controller {
         //     $q->where('periode_id', $periodeId);
         // })->with('realisasiPeriodik')->get();
 
-        if($request->query('params') == 'json') return response()->json($suratTugas);
+        if($request->query('params') == 'json') return response()->json($rekapKehadiran);
         else return view('penilaian::evaluasi.evaluasi-detail',
             compact('periodeId','suratTugas', 'pegawaiWhoLogin', 'pegawai', 'rencana', 'hasiKerjaRecommendation', 'perilakuRecommendation', 'rekapKehadiran', 'hasilKerjaTambahan')
         );
